@@ -1,0 +1,6 @@
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core\obj\Debug\MiniProgrammingLanguage.Core.csproj.AssemblyReference.cache
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core\obj\Debug\MiniProgrammingLanguage.Core.csproj.CoreCompileInputs.cache
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core\bin\Debug\MiniProgrammingLanguage.Core.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core\bin\Debug\MiniProgrammingLanguage.Core.pdb
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core\obj\Debug\MiniProgrammingLanguage.Core.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core\obj\Debug\MiniProgrammingLanguage.Core.pdb

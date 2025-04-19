@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{A51F9181-E300-4154-BC09-A14B843427FE}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <LangVersion>11.0</LangVersion>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>MiniProgrammingLanguage.Core</RootNamespace>
+        <AssemblyName>MiniProgrammingLanguage.Core</AssemblyName>
+        <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="EntryPoint.cs" />
+        <Compile Include="Exceptions\AbstractLanguageException.cs" />
+        <Compile Include="Extensions\CharExtensions.cs" />
+        <Compile Include="Extensions\StringExtensions.cs" />
+        <Compile Include="Interpreter\Exceptions\AbstractInterpreterException.cs" />
+        <Compile Include="Interpreter\Exceptions\ArgumentExceptedException.cs" />
+        <Compile Include="Interpreter\Exceptions\CannotAccessException.cs" />
+        <Compile Include="Interpreter\Exceptions\CannotCastException.cs" />
+        <Compile Include="Interpreter\Exceptions\FunctionNotFoundException.cs" />
+        <Compile Include="Interpreter\Exceptions\IncorrectTypeException.cs" />
+        <Compile Include="Interpreter\Exceptions\InvalidReturnTypeException.cs" />
+        <Compile Include="Interpreter\Exceptions\MemberNotFoundException.cs" />
+        <Compile Include="Interpreter\Exceptions\TypeNotFoundException.cs" />
+        <Compile Include="Interpreter\Exceptions\VariableNotFoundException.cs" />
+        <Compile Include="Interpreter\InterpreterThrowHelper.cs" />
+        <Compile Include="Interpreter\ProgramContext.cs" />
+        <Compile Include="Interpreter\Repositories\AbstractInstancesRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\FunctionExecuteContext.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionsRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\Interfaces\IUserFunctionInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\LanguageFunctionInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\UserFunctionInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\FunctionsRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Interfaces\IInstancesRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Interfaces\ILanguageInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Interfaces\IRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Interfaces\IRepositoryInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Types\Identifications\KeyTypeMemberIdentification.cs" />
+        <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypeInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypeMember.cs" />
+        <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypeMemberIdentification.cs" />
+        <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypesRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Types\TypeMemberInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Types\TypesRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Types\UserTypeInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Tasks\Interfaces\ITaskInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Tasks\Interfaces\ITasksRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Tasks\TaskInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Tasks\TasksRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\Interfaces\IVariableInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\Interfaces\IVariablesRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\LanguageVariableInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\UserVariableInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\VariableGetterContext.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\VariablesRepository.cs" />
+        <Compile Include="Interpreter\Values\AbstractValue.cs" />
+        <Compile Include="Interpreter\Values\ArrayValue.cs" />
+        <Compile Include="Interpreter\Values\BooleanValue.cs" />
+        <Compile Include="Interpreter\Values\Enums\ValueType.cs" />
+        <Compile Include="Interpreter\Values\NoneValue.cs" />
+        <Compile Include="Interpreter\Values\NumberValue.cs" />
+        <Compile Include="Interpreter\Values\RoundNumberValue.cs" />
+        <Compile Include="Interpreter\Values\StringValue.cs" />
+        <Compile Include="Interpreter\Values\ObjectTypeValue.cs" />
+        <Compile Include="Interpreter\Values\Type\TypeMemberValue.cs" />
+        <Compile Include="Interpreter\Values\Type\TypeValue.cs" />
+        <Compile Include="Interpreter\Values\VoidValue.cs" />
+        <Compile Include="Lexer\Enums\TokenType.cs" />
+        <Compile Include="Lexer\Extensions\TokenTypesExtensions.cs" />
+        <Compile Include="Lexer\Lexer.cs" />
+        <Compile Include="Lexer\LexerConfiguration.cs" />
+        <Compile Include="Lexer\Token.cs" />
+        <Compile Include="Lexer\Tokenizers\AbstractTokenizer.cs" />
+        <Compile Include="Lexer\Tokenizers\NumberTokenizer.cs" />
+        <Compile Include="Lexer\Tokenizers\StringTokenizer.cs" />
+        <Compile Include="Location.cs" />
+        <Compile Include="Parser\Ast\ArrayExpression.cs" />
+        <Compile Include="Parser\Ast\AssignExpression.cs" />
+        <Compile Include="Parser\Ast\AssignTypeMemberExpression.cs" />
+        <Compile Include="Parser\Ast\AwaitExpression.cs" />
+        <Compile Include="Parser\Ast\BinaryExpression.cs" />
+        <Compile Include="Parser\Ast\BooleanExpression.cs" />
+        <Compile Include="Parser\Ast\BreakExpression.cs" />
+        <Compile Include="Parser\Ast\CastExpression.cs" />
+        <Compile Include="Parser\Ast\CreateExpression.cs" />
+        <Compile Include="Parser\Ast\Enums\BinaryOperatorType.cs" />
+        <Compile Include="Parser\Ast\Enums\StateType.cs" />
+        <Compile Include="Parser\Ast\ForExpression.cs" />
+        <Compile Include="Parser\Ast\FunctionCallExpression.cs" />
+        <Compile Include="Parser\Ast\FunctionDeclarationExpression.cs" />
+        <Compile Include="Parser\Ast\IfExpression.cs" />
+        <Compile Include="Parser\Ast\Interfaces\IAssignExpression.cs" />
+        <Compile Include="Parser\Ast\Interfaces\IControlFlowStatement.cs" />
+        <Compile Include="Parser\Ast\Interfaces\IEvaluableExpression.cs" />
+        <Compile Include="Parser\Ast\Interfaces\IStatement.cs" />
+        <Compile Include="Parser\Ast\Interfaces\ITypeMemberExpression.cs" />
+        <Compile Include="Parser\Ast\KeyTypeMemberExpression.cs" />
+        <Compile Include="Parser\Ast\LoopExpression.cs" />
+        <Compile Include="Parser\Ast\ModuleExpression.cs" />
+        <Compile Include="Parser\Ast\NoneExpression.cs" />
+        <Compile Include="Parser\Ast\NumberExpression.cs" />
+        <Compile Include="Parser\Ast\ReturnExpression.cs" />
+        <Compile Include="Parser\Ast\RoundNumberExpression.cs" />
+        <Compile Include="Parser\Ast\StringExpression.cs" />
+        <Compile Include="Parser\Ast\TypeDeclarationExpression.cs" />
+        <Compile Include="Parser\Ast\UnaryExpression.cs" />
+        <Compile Include="Parser\Ast\VariableExpression.cs" />
+        <Compile Include="Parser\Ast\WhileExpression.cs" />
+        <Compile Include="Parser\Exceptions\StatementExceptedException.cs" />
+        <Compile Include="Parser\Exceptions\InvalidNumberFormatException.cs" />
+        <Compile Include="Parser\Exceptions\AbstractParserException.cs" />
+        <Compile Include="Parser\Exceptions\TokenExpectedException.cs" />
+        <Compile Include="Parser\Exceptions\TypeExpectedException.cs" />
+        <Compile Include="Parser\Exceptions\ValueExpectedException.cs" />
+        <Compile Include="Parser\FunctionArgument.cs" />
+        <Compile Include="Parser\Ast\AbstractEvaluableExpression.cs" />
+        <Compile Include="Parser\Ast\AbstractExpression.cs" />
+        <Compile Include="Parser\Ast\FunctionBodyExpression.cs" />
+        <Compile Include="Parser\Parser.cs" />
+        <Compile Include="Parser\ParserConfiguration.cs" />
+        <Compile Include="Parser\ParserThrowHelper.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Utilities\CompilerFeatureRequiredAttribute.cs" />
+        <Compile Include="Utilities\IsExternalInit.cs" />
+        <Compile Include="Utilities\RequiredMemberAttribute.cs" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>
