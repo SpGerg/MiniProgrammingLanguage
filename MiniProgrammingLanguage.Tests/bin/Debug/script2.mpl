@@ -1,3 +1,3 @@
 import scripter
 
-print(crate_player("персик"))
+print(create_player("персик"))

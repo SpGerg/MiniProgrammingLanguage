@@ -126,7 +126,12 @@ namespace MiniProgrammingLanguage.Core.Lexer
                     {
                         continue;
                     }
-                    
+
+                    if (IsNotEnded && !char.IsWhiteSpace(Current))
+                    {
+                        continue;
+                    }
+
                     tokens.Add(new Token
                     {
                         Type = token,

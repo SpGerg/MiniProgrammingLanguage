@@ -2,7 +2,7 @@ type player
     name: string
 end
 
-function crate_player(name)
+function create_player(name)
     pl = create player
     pl.name = name
 
