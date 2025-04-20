@@ -20,13 +20,24 @@ public class IfExpression : AbstractEvaluableExpression, IStatement, IControlFlo
     public FunctionBodyExpression Body { get; }
     
     public FunctionBodyExpression ElseBody { get; }
-    
+
     public StateType State { get; private set; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var result = Condition.Evaluate(programContext);
+        AbstractValue result;
 
+        if (Condition is VariableExpression variableExpression)
+        {
+            var variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name, Location);
+            
+            result = new BooleanValue(variable is not null);
+        }
+        else
+        {
+            result = Condition.Evaluate(programContext);
+        }
+        
         if (result is not BooleanValue booleanValue)
         {
             InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Boolean.ToString(), result.Type.ToString(), Location);

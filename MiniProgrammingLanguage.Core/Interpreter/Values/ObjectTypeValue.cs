@@ -34,6 +34,8 @@ public class ObjectTypeValue : AbstractValue
     
     public ValueType ValueType { get; }
 
+    public bool IsNullable => ValueType is ValueType.Type or ValueType.String;
+
     public override bool Is(AbstractValue abstractValue)
     {
         if (ValueType is ValueType.Any)
@@ -45,7 +47,7 @@ public class ObjectTypeValue : AbstractValue
         {
             ObjectTypeValue objectTypeValue => ValueType == objectTypeValue.ValueType && Name == objectTypeValue.Name,
             TypeValue typeValue => ValueType is ValueType.Type && Name == typeValue.Name,
-            NoneValue when ValueType is ValueType.Type => true,
+            NoneValue when IsNullable => true,
             _ => ValueType == abstractValue.Type
         };
     }

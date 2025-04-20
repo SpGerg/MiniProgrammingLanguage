@@ -36,7 +36,7 @@ public class StringTokenizer : AbstractTokenizer
         {
             Type = TokenType.String,
             Value = buffer,
-            Location = Lexer.Source.GetLocationByPosition(Lexer.Position)
+            Location = Lexer.Source.GetLocationByPosition(Lexer.Position, Lexer.Filepath)
         };
     }
 

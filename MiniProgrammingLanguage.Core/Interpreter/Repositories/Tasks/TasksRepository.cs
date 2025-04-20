@@ -15,6 +15,14 @@ public class TasksRepository : ITasksRepository
         _entities.Add(entity);
     }
 
+    public void AddRange(IEnumerable<ITaskInstance> entities)
+    {
+        foreach (var entity in entities)
+        {
+            Add(entity);
+        }
+    }
+
     public bool Remove(ITaskInstance entity)
     {
         var result = _entities.RemoveAll(target => target.Task == entity.Task);

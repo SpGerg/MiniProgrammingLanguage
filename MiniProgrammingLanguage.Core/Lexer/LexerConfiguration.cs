@@ -50,7 +50,8 @@ public readonly struct LexerConfiguration
             { TokenType.And, "and" },
             { TokenType.Or, "or" },
             { TokenType.While, "while" },
-            { TokenType.Break, "break" }
+            { TokenType.Break, "break" },
+            { TokenType.Import, "import" },
         }
     };
     

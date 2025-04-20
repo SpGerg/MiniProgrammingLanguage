@@ -16,10 +16,11 @@ namespace MiniProgrammingLanguage.Core.Parser;
 
 public class Parser
 {
-    public Parser(IReadOnlyList<Token> tokens, ParserConfiguration configuration)
+    public Parser(IReadOnlyList<Token> tokens, string filepath, ParserConfiguration configuration)
     {
         Tokens = tokens;
         Configuration = configuration;
+        Filepath = filepath;
     }
 
     public IReadOnlyList<Token> Tokens { get; }
@@ -27,6 +28,8 @@ public class Parser
     public Token Current => Tokens[Position];
 
     public bool IsNotEnded => Position < Tokens.Count;
+    
+    public string Filepath { get; }
 
     public int Position { get; private set; }
     
@@ -43,10 +46,11 @@ public class Parser
             statements.Add(ParseStatement());
         }
 
-        return new FunctionBodyExpression(statements.ToArray(), null, new Location()
+        return new FunctionBodyExpression(statements.ToArray(), null, new Location
         {
             Line = 0,
-            Position = 0
+            Position = 0,
+            Filepath = Filepath
         });
     }
 
@@ -55,6 +59,11 @@ public class Parser
         if (Match(TokenType.Await))
         {
             return ParseAwait();
+        }
+
+        if (Match(TokenType.Import))
+        {
+            return ParseImport();
         }
 
         if (Match(TokenType.Break))
@@ -573,6 +582,15 @@ public class Parser
         }
 
         return new ArrayExpression(values.ToArray(), current.Location);
+    }
+
+    private ImportExpression ParseImport()
+    {
+        Match(TokenType.Import);
+
+        var name = ParseBinary();
+
+        return new ImportExpression(name, name.Location);
     }
 
     private CreateExpression ParseCreate()

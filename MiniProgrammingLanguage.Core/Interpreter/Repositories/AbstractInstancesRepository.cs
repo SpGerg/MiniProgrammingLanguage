@@ -9,6 +9,8 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 {
     public IEnumerable<T> Entities => _globalEntities;
 
+    public IReadOnlyDictionary<FunctionBodyExpression, List<T>> Instances => _entities;
+
     private readonly Dictionary<FunctionBodyExpression, List<T>> _entities = new();
 
     private readonly List<T> _globalEntities = new();
@@ -38,6 +40,14 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         }
         
         return _entities.TryGetValue(entity.Root, out var instances) && instances.Remove(entity);
+    }
+
+    public void AddRange(IEnumerable<T> entities)
+    {
+        foreach (var entity in entities)
+        {
+            Add(entity);
+        }
     }
 
     public bool AddOrSet(ProgramContext programContext, T entity, Location location)

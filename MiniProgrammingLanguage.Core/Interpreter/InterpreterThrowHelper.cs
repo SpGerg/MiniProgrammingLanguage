@@ -48,4 +48,9 @@ public static class InterpreterThrowHelper
     {
         throw new TypeNotFoundException(name, location);
     }
+
+    public static void ThrowWrongImportModuleException(string module, Location location)
+    {
+        throw new WrongImportModuleException(module, location);
+    }
 }

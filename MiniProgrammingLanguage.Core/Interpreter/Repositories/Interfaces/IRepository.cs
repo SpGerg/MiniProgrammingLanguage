@@ -8,6 +8,8 @@ public interface IRepository<T>
 
     void Add(T entity);
 
+    void AddRange(IEnumerable<T> entities);
+
     bool Remove(T entity);
 
     void Clear();

@@ -19,8 +19,10 @@ namespace MiniProgrammingLanguage.Tests
     {
         public static void Main(string[] args)
         {
+            var filepath = Path.Combine(Directory.GetCurrentDirectory(), "script2.mpl");
             var lexer = new Lexer(
-                File.ReadAllText($"{Path.Combine(Directory.GetCurrentDirectory(), "script2.mpl")}"),
+                File.ReadAllText(filepath),
+                filepath,
                 LexerConfiguration.Default);
             var tokens = lexer.Tokenize();
 
@@ -29,7 +31,7 @@ namespace MiniProgrammingLanguage.Tests
                 Console.WriteLine(token);
             }
 
-            var parser = new Parser(tokens, new ParserConfiguration
+            var parser = new Parser(tokens, filepath, new ParserConfiguration
             {
                 LexerConfiguration = lexer.Configuration
             });
@@ -84,7 +86,7 @@ namespace MiniProgrammingLanguage.Tests
                 Root = null
             };
 
-            var programContext = new ProgramContext(new [] { taskInstance }, new[] { printFunction, sleepFunction }, new [] { moduleFunction });
+            var programContext = new ProgramContext(filepath, new [] { taskInstance }, new[] { printFunction, sleepFunction }, new [] { moduleFunction });
             functionBody.Evaluate(programContext);
 
             while (programContext.Tasks.Entities.Any())

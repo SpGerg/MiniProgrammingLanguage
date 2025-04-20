@@ -39,7 +39,6 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="EntryPoint.cs" />
         <Compile Include="Exceptions\AbstractLanguageException.cs" />
         <Compile Include="Extensions\CharExtensions.cs" />
         <Compile Include="Extensions\StringExtensions.cs" />
@@ -53,6 +52,7 @@
         <Compile Include="Interpreter\Exceptions\MemberNotFoundException.cs" />
         <Compile Include="Interpreter\Exceptions\TypeNotFoundException.cs" />
         <Compile Include="Interpreter\Exceptions\VariableNotFoundException.cs" />
+        <Compile Include="Interpreter\Exceptions\WrongImportModuleException.cs" />
         <Compile Include="Interpreter\InterpreterThrowHelper.cs" />
         <Compile Include="Interpreter\ProgramContext.cs" />
         <Compile Include="Interpreter\Repositories\AbstractInstancesRepository.cs" />
@@ -121,6 +121,7 @@
         <Compile Include="Parser\Ast\FunctionCallExpression.cs" />
         <Compile Include="Parser\Ast\FunctionDeclarationExpression.cs" />
         <Compile Include="Parser\Ast\IfExpression.cs" />
+        <Compile Include="Parser\Ast\ImportExpression.cs" />
         <Compile Include="Parser\Ast\Interfaces\IAssignExpression.cs" />
         <Compile Include="Parser\Ast\Interfaces\IControlFlowStatement.cs" />
         <Compile Include="Parser\Ast\Interfaces\IEvaluableExpression.cs" />

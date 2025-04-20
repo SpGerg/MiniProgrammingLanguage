@@ -39,7 +39,7 @@ public class NumberTokenizer : AbstractTokenizer
         {
             Type = TokenType.Number,
             Value = buffer,
-            Location = Lexer.Source.GetLocationByPosition(position)
+            Location = Lexer.Source.GetLocationByPosition(position, Lexer.Filepath)
         };
     }
 

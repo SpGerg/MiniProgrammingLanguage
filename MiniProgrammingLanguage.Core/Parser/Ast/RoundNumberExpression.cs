@@ -10,6 +10,8 @@ public class RoundNumberExpression : AbstractEvaluableExpression
         Value = value;
     }
 
+    public override bool IsValue => true;
+    
     public int Value { get; }
     
     public override AbstractValue Evaluate(ProgramContext programContext)

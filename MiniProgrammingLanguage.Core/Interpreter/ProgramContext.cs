@@ -12,8 +12,10 @@ namespace MiniProgrammingLanguage.Core.Interpreter;
 
 public class ProgramContext
 {
-    public ProgramContext(IEnumerable<ITypeInstance> types = null, IEnumerable<IFunctionInstance> functions = null, IEnumerable<IVariableInstance> variables = null)
+    public ProgramContext(string filepath, IEnumerable<ITypeInstance> types = null, IEnumerable<IFunctionInstance> functions = null, IEnumerable<IVariableInstance> variables = null)
     {
+        Filepath = filepath;
+        
         if (variables is not null)
         {
             foreach (var variable in variables)
@@ -41,11 +43,21 @@ public class ProgramContext
 
     public string Module { get; set; } = "global";
     
+    public string Filepath { get; set; }
+    
+    public ITypesRepository Types { get; } = new TypesRepository();
+    
+    public IFunctionsRepository Functions { get; } = new FunctionsRepository();
+    
     public IVariablesRepository Variables { get; } = new VariablesRepository();
 
-    public ITypesRepository Types { get; } = new TypesRepository();
-
-    public IFunctionsRepository Functions { get; } = new FunctionsRepository();
-
     public ITasksRepository Tasks { get; } = new TasksRepository();
+
+    public void Import(ProgramContext programContext)
+    {
+        Types.AddRange(programContext.Types.Entities);
+        Functions.AddRange(programContext.Functions.Entities);
+        Variables.AddRange(programContext.Variables.Entities);
+        Tasks.AddRange(programContext.Tasks.Entities);
+    }
 }

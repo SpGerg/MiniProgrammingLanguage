@@ -7,9 +7,10 @@ namespace MiniProgrammingLanguage.Core.Lexer
 {
     public class Lexer
     {
-        public Lexer(string source, LexerConfiguration configuration)
+        public Lexer(string source, string filepath, LexerConfiguration configuration)
         {
             Source = source;
+            Filepath = filepath;
             Configuration = configuration;
 
             _stringTokenizer = new StringTokenizer(this);
@@ -17,6 +18,8 @@ namespace MiniProgrammingLanguage.Core.Lexer
         }
         
         public string Source { get; }
+        
+        public string Filepath { get; }
         
         public LexerConfiguration Configuration { get; }
 
@@ -51,7 +54,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
                         {
                             Type = TokenType.Word,
                             Value = buffer,
-                            Location = Source.GetLocationByPosition(position)
+                            Location = Source.GetLocationByPosition(position, Filepath)
                         });
                     }
                     
@@ -104,7 +107,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
                     {
                         Type = token is TokenType.None ? TokenType.Word : token,
                         Value = result,
-                        Location = Source.GetLocationByPosition(position)
+                        Location = Source.GetLocationByPosition(position, Filepath)
                     });
                     
                     buffer = string.Empty;
@@ -128,7 +131,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
                     {
                         Type = token,
                         Value = buffer,
-                        Location = Source.GetLocationByPosition(position)
+                        Location = Source.GetLocationByPosition(position, Filepath)
                     });
                     
                     buffer = string.Empty;
@@ -148,7 +151,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
                     {
                         Type = token is TokenType.None ? TokenType.Word : token,
                         Value = result,
-                        Location = Source.GetLocationByPosition(position)
+                        Location = Source.GetLocationByPosition(position, Filepath)
                     });
                 }
                     
@@ -156,7 +159,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
                 {
                     Type = operatorToken,
                     Value = currentString,
-                    Location = Source.GetLocationByPosition(position)
+                    Location = Source.GetLocationByPosition(position, Filepath)
                 });
                     
                 buffer = string.Empty;

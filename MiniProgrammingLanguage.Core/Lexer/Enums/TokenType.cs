@@ -40,6 +40,7 @@ namespace MiniProgrammingLanguage.Core.Lexer.Enums
         Module,
         And,
         Or,
+        Import,
         Await,
         While,
         StringType,
