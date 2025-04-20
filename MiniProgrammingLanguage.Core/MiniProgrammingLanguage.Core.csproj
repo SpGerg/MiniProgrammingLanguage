@@ -46,6 +46,8 @@
         <Compile Include="Interpreter\Exceptions\ArgumentExceptedException.cs" />
         <Compile Include="Interpreter\Exceptions\CannotAccessException.cs" />
         <Compile Include="Interpreter\Exceptions\CannotCastException.cs" />
+        <Compile Include="Interpreter\Exceptions\CyclicImportException.cs" />
+        <Compile Include="Interpreter\Exceptions\DuplicateNameException.cs" />
         <Compile Include="Interpreter\Exceptions\FunctionNotFoundException.cs" />
         <Compile Include="Interpreter\Exceptions\IncorrectTypeException.cs" />
         <Compile Include="Interpreter\Exceptions\InvalidReturnTypeException.cs" />

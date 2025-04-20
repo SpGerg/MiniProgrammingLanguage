@@ -6,6 +6,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 public interface IInstancesRepository<T> : IRepository<T> where T : IRepositoryInstance
 {
     IReadOnlyDictionary<FunctionBodyExpression, List<T>> Instances { get; }
+    
+    void Add(T entity, Location location);
 
     bool AddOrSet(ProgramContext programContext, T entity, Location location);
     

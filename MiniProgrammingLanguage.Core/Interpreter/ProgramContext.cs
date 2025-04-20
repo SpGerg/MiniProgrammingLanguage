@@ -44,7 +44,11 @@ public class ProgramContext
     public string Module { get; set; } = "global";
     
     public string Filepath { get; set; }
-    
+
+    public bool IsGlobal => Module is "global";
+
+    public IReadOnlyCollection<string> Imported => _importedModules;
+
     public ITypesRepository Types { get; } = new TypesRepository();
     
     public IFunctionsRepository Functions { get; } = new FunctionsRepository();
@@ -53,8 +57,17 @@ public class ProgramContext
 
     public ITasksRepository Tasks { get; } = new TasksRepository();
 
-    public void Import(ProgramContext programContext)
+    private readonly Stack<string> _importedModules = new();
+
+    public void Import(ProgramContext programContext, Location location)
     {
+        if (!programContext.IsGlobal && _importedModules.Contains(programContext.Module))
+        {
+            InterpreterThrowHelper.ThrowCyclicImportException(programContext.Module, location);
+        }
+        
+        _importedModules.Push(programContext.Module);
+        
         Types.AddRange(programContext.Types.Entities);
         Functions.AddRange(programContext.Functions.Entities);
         Variables.AddRange(programContext.Variables.Entities);

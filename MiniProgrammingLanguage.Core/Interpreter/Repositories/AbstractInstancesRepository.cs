@@ -15,21 +15,37 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
     private readonly List<T> _globalEntities = new();
 
-    public void Add(T entity)
+    public void Add(T entity, Location location)
     {
+        T existing = null;
+    
+        if (entity.Root is not null && _entities.TryGetValue(entity.Root, out var instances))
+        {
+            existing = instances.FirstOrDefault(i => i.Name == entity.Name);
+        }
+
+        if (existing is not null)
+        {
+            InterpreterThrowHelper.ThrowDuplicateNameException(entity.Name, location);
+        }
+
         if (entity.Root is null)
         {
             _globalEntities.Add(entity);
-            
             return;
         }
-        
-        if (!_entities.TryGetValue(entity.Root, out var instances))
+    
+        if (!_entities.TryGetValue(entity.Root, out var list))
         {
-            _entities[entity.Root] = instances = new List<T>();
+            _entities[entity.Root] = list = new List<T>();
         }
-        
-        instances.Add(entity);
+    
+        list.Add(entity);
+    }
+    
+    public void Add(T entity)
+    {
+        Add(entity, Location.Default);
     }
 
     public bool Remove(T entity)
@@ -56,7 +72,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
         if (instance is null)
         {
-            Add(entity);
+            Add(entity, location);
             
             return true;
         }
