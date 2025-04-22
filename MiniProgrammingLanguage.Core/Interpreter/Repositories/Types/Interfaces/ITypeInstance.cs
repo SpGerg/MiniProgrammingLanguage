@@ -9,5 +9,7 @@ public interface ITypeInstance : IRepositoryInstance
 {
     IReadOnlyList<ITypeMember> Members { get; }
 
+    ITypeMember Get(ITypeMemberIdentification identification);
+
     TypeValue Create();
 }

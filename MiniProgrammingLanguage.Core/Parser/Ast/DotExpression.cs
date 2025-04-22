@@ -90,7 +90,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         
         if (expression is FunctionCallExpression functionCallExpression)
         {
-            var type = (UserTypeInstance) programContext.Types.Get(functionCallExpression.Root, typeValue.Name, Location);
+            var type = programContext.Types.Get(functionCallExpression.Root, typeValue.Name, Location);
             var function = type.Get(new FunctionTypeMemberIdentification
             {
                 Identifier = functionCallExpression.Name

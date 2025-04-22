@@ -12,9 +12,9 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 
 public class UserFunctionInstance : IFunctionInstance
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
-    public FunctionBodyExpression Root { get; set; }
+    public required FunctionBodyExpression Root { get; set; }
 
     public required FunctionBodyExpression Body { get; set; }
     
