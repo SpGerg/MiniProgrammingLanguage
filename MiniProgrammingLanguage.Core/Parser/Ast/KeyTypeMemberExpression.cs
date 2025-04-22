@@ -10,28 +10,28 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
 {
     public KeyTypeMemberExpression(string name, string parent, ObjectTypeValue type, Location location) : base(location)
     {
-        Name = name;
         Parent = parent;
+        Name = name;
         Type = type;
     }
-
-    public string Name { get; }
     
     public string Parent { get; }
-    
+
+    public string Name { get; }
+
     public ObjectTypeValue Type { get; }
     
     public ITypeMember Create()
     {
-        return new TypeMemberInstance
+        return new TypeVariableMemberInstance
         {
             Parent = Parent,
             Identification = new KeyTypeMemberIdentification
             {
-                Identificator = Name
+                Identifier = Name
             },
             Type = Type,
-            Default = null,
+            Default = new NoneValue(),
             IsReadonly = false
         };
     }

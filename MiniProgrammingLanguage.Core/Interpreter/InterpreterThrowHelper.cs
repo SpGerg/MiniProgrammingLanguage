@@ -64,4 +64,14 @@ public static class InterpreterThrowHelper
     {
         throw new Exceptions.DuplicateNameException(name, location);
     }
+
+    public static void ThrowFunctionNotDeclaredException(string name, Location location)
+    {
+        throw new FunctionNotDeclaredException(name, location);
+    }
+
+    public static void ThrowDivideByZeroException(Location location)
+    {
+        throw new DivideByZeroException(location);
+    }
 }

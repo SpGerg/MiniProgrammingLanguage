@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
@@ -8,14 +9,36 @@ public abstract class AbstractValue
     public abstract ValueType Type { get; }
     
     public abstract ValueType[] CanCast { get; }
+    
+    public abstract bool Visit(IValueVisitor visitor);
 
-    public abstract string AsString(ProgramContext programContext, Location location);
-    
-    public abstract float AsNumber(ProgramContext programContext, Location location);
-    
-    public abstract int AsRoundNumber(ProgramContext programContext, Location location);
-    
-    public abstract bool AsBoolean(ProgramContext programContext, Location location);
+    public virtual string AsString(ProgramContext programContext, Location location)
+    {
+        InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.String.ToString(), location);
+        
+        return null;
+    }
+
+    public virtual float AsNumber(ProgramContext programContext, Location location)
+    {
+        InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.Number.ToString(), location);
+
+        return -1;
+    }
+
+    public virtual int AsRoundNumber(ProgramContext programContext, Location location)
+    {
+        InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.RoundNumber.ToString(), location);
+
+        return -1;
+    }
+
+    public virtual bool AsBoolean(ProgramContext programContext, Location location)
+    {
+        InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.Boolean.ToString(), location);
+
+        return false;
+    }
 
     public bool Is(ObjectTypeValue objectTypeValue)
     {
@@ -23,18 +46,22 @@ public abstract class AbstractValue
         {
             return true;
         }
+        
+        var visitor = new TypeCompatibilityVisitor(objectTypeValue);
 
-        return objectTypeValue.ValueType == Type;
+        return Visit(visitor);
     }
     
-    public virtual bool Is(AbstractValue objectTypeValue)
+    public bool Is(AbstractValue abstractValue)
     {
-        if (Type is ValueType.Any)
+        if (this is ObjectTypeValue objectTypeValue)
         {
-            return true;
+            return abstractValue.Is(objectTypeValue);
         }
+        
+        var visitor = new ValueCompatibilityVisitor(abstractValue);
 
-        return objectTypeValue.Type == Type;
+        return Visit(visitor);
     }
 
     public AbstractValue Cast(ProgramContext programContext, ValueType valueType, Location location)

@@ -7,6 +7,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables.Interfaces;
+using MiniProgrammingLanguage.Core.Parser.Ast;
 
 namespace MiniProgrammingLanguage.Core.Interpreter;
 
@@ -72,5 +73,12 @@ public class ProgramContext
         Functions.AddRange(programContext.Functions.Entities);
         Variables.AddRange(programContext.Variables.Entities);
         Tasks.AddRange(programContext.Tasks.Entities);
+    }
+
+    public void Clear(FunctionBodyExpression functionBodyExpression)
+    {
+        Types.Clear(functionBodyExpression);
+        Functions.Clear(functionBodyExpression);
+        Variables.Clear(functionBodyExpression);
     }
 }

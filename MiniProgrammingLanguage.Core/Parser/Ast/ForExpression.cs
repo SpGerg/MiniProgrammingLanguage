@@ -11,6 +11,8 @@ public class ForExpression : LoopExpression
         Variable = variable;
         Step = step;
         Name = name;
+
+        _isAssign = Variable is AssignExpression;
     }
     
     public AbstractEvaluableExpression Condition { get; }
@@ -20,6 +22,10 @@ public class ForExpression : LoopExpression
     public BinaryExpression Step { get; }
     
     public string Name { get; }
+    
+    private readonly bool _isAssign;
+    
+    private UserVariableInstance _userVariableInstance;
 
     public override bool IsContinue
     {
@@ -33,28 +39,25 @@ public class ForExpression : LoopExpression
 
     public override void OnLoopStarted()
     {
-        if (Variable is AssignExpression)
+        if (_isAssign)
         {
             Variable.Evaluate(ProgramContext);
             
             return;
         }
 
-        ProgramContext.Variables.AddOrSet(ProgramContext, new UserVariableInstance
+        _userVariableInstance = new UserVariableInstance
         {
             Name = Name,
             Value = new NumberValue(0), 
             Root = Body
-        }, Location);
+        };
+
+        ProgramContext.Variables.Add(_userVariableInstance, Location, false);
     }
     
     public override void OnIteration()
     {
-        ProgramContext.Variables.Set(ProgramContext, new UserVariableInstance
-        {
-            Name = Name,
-            Value = Step.Evaluate(ProgramContext), 
-            Root = Body
-        }, Location);
+        _userVariableInstance.Value = Step.Evaluate(ProgramContext);
     }
 }

@@ -7,11 +7,13 @@ public interface IInstancesRepository<T> : IRepository<T> where T : IRepositoryI
 {
     IReadOnlyDictionary<FunctionBodyExpression, List<T>> Instances { get; }
     
-    void Add(T entity, Location location);
+    void Add(T entity, Location location, bool isCheckExisting = true);
 
     bool AddOrSet(ProgramContext programContext, T entity, Location location);
     
     void Set(ProgramContext programContext, T entity, Location location);
     
     T Get(FunctionBodyExpression functionBody, string name, Location location);
+
+    void Clear(FunctionBodyExpression functionBodyExpression);
 }

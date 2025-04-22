@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
@@ -26,6 +27,11 @@ public class TypeValue : AbstractValue
     public IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> Members => _members;
 
     private readonly IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> _members;
+    
+    public override bool Visit(IValueVisitor visitor)
+    {
+        return visitor.Visit(this);
+    }
 
     public override float AsNumber(ProgramContext programContext, Location location)
     {
@@ -57,8 +63,8 @@ public class TypeValue : AbstractValue
         foreach (var member in _members)
         {
             var value = member.Value.Value;
-
-            stringBuilder.Append($"{member.Key.Identificator}: {(value is NoneValue ? "none" : value.AsString(programContext, location))}");
+            
+            stringBuilder.Append($"{member.Key.Identifier}: {(value is NoneValue ? "none" : value.AsString(programContext, location))}");
             
             if (member.Value == _members.Last().Value)
             {

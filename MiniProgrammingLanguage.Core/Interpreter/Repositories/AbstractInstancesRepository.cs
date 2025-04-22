@@ -7,37 +7,36 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories;
 
 public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> where T : class, IRepositoryInstance
 {
-    public IEnumerable<T> Entities => _globalEntities;
+    public IEnumerable<T> Entities => GlobalEntities;
 
-    public IReadOnlyDictionary<FunctionBodyExpression, List<T>> Instances => _entities;
+    public IReadOnlyDictionary<FunctionBodyExpression, List<T>> Instances => BodiesEntities;
 
-    private readonly Dictionary<FunctionBodyExpression, List<T>> _entities = new();
+    protected Dictionary<FunctionBodyExpression, List<T>> BodiesEntities { get; } = new();
 
-    private readonly List<T> _globalEntities = new();
+    protected List<T> GlobalEntities { get; } = new();
 
-    public void Add(T entity, Location location)
+    public void Add(T entity, Location location, bool isCheckExisting = true)
     {
-        T existing = null;
-    
-        if (entity.Root is not null && _entities.TryGetValue(entity.Root, out var instances))
+        if (isCheckExisting)
         {
-            existing = instances.FirstOrDefault(i => i.Name == entity.Name);
-        }
+            var existing = Get(entity.Root, entity.Name, location);
 
-        if (existing is not null)
-        {
-            InterpreterThrowHelper.ThrowDuplicateNameException(entity.Name, location);
+            if (existing is not null)
+            {
+                InterpreterThrowHelper.ThrowDuplicateNameException(entity.Name, location);
+            }
         }
 
         if (entity.Root is null)
         {
-            _globalEntities.Add(entity);
+            GlobalEntities.Add(entity);
+            
             return;
         }
     
-        if (!_entities.TryGetValue(entity.Root, out var list))
+        if (!BodiesEntities.TryGetValue(entity.Root, out var list))
         {
-            _entities[entity.Root] = list = new List<T>();
+            BodiesEntities[entity.Root] = list = new List<T>();
         }
     
         list.Add(entity);
@@ -52,10 +51,10 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     {
         if (entity.Root is null)
         {
-            return _globalEntities.Remove(entity);
+            return GlobalEntities.Remove(entity);
         }
         
-        return _entities.TryGetValue(entity.Root, out var instances) && instances.Remove(entity);
+        return BodiesEntities.TryGetValue(entity.Root, out var instances) && instances.Remove(entity);
     }
 
     public void AddRange(IEnumerable<T> entities)
@@ -72,7 +71,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
         if (instance is null)
         {
-            Add(entity, location);
+            Add(entity, location, false);
             
             return true;
         }
@@ -99,22 +98,38 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
     public T Get(FunctionBodyExpression functionBody, string name, Location location)
     {
-        if (functionBody is null)
+        var currentBody = functionBody;
+    
+        while (currentBody is not null)
         {
-            return _globalEntities.FirstOrDefault(e => e.Name == name);
+            if (BodiesEntities.TryGetValue(currentBody, out var instances))
+            {
+                foreach (var instance in instances.Where(instance => instance.Name == name))
+                {
+                    return instance;
+                }
+            }
+            
+            currentBody = currentBody.Root;
+        }
+    
+        return GlobalEntities.FirstOrDefault(e => e.Name == name);
+    }
+
+    public void Clear(FunctionBodyExpression functionBodyExpression)
+    {
+        if (functionBodyExpression is null)
+        {
+            Clear();
+            
+            return;
         }
 
-        if (!_entities.TryGetValue(functionBody, out var instances))
-        {
-            return Get(functionBody.Root, name, location);
-        }
-        
-        var result = instances.FirstOrDefault(i => i.Name == name);
-        return result ?? Get(functionBody.Root, name, location);
+        BodiesEntities.Remove(functionBodyExpression);
     }
-    
+
     public void Clear()
     {
-        _entities.Clear();
+        GlobalEntities.Clear();
     }
 }

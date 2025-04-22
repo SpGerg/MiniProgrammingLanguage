@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
@@ -20,6 +21,11 @@ public class BooleanValue : AbstractValue
     };
 
     public bool Value { get; }
+    
+    public override bool Visit(IValueVisitor visitor)
+    {
+        return visitor.Visit(this);
+    }
     
     public override string AsString(ProgramContext programContext, Location location)
     {

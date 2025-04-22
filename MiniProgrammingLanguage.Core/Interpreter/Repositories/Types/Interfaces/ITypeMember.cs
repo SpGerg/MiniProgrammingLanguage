@@ -9,7 +9,7 @@ public interface ITypeMember
     ITypeMemberIdentification Identification { get; }
     
     AbstractValue Default { get; }
-    
+
     bool IsReadonly { get; }
     
     ObjectTypeValue Type { get; }

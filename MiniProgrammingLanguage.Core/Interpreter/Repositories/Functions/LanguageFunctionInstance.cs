@@ -23,8 +23,32 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
     
     public required bool IsAsync { get; init; }
 
+    public bool IsDeclared => Bind is not null;
+
     public AbstractValue Evaluate(FunctionExecuteContext context)
     {
+        if (!IsDeclared)
+        {
+            InterpreterThrowHelper.ThrowFunctionNotDeclaredException(Name, context.Location);
+        }
+        
+        for (var i = 0; i < Arguments.Length; i++)
+        {
+            if (i < context.Arguments.Length)
+            {
+                continue;
+            }
+            
+            var argument = Arguments[i];
+            
+            if (!argument.IsRequired)
+            {
+                continue;
+            }
+            
+            InterpreterThrowHelper.ThrowArgumentExceptedException(argument.Name, context.Location);
+        }
+        
         var result = Bind.Invoke(context);
 
         if (!Return.Is(result))
@@ -39,5 +63,23 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
     {
         exception = new CannotAccessException(Name, location);
         return false;
+    }
+    
+    public FunctionValue Create()
+    {
+        return new FunctionValue(this);
+    }
+    
+    public IFunctionInstance Copy(string name = null, FunctionBodyExpression root = null)
+    {
+        return new LanguageFunctionInstance
+        {
+            Name = name ?? Name,
+            Arguments = Arguments,
+            Bind = Bind,
+            IsAsync = IsAsync,
+            Return = Return,
+            Root = root ?? Root
+        };
     }
 }

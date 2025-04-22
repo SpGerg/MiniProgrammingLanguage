@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
@@ -17,6 +18,8 @@ public class ObjectTypeValue : AbstractValue
     
     public static ObjectTypeValue Void => new(string.Empty, ValueType.Void);
     
+    public static ObjectTypeValue Function => new(string.Empty, ValueType.Function);
+    
     public ObjectTypeValue(string name, ValueType valueType)
     {
         Name = name;
@@ -34,48 +37,14 @@ public class ObjectTypeValue : AbstractValue
     
     public ValueType ValueType { get; }
 
-    public bool IsNullable => ValueType is ValueType.Type or ValueType.String;
-
-    public override bool Is(AbstractValue abstractValue)
+    public override bool Visit(IValueVisitor visitor)
     {
-        if (ValueType is ValueType.Any)
-        {
-            return true;
-        }
-
-        return abstractValue switch
-        {
-            ObjectTypeValue objectTypeValue => ValueType == objectTypeValue.ValueType && Name == objectTypeValue.Name,
-            TypeValue typeValue => ValueType is ValueType.Type && Name == typeValue.Name,
-            NoneValue when IsNullable => true,
-            _ => ValueType == abstractValue.Type
-        };
+        return visitor.Visit(this);
     }
 
     public override string AsString(ProgramContext programContext, Location location)
     {
         return string.IsNullOrEmpty(Name) ? ValueType.ToString() : $"{Name}, {ValueType}";
-    }
-
-    public override float AsNumber(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.ObjectType.ToString(), ValueType.Number.ToString(), location);
-
-        return -1;
-    }
-
-    public override int AsRoundNumber(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.ObjectType.ToString(), ValueType.RoundNumber.ToString(), location);
-        
-        return -1;
-    }
-
-    public override bool AsBoolean(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.ObjectType.ToString(), ValueType.Boolean.ToString(), location);
-        
-        return false;
     }
 
     public override string ToString()

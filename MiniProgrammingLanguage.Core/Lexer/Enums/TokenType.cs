@@ -43,6 +43,7 @@ namespace MiniProgrammingLanguage.Core.Lexer.Enums
         Import,
         Await,
         While,
+        Implement,
         StringType,
         NumberType,
         RoundNumberType,

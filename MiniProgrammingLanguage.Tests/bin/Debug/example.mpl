@@ -6,6 +6,7 @@ castable type event_arguments
 end
 
 type listener
+    constructor(listeners)
     list<(event_arguments arguments) -> () listeners
     function subscribe(event_arguments arguments)
     function invoke()
@@ -16,9 +17,12 @@ type event
     listener listener
 end
 
-implement function listener.create()
+//listeners = create listener([ ... ])
+implement function listener.constructor(listeners)
     self = create listener
     self.listeners = create listener
+
+    self.listeners.add_range(listeners)
 
     return self
 end

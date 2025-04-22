@@ -1,5 +1,7 @@
+using System;
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
@@ -28,10 +30,33 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
     public bool IsAsync { get; }
     
     public FunctionBodyExpression Root { get; }
+
+    public bool IsAnonymous => Name == string.Empty;
     
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var functionInstance = new UserFunctionInstance
+        var result = Create();
+        var value = result.Create();
+        
+        if (!IsAnonymous)
+        {
+            programContext.Variables.AddOrSet(programContext, new UserVariableInstance
+            {
+                Name = result.Name,
+                ObjectType = ObjectTypeValue.Function,
+                Root = result.Root,
+                Value = value
+            }, Location);
+        }
+
+        programContext.Functions.AddOrSet(programContext, Create(), Location);
+        
+        return value;
+    }
+
+    public UserFunctionInstance Create()
+    {
+        return new UserFunctionInstance
         {
             Name = Name,
             Arguments = Arguments,
@@ -40,9 +65,5 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
             IsAsync = IsAsync,
             Root = Root
         };
-        
-        programContext.Functions.AddOrSet(programContext, functionInstance, Location);
-
-        return null;
     }
 }

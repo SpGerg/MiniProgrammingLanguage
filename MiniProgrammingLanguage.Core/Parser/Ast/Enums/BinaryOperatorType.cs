@@ -9,7 +9,6 @@ public enum BinaryOperatorType
     Equals,
     Greater,
     Less,
-    Dot,
     And,
     Or
 }

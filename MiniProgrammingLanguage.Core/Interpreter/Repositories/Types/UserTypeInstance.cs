@@ -3,6 +3,7 @@ using System.Linq;
 using MiniProgrammingLanguage.Core.Exceptions;
 using MiniProgrammingLanguage.Core.Interpreter.Exceptions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
@@ -10,7 +11,7 @@ using MiniProgrammingLanguage.Core.Parser.Ast;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 
-public class TypeInstance : ITypeInstance
+public class UserTypeInstance : ITypeInstance
 {
     public required string Name { get; init; }
     
@@ -32,45 +33,50 @@ public class TypeInstance : ITypeInstance
         exception = null;
         return true;
     }
+
+    public ITypeMember Get(ITypeMemberIdentification identification)
+    {
+        return Members.FirstOrDefault(member => member.Identification.Is(identification));
+    }
     
-    public TypeValue Create(IReadOnlyDictionary<ITypeMemberIdentification, AbstractValue> values = null)
+    public TypeValue Create()
     {
         var result = new Dictionary<ITypeMemberIdentification, TypeMemberValue>();
         
-        if (values is not null)
+        foreach (var member in Members)
         {
-            foreach (var member in Members)
+            if (member is TypeVariableMemberInstance typeMember && typeMember.IsFunctionInstance)
             {
-                var value = values.FirstOrDefault(value => value.Key.Is(member.Identification));
+                continue;
+            }
+            
+            if (member is TypeFunctionMemberInstance typeFunctionMemberInstance)
+            {
+                var value = typeFunctionMemberInstance.Create();
                 
-                if (!value.Equals(default))
+                result.Add(member.Identification, new TypeMemberValue
                 {
-                    result.Add(member.Identification, new TypeMemberValue
-                    {
-                        Type = member.Type,
-                        Value = value.Value
-                    });
+                    Type = ObjectTypeValue.Function,
+                    Value = value
+                });
                     
-                    continue;
-                }
+                result.Add(new KeyTypeMemberIdentification
+                {
+                    Identifier = member.Identification.Identifier
+                }, new TypeMemberValue
+                {
+                    Type = ObjectTypeValue.Function,
+                    Value = value
+                });
+                    
+                continue;
+            }
                 
-                result.Add(member.Identification, new TypeMemberValue
-                {
-                    Type = member.Type,
-                    Value = new NoneValue()
-                });
-            }
-        }
-        else
-        {
-            foreach (var member in Members)
+            result.Add(member.Identification, new TypeMemberValue
             {
-                result.Add(member.Identification, new TypeMemberValue
-                {
-                    Type = member.Type,
-                    Value = new NoneValue()
-                });
-            }
+                Type = member.Type,
+                Value = new NoneValue()
+            });
         }
 
         return new TypeValue(Name, result);

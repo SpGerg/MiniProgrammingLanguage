@@ -1,10 +1,14 @@
 type player
-    name: string
+    last_broadcast
+    function broadcast(content)
 end
 
-function create_player(name)
-    pl = create player
-    pl.name = name
-
-    return pl
+implement function player.broadcast(content)
+    self.last_broadcast = content
+    print(content)
 end
+
+instance = create player
+instance.broadcast("Hello, world")
+
+print(instance)

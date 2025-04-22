@@ -2,9 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
@@ -26,9 +29,43 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
     
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var members = Members.Select(expression => expression.Create()).ToList();
+        var members = new List<ITypeMember>();
 
-        programContext.Types.Add(new TypeInstance
+        foreach (var member in Members)
+        {
+            var result = member.Create();
+            
+            if (result is TypeFunctionMemberInstance typeFunctionMemberInstance)
+            {
+                var value = typeFunctionMemberInstance.Create();
+                var variableMember = new TypeVariableMemberInstance
+                {
+                    Parent = Name,
+                    Type = result.Type,
+                    Identification = new KeyTypeMemberIdentification
+                    {
+                        Identifier = result.Identification.Identifier
+                    },
+                    Default = value,
+                    IsReadonly = true,
+                    IsFunctionInstance = true
+                };
+
+                members.Add(variableMember);
+            }
+            
+            members.Add(result);
+        }
+
+        programContext.Variables.Add(new UserVariableInstance
+        {
+            Name = Name,
+            Value = new ObjectTypeValue(Name, ValueType.Type),
+            ObjectType = new ObjectTypeValue(Name, ValueType.Type),
+            Root = Root
+        });
+        
+        programContext.Types.Add(new UserTypeInstance
         {
             Name = Name,
             Members = members,

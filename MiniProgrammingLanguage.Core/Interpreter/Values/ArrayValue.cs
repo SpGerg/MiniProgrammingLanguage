@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
@@ -12,6 +13,9 @@ public class ArrayValue : AbstractValue
     public ArrayValue(IEnumerable<AbstractEvaluableExpression> value)
     {
         Value = value;
+
+        _count = Value.Count();
+        _last = Value.Last();
     }
     
     public override ValueType Type => ValueType.Array;
@@ -19,11 +23,20 @@ public class ArrayValue : AbstractValue
     public override ValueType[] CanCast { get; } = { ValueType.String };
 
     public IEnumerable<AbstractEvaluableExpression> Value { get; }
-    
+
+    private readonly int _count;
+
+    private readonly AbstractEvaluableExpression _last;
+
+    public override bool Visit(IValueVisitor visitor)
+    {
+        return visitor.Visit(this);
+    }
+
     public override string AsString(ProgramContext programContext, Location location)
     {
         var stringBuilder = new StringBuilder();
-        stringBuilder.Append($"({Value.Count()}) [ ");
+        stringBuilder.Append($"({_count}) [ ");
 
         foreach (var value in Value)
         {
@@ -32,7 +45,7 @@ public class ArrayValue : AbstractValue
             
             stringBuilder.Append(message);
             
-            if (value == Value.Last())
+            if (value == _last)
             {
                 continue;
             }
@@ -40,29 +53,8 @@ public class ArrayValue : AbstractValue
             stringBuilder.Append(", ");
         }
         
-        stringBuilder.Append(" }");
+        stringBuilder.Append(" ]");
 
         return stringBuilder.ToString();
-    }
-
-    public override float AsNumber(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Array.ToString(), ValueType.Number.ToString(), location);
-
-        return -1;
-    }
-
-    public override int AsRoundNumber(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Array.ToString(), ValueType.RoundNumber.ToString(), location);
-
-        return -1;
-    }
-
-    public override bool AsBoolean(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Array.ToString(), ValueType.Boolean.ToString(), location);
-
-        return false;
     }
 }

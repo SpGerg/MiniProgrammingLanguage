@@ -66,17 +66,17 @@ namespace MiniProgrammingLanguage.Tests
                 Root = null
             };
 
-            var taskInstance = new TypeInstance
+            var taskInstance = new UserTypeInstance
             {
                 Name = "__task",
                 Members = new List<ITypeMember>
                 {
-                    new TypeMemberInstance
+                    new TypeVariableMemberInstance
                     {
                         Parent = "__task",
                         Identification = new KeyTypeMemberIdentification
                         {
-                            Identificator = "id"
+                            Identifier = "id"
                         },
                         Default = new RoundNumberValue(-1),
                         IsReadonly = true,

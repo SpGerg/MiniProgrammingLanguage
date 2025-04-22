@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
@@ -15,6 +16,11 @@ public class RoundNumberValue : AbstractValue
     
     public int Value { get; }
     
+    public override bool Visit(IValueVisitor visitor)
+    {
+        return visitor.Visit(this);
+    }
+    
     public override string AsString(ProgramContext programContext, Location location)
     {
         return Value.ToString();
@@ -28,12 +34,5 @@ public class RoundNumberValue : AbstractValue
     public override int AsRoundNumber(ProgramContext programContext, Location location)
     {
         return Value;
-    }
-
-    public override bool AsBoolean(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.RoundNumber.ToString(), ValueType.Boolean.ToString(), location);
-        
-        return false;
     }
 }

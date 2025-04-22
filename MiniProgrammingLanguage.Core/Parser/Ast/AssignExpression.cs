@@ -7,14 +7,17 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class AssignExpression : AbstractEvaluableExpression, IAssignExpression
 {
-    public AssignExpression(string name, AbstractEvaluableExpression evaluableExpression, FunctionBodyExpression root, Location location) : base(location)
+    public AssignExpression(string name, ObjectTypeValue type, AbstractEvaluableExpression evaluableExpression, FunctionBodyExpression root, Location location) : base(location)
     {
         Name = name;
+        Type = type;
         Root = root;
         EvaluableExpression = evaluableExpression;
     }
 
     public string Name { get; }
+    
+    public ObjectTypeValue Type { get; }
     
     public FunctionBodyExpression Root { get; }
     
@@ -23,8 +26,26 @@ public class AssignExpression : AbstractEvaluableExpression, IAssignExpression
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var value = EvaluableExpression.Evaluate(programContext);
+
+        if (Type is not null && !Type.Is(value))
+        {
+            InterpreterThrowHelper.ThrowIncorrectTypeException(Type.ValueType.ToString(), value.Type.ToString(), Location);
+        }
         
-        programContext.Variables.AddOrSet(programContext, new UserVariableInstance
+        if (Type is not null)
+        {
+            programContext.Variables.Add(new UserVariableInstance
+            {
+                Name = Name,
+                ObjectType = Type,
+                Root = Root,
+                Value = value
+            }, Location);
+
+            return value;
+        }
+        
+        programContext.Variables.Set(programContext, new UserVariableInstance
         {
             Name = Name,
             Root = Root,

@@ -9,5 +9,5 @@ public interface ITypeInstance : IRepositoryInstance
 {
     IReadOnlyList<ITypeMember> Members { get; }
 
-    TypeValue Create(IReadOnlyDictionary<ITypeMemberIdentification, AbstractValue> values = null);
+    TypeValue Create();
 }

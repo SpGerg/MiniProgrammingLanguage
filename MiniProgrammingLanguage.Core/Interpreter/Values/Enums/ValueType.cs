@@ -11,5 +11,6 @@ public enum ValueType
     Any,
     Void,
     Array,
+    Function,
     None
 }

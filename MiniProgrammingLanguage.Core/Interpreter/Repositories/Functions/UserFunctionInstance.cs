@@ -4,16 +4,17 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 
-public class UserFunctionInstance : IUserFunctionInstance
+public class UserFunctionInstance : IFunctionInstance
 {
-    public required string Name { get; init; }
+    public string Name { get; set; }
     
-    public required FunctionBodyExpression Root { get; init; }
+    public FunctionBodyExpression Root { get; set; }
 
     public required FunctionBodyExpression Body { get; set; }
     
@@ -23,8 +24,15 @@ public class UserFunctionInstance : IUserFunctionInstance
     
     public required bool IsAsync { get; init; }
 
+    public bool IsDeclared => Body is not null;
+
     public AbstractValue Evaluate(FunctionExecuteContext context)
     {
+        if (!IsDeclared)
+        {
+            InterpreterThrowHelper.ThrowFunctionNotDeclaredException(Name, context.Location);
+        }
+
         for (var i = 0; i < Arguments.Length; i++)
         {
             var argument = Arguments[i];
@@ -50,16 +58,26 @@ public class UserFunctionInstance : IUserFunctionInstance
                 InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ValueType.ToString(), value.Type.ToString(), context.Location);
             }
 
+            //We need add argument with function to functions repository
+            if (value is FunctionValue functionValue)
+            {
+                var functionInstance = functionValue.Value.Copy(argument.Name, Body);
+
+                context.ProgramContext.Functions.Add(functionInstance, context.Location, false);
+            }
+
             context.ProgramContext.Variables.Add(new UserVariableInstance
             {
                 Name = argument.Name,
                 Root = Body,
                 Value = value
-            });
+            }, context.Location, false);
         }
 
         Body.Token = context.Token;
         var result = Body.Evaluate(context.ProgramContext);
+        
+        context.ProgramContext.Clear(Body);
 
         if (!Return.Is(result))
         {
@@ -68,7 +86,6 @@ public class UserFunctionInstance : IUserFunctionInstance
 
         return result;
     }
-    
     public bool TryChange(ProgramContext programContext, IRepositoryInstance repositoryInstance, Location location, out AbstractLanguageException exception)
     {
         if (repositoryInstance is not UserFunctionInstance functionInstance)
@@ -83,9 +100,27 @@ public class UserFunctionInstance : IUserFunctionInstance
             return false;
         }
 
-        functionInstance.Body = functionInstance.Body;
+        Body = functionInstance.Body;
         
         exception = null;
         return false;
+    }
+    
+    public FunctionValue Create()
+    {
+        return new FunctionValue(this);
+    }
+    
+    public IFunctionInstance Copy(string name = null, FunctionBodyExpression root = null)
+    {
+        return new UserFunctionInstance
+        {
+            Name = name ?? Name,
+            Arguments = Arguments,
+            Body = Body,
+            IsAsync = IsAsync,
+            Return = Return,
+            Root = root ?? Root
+        };
     }
 }

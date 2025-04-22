@@ -22,10 +22,12 @@ public abstract class LoopExpression : AbstractEvaluableExpression, IStatement
         ProgramContext = programContext;
         
         OnLoopStarted();
+
+        AbstractValue result = new VoidValue();
         
         while (IsContinue)
         {
-            var bodyResult = Body.Evaluate(programContext);
+            result = Body.Evaluate(programContext);
 
             OnIteration();
             
@@ -34,10 +36,12 @@ public abstract class LoopExpression : AbstractEvaluableExpression, IStatement
                 continue;
             }
             
-            return bodyResult;
+            break;
         }
+        
+        programContext.Clear(Body);
 
-        return new VoidValue();
+        return result;
     }
     
     public virtual void OnLoopStarted() {}

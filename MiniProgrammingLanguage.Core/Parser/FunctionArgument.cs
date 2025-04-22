@@ -9,7 +9,6 @@ public class FunctionArgument
     {
         Name = name;
         Type = objectTypeValue ?? new ObjectTypeValue(string.Empty, ValueType.Any);
-        Default = defaultValue ?? new NoneValue();
     }
 
     public string Name { get; }
@@ -19,4 +18,9 @@ public class FunctionArgument
     public AbstractValue Default { get; }
     
     public bool IsRequired => Default is null;
+
+    public override string ToString()
+    {
+        return "{" + $"name: {Name}, type: {Type}, required: {IsRequired.ToString().ToLower()} " + "}";
+    }
 }

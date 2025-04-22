@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
@@ -17,6 +18,11 @@ public class StringValue : AbstractValue
     };
     
     public string Value { get; }
+    
+    public override bool Visit(IValueVisitor visitor)
+    {
+        return visitor.Visit(this);
+    }
     
     public override string AsString(ProgramContext programContext, Location location)
     {
@@ -41,12 +47,5 @@ public class StringValue : AbstractValue
         }
 
         return value;
-    }
-
-    public override bool AsBoolean(ProgramContext programContext, Location location)
-    {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.String.ToString(), ValueType.Boolean.ToString(), location);
-        
-        return false;
     }
 }

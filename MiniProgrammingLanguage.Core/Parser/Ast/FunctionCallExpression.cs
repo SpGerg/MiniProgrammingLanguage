@@ -73,14 +73,14 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
             {
                 InterpreterThrowHelper.ThrowTypeNotFoundException(Name, Location);
             }
+            
+            var taskTypeValue = taskType.Create();
 
-            var members = new Dictionary<ITypeMemberIdentification, AbstractValue>
-            {
-                { new KeyTypeMemberIdentification { Identificator = "id" }, new NumberValue(task.Id) }
-            };
+            var identification = new KeyTypeMemberIdentification { Identifier = "id" };
+            var member = taskTypeValue.Get(identification);
             
-            var taskTypeValue = taskType.Create(members);
-            
+            member.Value = new NumberValue(task.Id);
+
             return taskTypeValue;
         }
 

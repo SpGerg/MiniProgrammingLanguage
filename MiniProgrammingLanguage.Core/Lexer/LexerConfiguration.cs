@@ -52,6 +52,7 @@ public readonly struct LexerConfiguration
             { TokenType.While, "while" },
             { TokenType.Break, "break" },
             { TokenType.Import, "import" },
+            { TokenType.Implement, "implement" }
         }
     };
     

@@ -1,9 +1,12 @@
+using System;
 using MiniProgrammingLanguage.Core.Interpreter;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
-using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
+using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
@@ -26,107 +29,56 @@ public class BinaryExpression : AbstractEvaluableExpression
     {
         return Operator switch
         {
-            BinaryOperatorType.Plus => Plus(programContext),
-            BinaryOperatorType.Minus => Minus(programContext),
-            BinaryOperatorType.Equals => Equals(programContext),
-            BinaryOperatorType.Greater => Greater(programContext),
-            BinaryOperatorType.Less => Less(programContext),
-            BinaryOperatorType.Dot => Dot(programContext).Value,
-            BinaryOperatorType.And => And(programContext),
-            BinaryOperatorType.Or => Or(programContext),
-            _ => null
+            _ => EvaluateWithSameValue(programContext),
         };
     }
 
-    public TypeMemberValue Dot(ProgramContext context, TypeValue parent = null)
-    {
-        if (parent is null)
-        {
-            var left = Left.Evaluate(context);
-
-            if (left is not TypeValue typeValue)
-            {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), left.Type.ToString(), Location);
-
-                return null;
-            }
-
-            if (Right is BinaryExpression binaryExpression)
-            {
-                return binaryExpression.Dot(context, typeValue);
-            }
-
-            return GetMemberFromType(typeValue, Right);
-        }
-        else
-        {
-            if (Right is not BinaryExpression binaryExpression)
-            {
-                return GetMemberFromType(parent, Right);
-            }
-            
-            var left = GetMemberFromType(parent, binaryExpression.Left).Value;
-
-            if (left is not TypeValue typeValue)
-            {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), left.Type.ToString(), Location);
-                    
-                return null;
-            }
-
-            return binaryExpression.Dot(context, typeValue);
-        }
-    }
-
-    private TypeMemberValue GetMemberFromType(TypeValue typeValue, AbstractExpression expression)
-    {
-        if (expression is VariableExpression variableExpression)
-        {
-            return typeValue.Get(new KeyTypeMemberIdentification
-            {
-                Identificator = variableExpression.Name
-            });
-        }
-
-        return null;
-    }
-
-    private AbstractValue And(ProgramContext context)
+    private AbstractValue EvaluateWithSameValue(ProgramContext context)
     {
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
 
-        if (left.Type != right.Type)
+        var leftType = new ObjectTypeValue(left is TypeValue typeValue ? typeValue.Name : string.Empty, left.Type);
+        
+        if (!leftType.Is(right))
         {
             InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
         }
 
+        var result = Operator switch
+        {
+            BinaryOperatorType.Plus => Plus(context, left, right),
+            BinaryOperatorType.Minus => Minus(context, left, right),
+            BinaryOperatorType.Multiplication => Multiplication(context, left, right),
+            BinaryOperatorType.Division => Division(context, left, right),
+            BinaryOperatorType.And => And(context, left, right),
+            BinaryOperatorType.Or => Or(context, left, right),
+            BinaryOperatorType.Equals => Equals(context, left, right),
+            BinaryOperatorType.Greater => Greater(context, left, right),
+            BinaryOperatorType.Less => Less(context, left, right),
+            _ => null
+        };
+
+        if (result is null)
+        {
+            InterpreterThrowHelper.ThrowCannotAccessException("?", Location);
+        }
+
+        return result;
+    }
+
+    private AbstractValue And(ProgramContext context, AbstractValue left, AbstractValue right)
+    {
         return new BooleanValue(left.AsBoolean(context, Location) && right.AsBoolean(context, Location));
     }
     
-    private AbstractValue Or(ProgramContext context)
+    private AbstractValue Or(ProgramContext context, AbstractValue left, AbstractValue right)
     {
-        var left = Left.Evaluate(context);
-        var right = Right.Evaluate(context);
-
-        if (left.Type != right.Type)
-        {
-            InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
-        }
-
         return new BooleanValue(left.AsBoolean(context, Location) || right.AsBoolean(context, Location));
     }
     
-    private AbstractValue Greater(ProgramContext context)
+    private AbstractValue Greater(ProgramContext context, AbstractValue left, AbstractValue right)
     {
-        var left = Left.Evaluate(context);
-        var right = Right.Evaluate(context);
-
-        if (left.Type != right.Type)
-        {
-            InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
-        }
-        
         return left.Type switch
         {
             ValueType.Number => new BooleanValue(left.AsNumber(context, Location) > right.AsNumber(context, Location)),
@@ -135,16 +87,8 @@ public class BinaryExpression : AbstractEvaluableExpression
         };
     }
     
-    private AbstractValue Less(ProgramContext context)
+    private AbstractValue Less(ProgramContext context, AbstractValue left, AbstractValue right)
     {
-        var left = Left.Evaluate(context);
-        var right = Right.Evaluate(context);
-
-        if (left.Type != right.Type)
-        {
-            InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
-        }
-        
         return left.Type switch
         {
             ValueType.Number => new BooleanValue(left.AsNumber(context, Location) < right.AsNumber(context, Location)),
@@ -153,58 +97,55 @@ public class BinaryExpression : AbstractEvaluableExpression
         };
     }
 
-    private AbstractValue Equals(ProgramContext context)
+    private static AbstractValue Equals(ProgramContext context, AbstractValue left, AbstractValue right)
     {
-        var left = Left.Evaluate(context);
-        var right = Right.Evaluate(context);
-
-        if (left.Type != right.Type)
-        {
-            InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
-        }
-        
-        return left.Type switch
-        {
-            ValueType.String => new BooleanValue(left.AsString(context, Location) == right.AsString(context, Location)),
-            ValueType.Number => new BooleanValue(left.AsNumber(context, Location) == right.AsNumber(context, Location)),
-            ValueType.Boolean => new BooleanValue(left.AsBoolean(context, Location) == right.AsBoolean(context, Location)),
-            ValueType.RoundNumber => new BooleanValue(left.AsRoundNumber(context, Location) == right.AsRoundNumber(context, Location)),
-            _ => null
-        };
+        return new BooleanValue(left.Is(right));
     }
     
-    private AbstractValue Plus(ProgramContext context)
+    private AbstractValue Plus(ProgramContext context, AbstractValue left, AbstractValue right)
     {
-        var left = Left.Evaluate(context);
-        var right = Right.Evaluate(context);
-
-        if (left.Type != right.Type)
-        {
-            InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
-        }
-
         return left.Type switch
         {
             ValueType.String => new StringValue(left.AsString(context, Location) + right.AsString(context, Location)),
             ValueType.Number => new NumberValue(left.AsNumber(context, Location) + right.AsNumber(context, Location)),
-            ValueType.RoundNumber => new RoundNumberValue(left.AsRoundNumber(context, Location) + right.AsRoundNumber(context, Location)),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) + right.AsNumber(context, Location)),
             _ => null
         };
     }
     
-    private AbstractValue Minus(ProgramContext context)
+    private AbstractValue Minus(ProgramContext context, AbstractValue left, AbstractValue right)
     {
-        var left = Left.Evaluate(context);
-        var right = Right.Evaluate(context);
-
-        if (left.Type != right.Type)
-        {
-            InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
-        }
-
         return left.Type switch
         {
             ValueType.Number => new NumberValue(left.AsNumber(context, Location) - right.AsNumber(context, Location)),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) - right.AsNumber(context, Location)),
+            _ => null
+        };
+    }
+    
+    private AbstractValue Multiplication(ProgramContext context, AbstractValue left, AbstractValue right)
+    {
+        return left.Type switch
+        {
+            ValueType.Number => new NumberValue(left.AsNumber(context, Location) * right.AsNumber(context, Location)),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) * right.AsNumber(context, Location)),
+            _ => null
+        };
+    }
+    
+    private AbstractValue Division(ProgramContext context, AbstractValue left, AbstractValue right)
+    {
+        var rightNumber = right.AsNumber(context, Location);
+        
+        if (rightNumber == 0)
+        {
+            InterpreterThrowHelper.ThrowDivideByZeroException(Location);
+        }
+        
+        return left.Type switch
+        {
+            ValueType.Number => new NumberValue(left.AsNumber(context, Location) / rightNumber),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) / (int) rightNumber),
             _ => null
         };
     }
