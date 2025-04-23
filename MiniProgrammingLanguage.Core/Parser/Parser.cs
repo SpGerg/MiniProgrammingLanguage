@@ -194,7 +194,7 @@ public class Parser
             MatchOrException(TokenType.Word).
                 MatchOrException(TokenType.Equals);
 
-            var value = ParseValue();
+            var value = ParseUnary();
 
             if (value is not RoundNumberExpression roundNumberExpression)
             {
