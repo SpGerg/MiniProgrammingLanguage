@@ -218,14 +218,7 @@ public class Parser
     {
         Match(TokenType.While);
 
-        var isPars = Match(TokenType.LeftParentheses);
-
         var condition = ParseBinary();
-
-        if (isPars)
-        {
-            MatchOrException(TokenType.RightParentheses);
-        }
 
         var body = ParseFunctionBody();
 
@@ -437,14 +430,7 @@ public class Parser
     {
         Match(TokenType.If);
 
-        var isPars = Match(TokenType.LeftParentheses);
-
         var condition = ParseBinary();
-
-        if (isPars)
-        {
-            MatchOrException(TokenType.RightParentheses);
-        }
         
         MatchOrException(TokenType.Then);
 
