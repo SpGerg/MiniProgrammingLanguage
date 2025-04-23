@@ -907,7 +907,10 @@ public class Parser
         {
             var enumName = Current;
 
-            MatchOrException(TokenType.Word);
+            if (!Match(TokenType.Word))
+            {
+                return new ObjectTypeValue(string.Empty, ValueType.EnumMember);
+            }
             
             return new ObjectTypeValue(enumName.Value, ValueType.EnumMember);
         }
@@ -916,7 +919,10 @@ public class Parser
         {
             var enumName = Current;
 
-            MatchOrException(TokenType.Word);
+            if (!Match(TokenType.Word))
+            {
+                return new ObjectTypeValue(string.Empty, ValueType.Enum);
+            }
             
             return new ObjectTypeValue(enumName.Value, ValueType.Enum);
         }

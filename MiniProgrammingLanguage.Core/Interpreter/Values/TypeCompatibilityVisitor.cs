@@ -56,6 +56,11 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(EnumValue enumValue)
     {
+        if (string.IsNullOrEmpty(Type.Name))
+        {
+            return Type.ValueType is ValueType.Enum;
+        }
+        
         return Type.ValueType is ValueType.Enum && Type.Name == enumValue.Value.Name;
     }
 
@@ -66,6 +71,11 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(EnumMemberValue enumMemberValue)
     {
+        if (string.IsNullOrEmpty(Type.Name))
+        {
+            return Type.ValueType is ValueType.EnumMember;
+        }
+        
         return Type.ValueType is ValueType.EnumMember && Type.Name == enumMemberValue.Name;
     }
 

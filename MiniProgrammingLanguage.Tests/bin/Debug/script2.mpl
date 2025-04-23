@@ -12,7 +12,7 @@ enum other_test
     bottom = 3
 end
 
-function checker(arg: enum_member test)
+function checker(arg: enum_member)
     print(arg)
 end
 
