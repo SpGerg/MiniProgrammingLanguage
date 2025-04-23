@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
@@ -53,9 +54,19 @@ public class TypeCompatibilityVisitor : IValueVisitor
         return Type.ValueType is ValueType.RoundNumber or ValueType.Number;
     }
 
+    public bool Visit(EnumValue enumValue)
+    {
+        return Type.ValueType is ValueType.Enum && Type.Name == enumValue.Value.Name;
+    }
+
     public bool Visit(StringValue stringValue)
     {
         return Type.ValueType is ValueType.String or ValueType.None;
+    }
+
+    public bool Visit(EnumMemberValue enumMemberValue)
+    {
+        return Type.ValueType is ValueType.EnumMember && Type.Name == enumMemberValue.Name;
     }
 
     public bool Visit(VoidValue voidValue)

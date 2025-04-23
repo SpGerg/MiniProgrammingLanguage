@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Tasks;
@@ -13,7 +15,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter;
 
 public class ProgramContext
 {
-    public ProgramContext(string filepath, IEnumerable<ITypeInstance> types = null, IEnumerable<IFunctionInstance> functions = null, IEnumerable<IVariableInstance> variables = null)
+    public ProgramContext(string filepath, IEnumerable<ITypeInstance> types = null, IEnumerable<IFunctionInstance> functions = null, IEnumerable<IEnumInstance> enums = null, IEnumerable<IVariableInstance> variables = null)
     {
         Filepath = filepath;
         
@@ -30,6 +32,14 @@ public class ProgramContext
             foreach (var function in functions)
             {
                 Functions.Add(function);
+            }
+        }
+        
+        if (enums is not null)
+        {
+            foreach (var enumInstance in enums)
+            {
+                Enums.Add(enumInstance);
             }
         }
 
@@ -53,6 +63,8 @@ public class ProgramContext
     public ITypesRepository Types { get; } = new TypesRepository();
     
     public IFunctionsRepository Functions { get; } = new FunctionsRepository();
+
+    public IEnumsRepository Enums { get; } = new EnumsRepository();
     
     public IVariablesRepository Variables { get; } = new VariablesRepository();
 

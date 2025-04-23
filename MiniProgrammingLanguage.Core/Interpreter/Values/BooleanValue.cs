@@ -5,7 +5,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class BooleanValue : AbstractValue
 {
-    public BooleanValue(bool value)
+    public BooleanValue(bool value) : base(string.Empty)
     {
         Value = value;
     }

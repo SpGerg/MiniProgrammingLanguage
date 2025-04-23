@@ -65,7 +65,7 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
             InterpreterThrowHelper.ThrowWrongImportModuleException(content, Location);
         }
 
-        var moduleContext = new ProgramContext(filepath, programContext.Types.Entities, programContext.Functions.Entities, programContext.Variables.Entities);
+        var moduleContext = new ProgramContext(filepath, programContext.Types.Entities, programContext.Functions.Entities, null, programContext.Variables.Entities);
 
         var lexer = new Lexer.Lexer(source, filepath, LexerConfiguration.Default);
         var tokens = lexer.Tokenize();

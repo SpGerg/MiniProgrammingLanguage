@@ -7,7 +7,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class FunctionValue : AbstractValue
 {
-    public FunctionValue(IFunctionInstance value)
+    public FunctionValue(IFunctionInstance value) : base(string.Empty)
     {
         Value = value;
     }

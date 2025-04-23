@@ -86,7 +86,7 @@ namespace MiniProgrammingLanguage.Tests
                 Root = null
             };
 
-            var programContext = new ProgramContext(filepath, new [] { taskInstance }, new[] { printFunction, sleepFunction }, new [] { moduleFunction });
+            var programContext = new ProgramContext(filepath, new [] { taskInstance }, new[] { printFunction, sleepFunction }, null, new [] { moduleFunction });
             functionBody.Evaluate(programContext);
 
             while (programContext.Tasks.Entities.Any())

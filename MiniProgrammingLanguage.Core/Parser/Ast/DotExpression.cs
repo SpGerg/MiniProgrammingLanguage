@@ -5,6 +5,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identification
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
@@ -24,7 +25,26 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
     
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        return Dot(programContext).Value;
+        var left = Left.Evaluate(programContext);
+
+        if (left is TypeValue typeValue)
+        {
+            return Dot(programContext, typeValue).Value;
+        }
+        
+        if (left is not EnumValue enumValue || Right is not VariableExpression variableExpression)
+        {
+            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Enum.ToString(), left.Type.ToString(), Location);
+
+            return null;
+        }
+
+        if (!enumValue.Value.TryGetByName(variableExpression.Name, out _))
+        {
+            InterpreterThrowHelper.ThrowMemberNotFoundException(enumValue.Value.Name, variableExpression.Name, Location);
+        }
+
+        return new EnumMemberValue(enumValue.Value.Name, variableExpression.Name);
     }
 
     public TypeMemberValue Dot(ProgramContext context, TypeValue parent = null)

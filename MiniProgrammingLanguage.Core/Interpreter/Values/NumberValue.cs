@@ -5,7 +5,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class NumberValue : AbstractValue
 {
-    public NumberValue(float value)
+    public NumberValue(float value) : base(string.Empty)
     {
         Value = value;
     }

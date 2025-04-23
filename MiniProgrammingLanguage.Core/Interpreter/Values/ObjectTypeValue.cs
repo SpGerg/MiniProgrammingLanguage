@@ -20,7 +20,7 @@ public class ObjectTypeValue : AbstractValue
     
     public static ObjectTypeValue Function => new(string.Empty, ValueType.Function);
     
-    public ObjectTypeValue(string name, ValueType valueType)
+    public ObjectTypeValue(string name, ValueType valueType) : base(name)
     {
         Name = name;
         ValueType = valueType;

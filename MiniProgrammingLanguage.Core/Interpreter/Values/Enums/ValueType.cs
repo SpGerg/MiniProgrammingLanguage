@@ -12,5 +12,7 @@ public enum ValueType
     Void,
     Array,
     Function,
+    Enum,
+    EnumMember,
     None
 }

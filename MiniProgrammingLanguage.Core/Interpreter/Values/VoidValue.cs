@@ -5,6 +5,10 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class VoidValue : AbstractValue
 {
+    public VoidValue() : base(string.Empty)
+    {
+    }
+    
     public override ValueType Type => ValueType.Void;
     
     public override ValueType[] CanCast { get; } = {};

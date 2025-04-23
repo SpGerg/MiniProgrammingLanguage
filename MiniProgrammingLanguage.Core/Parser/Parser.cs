@@ -66,6 +66,11 @@ public class Parser
             return ParseImport();
         }
 
+        if (Match(TokenType.Enum))
+        {
+            return ParseEnumDeclaration();
+        }
+
         if (Match(TokenType.Break))
         {
             return new BreakExpression(Current.Location);
@@ -161,6 +166,52 @@ public class Parser
         ParserThrowHelper.ThrowStatementExceptedException(Current.Location);
         
         return null;
+    }
+
+    private EnumDeclarationExpression ParseEnumDeclaration()
+    {
+        Match(TokenType.Enum);
+
+        var name = Current;
+
+        MatchOrException(TokenType.Word);
+
+        var members = new Dictionary<string, int>();
+
+        var isEnded = false;
+        
+        while (IsNotEnded)
+        {
+            if (Match(TokenType.End))
+            {
+                isEnded = true;
+                
+                break;
+            }
+
+            var memberName = Current;
+
+            MatchOrException(TokenType.Word).
+                MatchOrException(TokenType.Equals);
+
+            var value = ParseValue();
+
+            if (value is not RoundNumberExpression roundNumberExpression)
+            {
+                ParserThrowHelper.ThrowTokenExpectedException(Configuration, value.Location, TokenType.Number);
+
+                return null;
+            }
+            
+            members.Add(memberName.Value, roundNumberExpression.Value);
+        }
+
+        if (!isEnded)
+        {
+            ParserThrowHelper.ThrowTokenExpectedException(Configuration, name.Location, TokenType.End);
+        }
+
+        return new EnumDeclarationExpression(name.Value, members, _root, name.Location);
     }
 
     private WhileExpression ParseWhile()
@@ -850,6 +901,24 @@ public class Parser
         if (Match(TokenType.RoundNumberType))
         {
             return ObjectTypeValue.RoundNumber;
+        }
+        
+        if (Match(TokenType.EnumMember))
+        {
+            var enumName = Current;
+
+            MatchOrException(TokenType.Word);
+            
+            return new ObjectTypeValue(enumName.Value, ValueType.EnumMember);
+        }
+        
+        if (Match(TokenType.Enum))
+        {
+            var enumName = Current;
+
+            MatchOrException(TokenType.Word);
+            
+            return new ObjectTypeValue(enumName.Value, ValueType.Enum);
         }
         
         if (Match(TokenType.Word))

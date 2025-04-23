@@ -1,13 +1,19 @@
-type broadcaster
-    function broadcast(content)
+enum test
+    left = 0
+    right = 1
+    forward = 2
+    bottom = 3
 end
 
-implement function broadcaster.broadcast(content)
-    print(content)
+enum other_test
+    left = 0
+    right = 1
+    forward = 2
+    bottom = 3
 end
 
-broadcaster_instance = create broadcaster
-
-for i in 1000000
-    print((string) i)
+function checker(arg: enum_member test)
+    print(arg)
 end
+
+checker(test.left)

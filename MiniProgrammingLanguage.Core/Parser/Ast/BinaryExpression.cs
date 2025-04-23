@@ -1,8 +1,4 @@
-using System;
 using MiniProgrammingLanguage.Core.Interpreter;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
@@ -37,8 +33,8 @@ public class BinaryExpression : AbstractEvaluableExpression
     {
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
-
-        var leftType = new ObjectTypeValue(left is TypeValue typeValue ? typeValue.Name : string.Empty, left.Type);
+        
+        var leftType = new ObjectTypeValue(left.Name, left.Type);
         
         if (!leftType.Is(right))
         {

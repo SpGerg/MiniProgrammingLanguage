@@ -5,6 +5,10 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class NoneValue : AbstractValue
 {
+    public NoneValue() : base(string.Empty)
+    {
+    }
+    
     public override ValueType Type => ValueType.None;
 
     public override ValueType[] CanCast { get; } = {};

@@ -5,7 +5,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class StringValue : AbstractValue
 {
-    public StringValue(string value)
+    public StringValue(string value) : base(string.Empty)
     {
         Value = value;
     }

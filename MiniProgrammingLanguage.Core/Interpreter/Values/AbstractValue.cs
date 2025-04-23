@@ -1,14 +1,22 @@
-using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using System;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public abstract class AbstractValue
 {
+    protected AbstractValue(string name)
+    {
+        Name = name;
+    }
+
     public abstract ValueType Type { get; }
     
     public abstract ValueType[] CanCast { get; }
+    
+    public string Name { get; }
     
     public abstract bool Visit(IValueVisitor visitor);
 
@@ -77,6 +85,6 @@ public abstract class AbstractValue
 
     public override string ToString()
     {
-        return Type.ToString();
+        return string.IsNullOrEmpty(Name) ? Type.ToString() : $"({Name}), {Type}";
     }
 }

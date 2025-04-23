@@ -55,7 +55,7 @@ public class UserFunctionInstance : IFunctionInstance
 
             if (!argument.Type.Is(value))
             {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ValueType.ToString(), value.Type.ToString(), context.Location);
+                InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ToString(), value.ToString(), context.Location);
             }
 
             //We need add argument with function to functions repository
@@ -86,6 +86,7 @@ public class UserFunctionInstance : IFunctionInstance
 
         return result;
     }
+    
     public bool TryChange(ProgramContext programContext, IRepositoryInstance repositoryInstance, Location location, out AbstractLanguageException exception)
     {
         if (repositoryInstance is not UserFunctionInstance functionInstance)

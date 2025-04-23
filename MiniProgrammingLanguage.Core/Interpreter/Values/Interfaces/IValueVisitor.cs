@@ -1,3 +1,4 @@
+using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
@@ -19,8 +20,12 @@ public interface IValueVisitor
     bool Visit(ObjectTypeValue objectTypeValue);
     
     bool Visit(RoundNumberValue roundNumberValue);
+
+    bool Visit(EnumValue enumValue);
     
     bool Visit(StringValue stringValue);
+
+    bool Visit(EnumMemberValue enumMemberValue);
     
     bool Visit(VoidValue voidValue);
 }

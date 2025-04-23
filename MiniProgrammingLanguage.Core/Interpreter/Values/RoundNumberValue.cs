@@ -5,7 +5,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class RoundNumberValue : AbstractValue
 {
-    public RoundNumberValue(int value)
+    public RoundNumberValue(int value) : base(string.Empty)
     {
         Value = value;
     }

@@ -10,7 +10,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class ArrayValue : AbstractValue
 {
-    public ArrayValue(IEnumerable<AbstractEvaluableExpression> value)
+    public ArrayValue(IEnumerable<AbstractEvaluableExpression> value) : base(string.Empty)
     {
         Value = value;
 

@@ -33,7 +33,7 @@ public class ForExpression : LoopExpression
         {
             var condition = Condition.Evaluate(ProgramContext);
             
-            return condition.AsBoolean(ProgramContext, Condition.Location) && !Body.IsEnded;
+            return condition.AsBoolean(ProgramContext, Location);
         }
     }
 

@@ -60,6 +60,10 @@
         <Compile Include="Interpreter\InterpreterThrowHelper.cs" />
         <Compile Include="Interpreter\ProgramContext.cs" />
         <Compile Include="Interpreter\Repositories\AbstractInstancesRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Enums\EnumsRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Enums\Interfaces\IEnumInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Enums\Interfaces\IEnumsRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Enums\UserEnumInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\FunctionExecuteContext.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionsRepository.cs" />
@@ -94,6 +98,8 @@
         <Compile Include="Interpreter\Values\AbstractValue.cs" />
         <Compile Include="Interpreter\Values\ArrayValue.cs" />
         <Compile Include="Interpreter\Values\BooleanValue.cs" />
+        <Compile Include="Interpreter\Values\EnumsValues\EnumMemberValue.cs" />
+        <Compile Include="Interpreter\Values\EnumsValues\EnumValue.cs" />
         <Compile Include="Interpreter\Values\Enums\ValueType.cs" />
         <Compile Include="Interpreter\Values\FunctionValue.cs" />
         <Compile Include="Interpreter\Values\Interfaces\IValueVisitor.cs" />
@@ -126,6 +132,7 @@
         <Compile Include="Parser\Ast\CastExpression.cs" />
         <Compile Include="Parser\Ast\CreateExpression.cs" />
         <Compile Include="Parser\Ast\DotExpression.cs" />
+        <Compile Include="Parser\Ast\EnumDeclarationExpression.cs" />
         <Compile Include="Parser\Ast\Enums\BinaryOperatorType.cs" />
         <Compile Include="Parser\Ast\Enums\StateType.cs" />
         <Compile Include="Parser\Ast\ForExpression.cs" />

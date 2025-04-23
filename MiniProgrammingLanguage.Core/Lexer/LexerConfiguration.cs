@@ -52,7 +52,9 @@ public readonly struct LexerConfiguration
             { TokenType.While, "while" },
             { TokenType.Break, "break" },
             { TokenType.Import, "import" },
-            { TokenType.Implement, "implement" }
+            { TokenType.Implement, "implement" },
+            { TokenType.Enum, "enum" },
+            { TokenType.EnumMember, "enum_member" }
         }
     };
     

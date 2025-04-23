@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
@@ -88,6 +89,16 @@ public class ValueCompatibilityVisitor : IValueVisitor
         return roundNumberValue.Value == roundNumber.Value;
     }
 
+    public bool Visit(EnumValue enumValue)
+    {
+        if (Value is not EnumValue value)
+        {
+            return false;
+        }
+
+        return enumValue.Value.Name == value.Value.Name;
+    }
+
     public bool Visit(StringValue stringValue)
     {
         if (Value is not StringValue @string)
@@ -96,6 +107,16 @@ public class ValueCompatibilityVisitor : IValueVisitor
         }
         
         return @string.Value == stringValue.Value;
+    }
+
+    public bool Visit(EnumMemberValue enumMemberValue)
+    {
+        if (Value is not EnumMemberValue enumMember)
+        {
+            return false;
+        }
+
+        return enumMemberValue.Name == enumMember.Name && enumMemberValue.Member == enumMember.Member;
     }
 
     public bool Visit(VoidValue voidValue)

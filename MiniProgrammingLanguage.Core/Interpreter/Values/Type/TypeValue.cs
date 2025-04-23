@@ -9,14 +9,11 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 public class TypeValue : AbstractValue
 {
-    public TypeValue(string name, IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> members)
+    public TypeValue(string name, IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> members) : base(name)
     {
-        Name = name;
         _members = members;
     }
-    
-    public string Name { get; }
-    
+
     public override ValueType Type => ValueType.Type;
 
     public override ValueType[] CanCast { get; } =

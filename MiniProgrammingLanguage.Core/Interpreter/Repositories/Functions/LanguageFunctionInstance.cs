@@ -34,13 +34,24 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
         
         for (var i = 0; i < Arguments.Length; i++)
         {
+            FunctionArgument argument;
+            
             if (i < context.Arguments.Length)
             {
+                argument = Arguments[i];
+
+                var value = context.Arguments[i].Evaluate(context.ProgramContext);
+                
+                if (!argument.Type.Is(value))
+                {
+                    InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ValueType.ToString(), value.Type.ToString(), context.Location);
+                }
+                
                 continue;
             }
             
-            var argument = Arguments[i];
-            
+            argument = Arguments[i];
+
             if (!argument.IsRequired)
             {
                 continue;
