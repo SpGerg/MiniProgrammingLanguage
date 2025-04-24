@@ -22,80 +22,44 @@ public class TypeVariableMemberInstanceBuilder
     
     public TypeVariableMemberInstanceBuilder SetParent(string parent)
     {
-        return new TypeVariableMemberInstanceBuilder
-        {
-            Parent = Parent,
-            Type = Type,
-            Identification = Identification,
-            Default = Default,
-            IsReadOnly = IsReadOnly,
-            Root = Root
-        };
+        Parent = parent;
+        
+        return this;
     }
     
     public TypeVariableMemberInstanceBuilder SetType(ObjectTypeValue typeValue)
     {
-        return new TypeVariableMemberInstanceBuilder
-        {
-            Parent = Parent,
-            Type = typeValue,
-            Identification = Identification,
-            Default = Default,
-            IsReadOnly = IsReadOnly,
-            Root = Root
-        };
+        Type = typeValue;
+        
+        return this;
     }
     
     public TypeVariableMemberInstanceBuilder SetIdentification(KeyTypeMemberIdentification identification)
     {
-        return new TypeVariableMemberInstanceBuilder
-        {
-            Parent = Parent,
-            Type = Type,
-            Identification = identification,
-            Default = Default,
-            IsReadOnly = IsReadOnly,
-            Root = Root
-        };
+        Identification = identification;
+        
+        return this;
     }
     
     public TypeVariableMemberInstanceBuilder SetDefault(AbstractValue defaultValue)
     {
-        return new TypeVariableMemberInstanceBuilder
-        {
-            Parent = Parent,
-            Type = Type,
-            Identification = Identification,
-            Default = defaultValue,
-            IsReadOnly = IsReadOnly,
-            Root = Root
-        };
+        Default = defaultValue;
+        
+        return this;
     }
     
     public TypeVariableMemberInstanceBuilder SetReadOnly(bool isReadOnly)
     {
-        return new TypeVariableMemberInstanceBuilder
-        {
-            Parent = Parent,
-            Type = Type,
-            Identification = Identification,
-            Default = Default,
-            IsReadOnly = isReadOnly,
-            Root = Root
-        };
+        IsReadOnly = isReadOnly;
+        
+        return this;
     }
 
     public TypeVariableMemberInstanceBuilder SetRoot(FunctionBodyExpression root)
     {
-        return new TypeVariableMemberInstanceBuilder
-        {
-            Parent = Parent,
-            Type = Type,
-            Identification = Identification,
-            Default = Default,
-            IsReadOnly = IsReadOnly,
-            Root = root
-        };
+        Root = root;
+
+        return this;
     }
 
     public TypeVariableMemberInstance Build()

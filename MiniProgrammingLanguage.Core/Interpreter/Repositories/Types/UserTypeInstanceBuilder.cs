@@ -14,32 +14,23 @@ public class UserTypeInstanceBuilder
     
     public UserTypeInstanceBuilder SetName(string name)
     {
-        return new UserTypeInstanceBuilder
-        {
-            Name = name,
-            Members = Members,
-            Root = Root
-        };
+        Name = name;
+
+        return this;
     }
     
     public UserTypeInstanceBuilder SetMembers(params ITypeMember[] members)
     {
-        return new UserTypeInstanceBuilder
-        {
-            Name = Name,
-            Members = members,
-            Root = Root
-        };
+        Members = members;
+        
+        return this;
     }
 
     public UserTypeInstanceBuilder SetRoot(FunctionBodyExpression root)
     {
-        return new UserTypeInstanceBuilder
-        {
-            Name = Name,
-            Members = Members,
-            Root = Root
-        };
+        Root = root;
+        
+        return this;
     }
 
     public UserTypeInstance Build()

@@ -16,46 +16,30 @@ public class LanguageVariableInstanceBuilder
     
     public LanguageVariableInstanceBuilder SetName(string name)
     {
-        return new LanguageVariableInstanceBuilder
-        {
-            Name = name,
-            Bind = Bind,
-            Type = Type,
-            Root = Root
-        };
+        Name = name;
+        
+        return this;
     }
 
     public LanguageVariableInstanceBuilder SetType(ObjectTypeValue typeValue)
     {
-        return new LanguageVariableInstanceBuilder
-        {
-            Name = Name,
-            Bind = Bind,
-            Type = typeValue,
-            Root = Root
-        };
+        Type = typeValue;
+        
+        return this;
     }
     
     public LanguageVariableInstanceBuilder SetBind(Func<VariableGetterContext, AbstractValue> bind)
     {
-        return new LanguageVariableInstanceBuilder
-        {
-            Name = Name,
-            Bind = bind,
-            Type = Type,
-            Root = Root
-        };
+        Bind = bind;
+        
+        return this;
     }
     
     public LanguageVariableInstanceBuilder SetRoot(FunctionBodyExpression root)
     {
-        return new LanguageVariableInstanceBuilder
-        {
-            Name = Name,
-            Bind = Bind,
-            Type = Type,
-            Root = Root
-        };
+        Root = root;
+        
+        return this;
     }
 
     public LanguageVariableInstance Build()
