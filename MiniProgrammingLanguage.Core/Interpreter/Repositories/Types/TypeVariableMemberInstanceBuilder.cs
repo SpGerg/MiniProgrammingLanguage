@@ -1,6 +1,7 @@
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 
@@ -16,7 +17,7 @@ public class TypeVariableMemberInstanceBuilder
     
     public AbstractValue Default { get; set; }
     
-    public bool IsReadOnly { get; set; }
+    public AccessType Access { get; set; }
 
     public FunctionBodyExpression Root { get; set; }
     
@@ -55,9 +56,9 @@ public class TypeVariableMemberInstanceBuilder
         return this;
     }
     
-    public TypeVariableMemberInstanceBuilder SetReadOnly(bool isReadOnly)
+    public TypeVariableMemberInstanceBuilder SetAccess(AccessType accessType)
     {
-        IsReadOnly = isReadOnly;
+        Access = accessType;
         
         return this;
     }
@@ -77,7 +78,7 @@ public class TypeVariableMemberInstanceBuilder
             Module = Module,
             Default = Default,
             Identification = Identification,
-            IsReadonly = IsReadOnly
+            Access = Access
         };
     }
 }

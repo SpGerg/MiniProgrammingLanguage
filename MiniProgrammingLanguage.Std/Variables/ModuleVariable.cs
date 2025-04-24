@@ -1,5 +1,6 @@
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Std.Variables;
 
@@ -11,6 +12,7 @@ public static class ModuleVariable
             .SetName("__module")
             .SetModule(StdModule.Name)
             .SetBind(GetModule)
+            .SetAccess(AccessType.Static)
             .SetType(ObjectTypeValue.String)
             .Build();
     }

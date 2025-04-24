@@ -1,6 +1,7 @@
 using System;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 
@@ -16,6 +17,8 @@ public class LanguageVariableInstanceBuilder
     
     public FunctionBodyExpression Root { get; set; }
     
+    public AccessType Access { get; set; }
+    
     public LanguageVariableInstanceBuilder SetName(string name)
     {
         Name = name;
@@ -26,6 +29,13 @@ public class LanguageVariableInstanceBuilder
     public LanguageVariableInstanceBuilder SetModule(string module)
     {
         Module = module;
+        
+        return this;
+    }
+    
+    public LanguageVariableInstanceBuilder SetAccess(AccessType accessType)
+    {
+        Access = accessType;
         
         return this;
     }
@@ -58,6 +68,7 @@ public class LanguageVariableInstanceBuilder
             Name = Name,
             Module = Module,
             Bind = Bind,
+            Access = Access,
             Type = Type,
             Root = Root
         };

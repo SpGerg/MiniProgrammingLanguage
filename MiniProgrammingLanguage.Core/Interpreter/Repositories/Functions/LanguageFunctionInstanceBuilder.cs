@@ -3,6 +3,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 
@@ -20,6 +21,8 @@ public class LanguageFunctionInstanceBuilder
     
     public FunctionBodyExpression Root { get; set; }
     
+    public AccessType Access { get; set; }
+    
     public bool IsAsync { get; set; }
     
     public LanguageFunctionInstanceBuilder SetName(string name)
@@ -32,6 +35,13 @@ public class LanguageFunctionInstanceBuilder
     public LanguageFunctionInstanceBuilder SetModule(string module)
     {
         Module = module;
+        
+        return this;
+    }
+    
+    public LanguageFunctionInstanceBuilder SetAccess(AccessType accessType)
+    {
+        Access = accessType;
         
         return this;
     }
@@ -78,6 +88,7 @@ public class LanguageFunctionInstanceBuilder
             Name = Name,
             Module = Module,
             Arguments = Arguments,
+            Access = Access,
             IsAsync = IsAsync,
             Bind = Bind,
             Return = Return,

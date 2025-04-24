@@ -1,6 +1,7 @@
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Std.Types;
 
@@ -15,8 +16,8 @@ public static class TaskType
             {
                 Identifier = "id"
             })
+            .SetAccess(AccessType.Static)
             .SetDefault(new RoundNumberValue(-1))
-            .SetReadOnly(true)
             .SetType(ObjectTypeValue.RoundNumber)
             .Build();
 

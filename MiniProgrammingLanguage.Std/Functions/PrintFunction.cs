@@ -2,6 +2,7 @@ using System;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Std.Functions;
 
@@ -13,6 +14,7 @@ public static class PrintFunction
             .SetName("print")
             .SetModule(StdModule.Name)
             .SetBind(Print)
+            .SetAccess(AccessType.Static)
             .SetArguments(new FunctionArgument("content"))
             .SetReturn(ObjectTypeValue.Void)
             .Build();

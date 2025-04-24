@@ -13,9 +13,7 @@ public class TypeVariableMemberInstance : ITypeMember
     public required ITypeMemberIdentification Identification { get; init; }
 
     public required AbstractValue Default { get; init; } = new NoneValue();
-    
-    public required bool IsReadonly { get; init;  }
-    
+
     public AccessType Access { get; init; }
 
     public bool IsFunctionInstance { get; init; }

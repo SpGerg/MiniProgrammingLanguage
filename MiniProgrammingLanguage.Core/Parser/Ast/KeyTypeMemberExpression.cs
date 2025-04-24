@@ -2,6 +2,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
@@ -33,7 +34,7 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
             },
             Type = Type,
             Default = new NoneValue(),
-            IsReadonly = false
+            Access = AccessType.None
         };
     }
 }

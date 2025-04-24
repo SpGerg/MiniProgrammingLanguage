@@ -46,7 +46,7 @@ public class UserVariableInstance : IVariableInstance
             return false;
         }
 
-        if (Access is AccessType.ReadOnly && programContext.Module != Module)
+        if (Access.HasFlag(AccessType.ReadOnly) && programContext.Module != Module)
         {
             exception = new CannotAccessException(Name, location);
             return false;

@@ -1,6 +1,7 @@
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Std.Functions;
 
@@ -12,6 +13,7 @@ public static class SleepFunction
             .SetName("sleep")
             .SetModule(StdModule.Name)
             .SetBind(Sleep)
+            .SetAccess(AccessType.Static)
             .SetArguments(new FunctionArgument("milliseconds", ObjectTypeValue.RoundNumber))
             .SetReturn(ObjectTypeValue.Void)
             .Build();

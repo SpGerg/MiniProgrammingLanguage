@@ -121,7 +121,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
         var entity = GlobalEntities.FirstOrDefault(entity => entity.Name == name);
 
-        if (entity is not null && entity.Access is not AccessType.Static && entity.Module != module)
+        if (entity is not null && !entity.Access.HasFlag(AccessType.Static) && entity.Module != module)
         {
             InterpreterThrowHelper.ThrowCannotAccessException(entity.Name, location);
         }

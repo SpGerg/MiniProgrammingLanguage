@@ -1,3 +1,3 @@
 module "scripter"
 
-test = 123
+static test = 123

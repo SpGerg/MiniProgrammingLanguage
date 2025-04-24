@@ -8,16 +8,18 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
 {
-    public TypeDeclarationExpression(string name, IReadOnlyList<ITypeMemberExpression> members, FunctionBodyExpression root, Location location) : base(location)
+    public TypeDeclarationExpression(string name, IReadOnlyList<ITypeMemberExpression> members, AccessType accessType, FunctionBodyExpression root, Location location) : base(location)
     {
         Name = name;
         Members = members;
+        Access = accessType;
         Root = root;
     }
     
@@ -26,6 +28,8 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
     public IReadOnlyList<ITypeMemberExpression> Members { get; }
     
     public FunctionBodyExpression Root { get; }
+    
+    public AccessType Access { get; }
     
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
@@ -48,7 +52,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
                         Identifier = result.Identification.Identifier
                     },
                     Default = value,
-                    IsReadonly = true,
+                    Access = AccessType.Static,
                     IsFunctionInstance = true
                 };
 

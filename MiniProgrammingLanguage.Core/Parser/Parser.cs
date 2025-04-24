@@ -133,7 +133,7 @@ public class Parser
 
         if (Match(TokenType.Type))
         {
-            return ParseType();
+            return ParseType(access);
         }
 
         if (Is(TokenType.Word))
@@ -515,7 +515,7 @@ public class Parser
         return new FunctionDeclarationExpression(name.Value, arguments, body, returnType, isAsync, accessType, _root, name.Location);
     }
 
-    private TypeDeclarationExpression ParseType()
+    private TypeDeclarationExpression ParseType(AccessType accessType)
     {
         Match(TokenType.Type);
 
@@ -530,7 +530,7 @@ public class Parser
             members.Add(ParseTypeMember(name.Value));
         }
 
-        return new TypeDeclarationExpression(name.Value, members, _root, name.Location);
+        return new TypeDeclarationExpression(name.Value, members, accessType, _root, name.Location);
     }
 
     private ITypeMemberExpression ParseTypeMember(string parent)
