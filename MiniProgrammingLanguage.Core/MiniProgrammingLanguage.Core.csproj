@@ -78,7 +78,7 @@
         <Compile Include="Interpreter\Repositories\Interfaces\IInstancesRepository.cs" />
         <Compile Include="Interpreter\Repositories\Interfaces\ILanguageInstance.cs" />
         <Compile Include="Interpreter\Repositories\Interfaces\IRepository.cs" />
-        <Compile Include="Interpreter\Repositories\Interfaces\IRepositoryInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Interfaces\IInstance.cs" />
         <Compile Include="Interpreter\Repositories\Types\Identifications\FunctionTypeMemberIdentification.cs" />
         <Compile Include="Interpreter\Repositories\Types\Identifications\KeyTypeMemberIdentification.cs" />
         <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypeInstance.cs" />
@@ -136,10 +136,12 @@
         <Compile Include="Parser\Ast\BinaryExpression.cs" />
         <Compile Include="Parser\Ast\BooleanExpression.cs" />
         <Compile Include="Parser\Ast\BreakExpression.cs" />
+        <Compile Include="Parser\Ast\CallExpression.cs" />
         <Compile Include="Parser\Ast\CastExpression.cs" />
         <Compile Include="Parser\Ast\CreateExpression.cs" />
         <Compile Include="Parser\Ast\DotExpression.cs" />
         <Compile Include="Parser\Ast\EnumDeclarationExpression.cs" />
+        <Compile Include="Parser\Ast\Enums\AccessType.cs" />
         <Compile Include="Parser\Ast\Enums\BinaryOperatorType.cs" />
         <Compile Include="Parser\Ast\Enums\StateType.cs" />
         <Compile Include="Parser\Ast\ForExpression.cs" />

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser.Ast;
 
@@ -9,6 +7,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 public class TypeVariableMemberInstanceBuilder
 {
     public string Parent { get; set; }
+    
+    public string Module { get; set; }
     
     public KeyTypeMemberIdentification Identification { get; set; }
     
@@ -23,6 +23,13 @@ public class TypeVariableMemberInstanceBuilder
     public TypeVariableMemberInstanceBuilder SetParent(string parent)
     {
         Parent = parent;
+        
+        return this;
+    }
+    
+    public TypeVariableMemberInstanceBuilder SetModule(string module)
+    {
+        Module = module;
         
         return this;
     }
@@ -67,6 +74,7 @@ public class TypeVariableMemberInstanceBuilder
         return new TypeVariableMemberInstance
         {
             Parent = Parent,
+            Module = Module,
             Default = Default,
             Identification = Identification,
             IsReadonly = IsReadOnly

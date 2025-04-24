@@ -3,7 +3,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables.Interfaces;
 
-public interface IVariableInstance : IRepositoryInstance
+public interface IVariableInstance : IInstance
 {
     ObjectTypeValue Type { get; }
 

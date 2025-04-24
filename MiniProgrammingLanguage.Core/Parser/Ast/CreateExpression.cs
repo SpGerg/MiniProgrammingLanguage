@@ -17,7 +17,7 @@ public class CreateExpression : AbstractEvaluableExpression
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var type = programContext.Types.Get(Root, Name, Location);
+        var type = programContext.Types.Get(Root, Name, programContext.Module, Location);
 
         if (type is null)
         {

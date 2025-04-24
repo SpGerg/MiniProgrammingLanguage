@@ -4,6 +4,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 
@@ -11,12 +12,16 @@ public class UserVariableInstance : IVariableInstance
 {
     public required string Name { get; init; }
     
+    public required string Module { get; init; }
+
     public required FunctionBodyExpression Root { get; init; }
-    
+
     public ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
     public AbstractValue Value { get; set; } = new NoneValue();
     
+    public AccessType Access { get; init; }
+
     public AbstractValue GetValue(VariableGetterContext context)
     {
         if (!Type.Is(Value))
@@ -24,12 +29,12 @@ public class UserVariableInstance : IVariableInstance
             InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Type.AsString(context.ProgramContext, context.Location), Value.Type.ToString(), context.Location);
         }
 
-        return Value;
+        return Value.IsValueType ? Value.Copy() : Value;
     }
     
-    public bool TryChange(ProgramContext programContext, IRepositoryInstance repositoryInstance, Location location, out AbstractLanguageException exception)
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
     {
-        if (repositoryInstance is not IVariableInstance variableInstance)
+        if (instance is not IVariableInstance variableInstance)
         {
             exception = new CannotAccessException(Name, location);
             return false;
@@ -41,12 +46,18 @@ public class UserVariableInstance : IVariableInstance
             return false;
         }
 
+        if (Access is AccessType.ReadOnly && programContext.Module != Module)
+        {
+            exception = new CannotAccessException(Name, location);
+            return false;
+        }
+
         Value = variableInstance.GetValue(new VariableGetterContext
         {
             ProgramContext = programContext,
             Location = location,
         });
-        
+
         exception = null;
         return true;
     }

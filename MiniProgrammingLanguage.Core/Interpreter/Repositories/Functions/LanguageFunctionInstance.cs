@@ -6,6 +6,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 
@@ -13,6 +14,8 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
 {
     public required string Name { get; init; }
     
+    public required string Module { get; init; }
+
     public required FunctionBodyExpression Root { get; init; }
 
     public required Func<FunctionExecuteContext, AbstractValue> Bind { get; init; }
@@ -22,6 +25,8 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
     public required ObjectTypeValue Return { get; init; }
     
     public required bool IsAsync { get; init; }
+
+    public AccessType Access { get; init; } = AccessType.ReadOnly;
 
     public bool IsDeclared => Bind is not null;
 
@@ -70,7 +75,7 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
         return result;
     }
     
-    public bool TryChange(ProgramContext programContext, IRepositoryInstance repositoryInstance, Location location, out AbstractLanguageException exception)
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
     {
         exception = new CannotAccessException(Name, location);
         return false;
@@ -86,6 +91,7 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
         return new LanguageFunctionInstance
         {
             Name = name ?? Name,
+            Module = Module,
             Arguments = Arguments,
             Bind = Bind,
             IsAsync = IsAsync,

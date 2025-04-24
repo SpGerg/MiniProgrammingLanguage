@@ -9,6 +9,7 @@ public static class ModuleVariable
     {
         return new LanguageVariableInstanceBuilder()
             .SetName("__module")
+            .SetModule(StdModule.Name)
             .SetBind(GetModule)
             .SetType(ObjectTypeValue.String)
             .Build();

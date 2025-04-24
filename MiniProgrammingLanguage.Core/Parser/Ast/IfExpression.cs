@@ -29,7 +29,7 @@ public class IfExpression : AbstractEvaluableExpression, IStatement, IControlFlo
 
         if (Condition is VariableExpression variableExpression)
         {
-            var variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name, Location);
+            var variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name, programContext.Module, Location);
             
             result = new BooleanValue(variable is not null);
         }

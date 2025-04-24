@@ -8,6 +8,8 @@ public class UserTypeInstanceBuilder
 {
     public string Name { get; set; }
     
+    public string Module { get; set; }
+    
     public IReadOnlyList<ITypeMember> Members { get; set; }
 
     public FunctionBodyExpression Root { get; set; }
@@ -16,6 +18,13 @@ public class UserTypeInstanceBuilder
     {
         Name = name;
 
+        return this;
+    }
+    
+    public UserTypeInstanceBuilder SetModule(string module)
+    {
+        Module = module;
+        
         return this;
     }
     
@@ -38,6 +47,7 @@ public class UserTypeInstanceBuilder
         return new UserTypeInstance
         {
             Name = Name,
+            Module = Module,
             Members = Members,
             Root = Root
         };

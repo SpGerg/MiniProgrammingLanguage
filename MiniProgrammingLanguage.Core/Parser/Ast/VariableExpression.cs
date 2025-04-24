@@ -18,13 +18,13 @@ public class VariableExpression : AbstractEvaluableExpression
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var variable = programContext.Variables.Get(Root, Name, Location);
+        var variable = programContext.Variables.Get(Root, Name, programContext.Module, Location);
 
         if (variable is null)
         {
             InterpreterThrowHelper.ThrowVariableNotFoundException(Name, Location);
         }
-
+        
         return variable.GetValue(new VariableGetterContext
         {
             ProgramContext = programContext,

@@ -21,6 +21,11 @@ public class RoundNumberValue : AbstractValue
         return visitor.Visit(this);
     }
     
+    public override AbstractValue Copy()
+    {
+        return new RoundNumberValue(Value);
+    }
+    
     public override string AsString(ProgramContext programContext, Location location)
     {
         return Value.ToString();

@@ -12,9 +12,16 @@ public class VoidValue : AbstractValue
     public override ValueType Type => ValueType.Void;
     
     public override ValueType[] CanCast { get; } = {};
-    
+
+    public override bool IsValueType => false;
+
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
+    }
+    
+    public override AbstractValue Copy()
+    {
+        return new VoidValue();
     }
 }

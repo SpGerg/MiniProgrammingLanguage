@@ -1,1 +1,3 @@
-require_dependency("day")
+import scripter
+
+print(test)

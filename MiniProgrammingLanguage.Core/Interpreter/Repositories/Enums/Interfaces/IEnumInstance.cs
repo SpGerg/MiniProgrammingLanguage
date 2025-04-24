@@ -4,7 +4,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums.Interfaces;
 
-public interface IEnumInstance : IRepositoryInstance
+public interface IEnumInstance : IInstance
 {
     IReadOnlyDictionary<string, int> Members { get; }
 

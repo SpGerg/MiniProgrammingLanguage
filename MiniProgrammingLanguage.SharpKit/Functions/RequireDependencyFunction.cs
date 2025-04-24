@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Values;

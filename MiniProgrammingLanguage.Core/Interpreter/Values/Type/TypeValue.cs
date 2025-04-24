@@ -20,6 +20,8 @@ public class TypeValue : AbstractValue
     {
         ValueType.String
     };
+    
+    public override bool IsValueType => false;
 
     public IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> Members => _members;
 
@@ -28,6 +30,11 @@ public class TypeValue : AbstractValue
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public override AbstractValue Copy()
+    {
+        return new TypeValue(Name, _members);
     }
 
     public override float AsNumber(ProgramContext programContext, Location location)

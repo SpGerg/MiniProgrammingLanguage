@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories;
 
-public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> where T : class, IRepositoryInstance
+public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> where T : class, IInstance
 {
     public IEnumerable<T> Entities => GlobalEntities;
 
@@ -17,9 +19,9 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
     public void Add(T entity, Location location, bool isCheckExisting = true)
     {
-        if (isCheckExisting)
+        if (entity.Module is not "global" && isCheckExisting)
         {
-            var existing = Get(entity.Root, entity.Name, location);
+            var existing = Get(entity.Root, entity.Name, entity.Module, location);
 
             if (existing is not null)
             {
@@ -46,7 +48,6 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     {
         Add(entity, Location.Default);
     }
-
     public bool Remove(T entity)
     {
         if (entity.Root is null)
@@ -57,17 +58,22 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         return BodiesEntities.TryGetValue(entity.Root, out var instances) && instances.Remove(entity);
     }
 
-    public void AddRange(IEnumerable<T> entities)
+    public void AddRange(IEnumerable<T> entities, bool isCheckExisting = true)
     {
         foreach (var entity in entities)
         {
-            Add(entity);
+            Add(entity, Location.Default, isCheckExisting);
         }
+    }
+    
+    public void AddRange(IEnumerable<T> entities)
+    {
+        AddRange(entities, true);
     }
 
     public bool AddOrSet(ProgramContext programContext, T entity, Location location)
     {
-        var instance = Get(entity.Root, entity.Name, location);
+        var instance = Get(entity.Root, entity.Name, programContext.Module, location);
 
         if (instance is null)
         {
@@ -86,7 +92,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     
     public void Set(ProgramContext programContext, T entity, Location location)
     {
-        var instance = Get(entity.Root, entity.Name, location);
+        var instance = Get(entity.Root, entity.Name, programContext.Module, location);
     
         if (instance.TryChange(programContext, entity, location, out var exception))
         {
@@ -96,7 +102,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         throw exception;
     }
 
-    public T Get(FunctionBodyExpression functionBody, string name, Location location)
+    public T Get(FunctionBodyExpression functionBody, string name, string module, Location location)
     {
         var currentBody = functionBody;
     
@@ -112,8 +118,15 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
             
             currentBody = currentBody.Root;
         }
+
+        var entity = GlobalEntities.FirstOrDefault(entity => entity.Name == name);
+
+        if (entity is not null && entity.Access is not AccessType.Static && entity.Module != module)
+        {
+            InterpreterThrowHelper.ThrowCannotAccessException(entity.Name, location);
+        }
     
-        return GlobalEntities.FirstOrDefault(e => e.Name == name);
+        return entity;
     }
 
     public void Clear(FunctionBodyExpression functionBodyExpression)

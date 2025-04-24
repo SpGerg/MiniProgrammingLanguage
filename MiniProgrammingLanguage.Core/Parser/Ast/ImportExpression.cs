@@ -3,6 +3,7 @@ using System.IO;
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Exceptions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Lexer;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
@@ -31,7 +32,17 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
         {
             if (Filepath is VariableExpression variableExpression)
             {
-                var variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name, variableExpression.Location);
+                IVariableInstance variable;
+
+                try
+                {
+                    variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name,
+                        programContext.Module, variableExpression.Location);
+                }
+                catch
+                {
+                    variable = null;
+                }
 
                 if (variable is null)
                 {

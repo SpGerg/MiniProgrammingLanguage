@@ -41,6 +41,11 @@ public class ObjectTypeValue : AbstractValue
     {
         return visitor.Visit(this);
     }
+    
+    public override AbstractValue Copy()
+    {
+        return new ObjectTypeValue(Name, ValueType);
+    }
 
     public override string AsString(ProgramContext programContext, Location location)
     {

@@ -5,7 +5,7 @@ using MiniProgrammingLanguage.Core.Parser.Ast;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces;
 
-public interface IFunctionInstance : IRepositoryInstance
+public interface IFunctionInstance : IInstance
 {
     FunctionArgument[] Arguments { get; }
     

@@ -21,11 +21,12 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
 
     public ObjectTypeValue Type { get; }
     
-    public ITypeMember Create()
+    public ITypeMember Create(string module)
     {
         return new TypeVariableMemberInstance
         {
             Parent = Parent,
+            Module = module,
             Identification = new KeyTypeMemberIdentification
             {
                 Identifier = Name

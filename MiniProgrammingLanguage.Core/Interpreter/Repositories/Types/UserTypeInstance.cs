@@ -8,6 +8,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 
@@ -15,14 +16,18 @@ public class UserTypeInstance : ITypeInstance
 {
     public required string Name { get; init; }
     
+    public required string Module { get; init; }
+
     public required IReadOnlyList<ITypeMember> Members { get; set; }
 
     public required FunctionBodyExpression Root { get; init; }
+    
+    public AccessType Access { get; init; }
 
-    public bool TryChange(ProgramContext programContext, IRepositoryInstance repositoryInstance, Location location,
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
         out AbstractLanguageException exception)
     {
-        if (repositoryInstance is not ITypeInstance structureInstance)
+        if (instance is not ITypeInstance structureInstance)
         {
             exception = new CannotAccessException(Name, location);
             return false;

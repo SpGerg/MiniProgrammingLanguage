@@ -25,7 +25,20 @@ public class Parser
 
     public IReadOnlyList<Token> Tokens { get; }
 
-    public Token Current => Tokens[Position];
+    public Token Current
+    {
+        get
+        {
+            if (Position > Tokens.Count)
+            {
+                var location = Tokens.Count is 0 ? Location.Default : Tokens[Tokens.Count - 1].Location;
+                
+                ParserThrowHelper.ThrowTokenExpectedException(Configuration, location);
+            }
+            
+            return Tokens[Position];
+        }
+    }
 
     public bool IsNotEnded => Position < Tokens.Count;
     
@@ -56,6 +69,8 @@ public class Parser
 
     private IStatement ParseStatement()
     {
+        var access = ParseAccess();
+        
         if (Match(TokenType.Await))
         {
             return ParseAwait();
@@ -68,7 +83,7 @@ public class Parser
 
         if (Match(TokenType.Enum))
         {
-            return ParseEnumDeclaration();
+            return ParseEnumDeclaration(access);
         }
 
         if (Match(TokenType.Break))
@@ -88,7 +103,7 @@ public class Parser
 
         if (Match(TokenType.Function))
         {
-            return ParseFunctionDeclaration();
+            return ParseFunctionDeclaration(access);
         }
 
         if (Match(TokenType.Return))
@@ -113,7 +128,7 @@ public class Parser
         
         if (Match(TokenType.Async))
         {
-            return ParseFunctionDeclaration(true);
+            return ParseFunctionDeclaration(access, true);
         }
 
         if (Match(TokenType.Type))
@@ -125,7 +140,7 @@ public class Parser
         {
             if (IsWithOffset(1, TokenType.Equals, TokenType.Colon))
             {
-                return ParseAssign();
+                return ParseAssign(access);
             }
             
             if (IsWithOffset(1, TokenType.LeftParentheses))
@@ -168,7 +183,16 @@ public class Parser
         return null;
     }
 
-    private EnumDeclarationExpression ParseEnumDeclaration()
+    private CallExpression ParseCall()
+    {
+        Match(TokenType.Call);
+
+        var isAsync = Match(TokenType.Async);
+        
+        return new CallExpression(ParseFunctionDeclaration(AccessType.None, isAsync), Current.Location);
+    }
+
+    private EnumDeclarationExpression ParseEnumDeclaration(AccessType access)
     {
         Match(TokenType.Enum);
 
@@ -211,7 +235,7 @@ public class Parser
             ParserThrowHelper.ThrowTokenExpectedException(Configuration, name.Location, TokenType.End);
         }
 
-        return new EnumDeclarationExpression(name.Value, members, _root, name.Location);
+        return new EnumDeclarationExpression(name.Value, members, _root, access, name.Location);
     }
 
     private WhileExpression ParseWhile()
@@ -359,8 +383,8 @@ public class Parser
                     );
 
                 if (left is VariableExpression variableExpression)
-                    return new AssignExpression(variableExpression.Name, null, ParseMultiplicative(), _root,
-                        variableExpression.Location);
+                    return new AssignExpression(variableExpression.Name, null, ParseBinary(), _root,
+                        variableExpression.Location, AccessType.None);
             }
 
             break;
@@ -380,7 +404,7 @@ public class Parser
             ParserThrowHelper.ThrowTokenExpectedException(Configuration, Current.Location, TokenType.Word);
         }
 
-        var variable = IsWithOffset(1, TokenType.Equals) ? ParseAssign() : ParseValue();
+        var variable = IsWithOffset(1, TokenType.Equals) ? ParseAssign(AccessType.None) : ParseValue();
             
         var name = variable switch
         {
@@ -415,7 +439,7 @@ public class Parser
         variable = variable switch
         {
             AssignExpression assignExpression => new AssignExpression(name, null, assignExpression.EvaluableExpression,
-                assignExpression.Root, assignExpression.Location),
+                assignExpression.Root, assignExpression.Location, assignExpression.Access),
             VariableExpression => new VariableExpression(name, body, variable.Location),
             _ => variable
         };
@@ -450,7 +474,8 @@ public class Parser
         Match(TokenType.Implement);
         
         var isAsync = Match(TokenType.Async);
-
+        var access = ParseAccess();
+        
         MatchOrException(TokenType.Function);
         
         var type = Current;
@@ -458,12 +483,12 @@ public class Parser
         MatchOrException(TokenType.Word).
             MatchOrException(TokenType.Dot);
         
-        var function = ParseFunctionDeclaration(isAsync);
+        var function = ParseFunctionDeclaration(access, isAsync);
 
         return new ImplementFunctionDeclarationExpression(type.Value, function, type.Location);
     }
-    
-    private FunctionDeclarationExpression ParseFunctionDeclaration(bool isAsync = false)
+
+    private FunctionDeclarationExpression ParseFunctionDeclaration(AccessType accessType, bool isAsync = false)
     {
         Match(TokenType.Function);
 
@@ -487,7 +512,7 @@ public class Parser
         
         var body = ParseFunctionBody();
 
-        return new FunctionDeclarationExpression(name.Value, arguments, body, returnType, isAsync, _root, name.Location);
+        return new FunctionDeclarationExpression(name.Value, arguments, body, returnType, isAsync, accessType, _root, name.Location);
     }
 
     private TypeDeclarationExpression ParseType()
@@ -661,7 +686,7 @@ public class Parser
         return new FunctionCallExpression(name.Value, arguments.ToArray(), _root, name.Location);
     }
 
-    private AssignExpression ParseAssign()
+    private AssignExpression ParseAssign(AccessType access)
     {
         var name = Current;
 
@@ -673,16 +698,12 @@ public class Parser
         {
             objectTypeValue = ParseObjectType();
         }
-        else
-        {
-            objectTypeValue = ObjectTypeValue.Any;
-        }
 
         MatchOrException(TokenType.Equals);
         
         var value = ParseBinary();
 
-        return new AssignExpression(name.Value, objectTypeValue, value, _root, name.Location);
+        return new AssignExpression(name.Value, objectTypeValue, value, _root, name.Location, access);
     }
     
     private AssignTypeMemberExpression ParseTypeMemberAssign()
@@ -769,6 +790,7 @@ public class Parser
     private AbstractEvaluableExpression ParseValue()
     {
         var current = Current;
+        var access = ParseAccess();
 
         if (Match(TokenType.LeftParentheses))
         {
@@ -784,16 +806,21 @@ public class Parser
             return result;
         }
 
+        if (Match(TokenType.Call))
+        {
+            return ParseCall();
+        }
+
         if (Match(TokenType.Async))
         {
             MatchOrException(TokenType.Function);
             
-            return new FunctionExpression(ParseFunctionDeclaration(true), current.Location);
+            return new FunctionExpression(ParseFunctionDeclaration(access, true), current.Location);
         }
         
         if (Match(TokenType.Function))
         {
-            return new FunctionExpression(ParseFunctionDeclaration(), current.Location);
+            return new FunctionExpression(ParseFunctionDeclaration(access), current.Location);
         }
         
         if (Match(TokenType.String))
@@ -926,6 +953,23 @@ public class Parser
         ParserThrowHelper.ThrowTypeExceptedException(current.Location);
 
         return null;
+    }
+
+    private AccessType ParseAccess()
+    {
+        var accessType = AccessType.None;
+
+        if (Match(TokenType.Static))
+        {
+            accessType |= AccessType.Static;
+        }
+
+        if (Match(TokenType.ReadOnly))
+        {
+            accessType |= AccessType.ReadOnly;
+        }
+
+        return accessType;
     }
 
     private bool Match(params TokenType[] tokenTypes)

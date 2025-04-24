@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 
@@ -10,7 +11,7 @@ public interface ITypeMember
     
     AbstractValue Default { get; }
 
-    bool IsReadonly { get; }
+    AccessType Access { get; }
     
     ObjectTypeValue Type { get; }
 }

@@ -4,22 +4,26 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
 {
-    public EnumDeclarationExpression(string name, IReadOnlyDictionary<string, int> members, FunctionBodyExpression root, Location location) : base(location)
+    public EnumDeclarationExpression(string name, IReadOnlyDictionary<string, int> members, FunctionBodyExpression root, AccessType access, Location location) : base(location)
     {
         Name = name;
         Members = members;
+        Access = access;
         Root = root;
     }
     
     public string Name { get; }
     
     public IReadOnlyDictionary<string, int> Members { get; }
+    
+    public AccessType Access { get; }
     
     public FunctionBodyExpression Root { get; }
 
@@ -28,7 +32,9 @@ public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
         var enumInstance = new UserEnumInstance
         {
             Name = Name,
+            Module = programContext.Module,
             Members = Members,
+            Access = Access,
             Root = Root
         };
 
@@ -38,6 +44,7 @@ public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
         programContext.Variables.Add(new UserVariableInstance
         {
             Name = Name,
+            Module = programContext.Module,
             Type = new ObjectTypeValue(Name, ValueType.Enum),
             Value = enumValue,
             Root = Root

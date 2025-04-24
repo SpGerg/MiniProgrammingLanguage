@@ -25,6 +25,11 @@ public class NumberValue : AbstractValue
     {
         return visitor.Visit(this);
     }
+    
+    public override AbstractValue Copy()
+    {
+        return new NumberValue(Value);
+    }
 
     public override string AsString(ProgramContext programContext, Location location)
     {

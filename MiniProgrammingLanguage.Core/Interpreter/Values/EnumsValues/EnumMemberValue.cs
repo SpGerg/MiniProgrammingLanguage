@@ -21,6 +21,11 @@ public class EnumMemberValue : AbstractValue
         return visitor.Visit(this);
     }
 
+    public override AbstractValue Copy()
+    {
+        return new EnumMemberValue(Name, Member);
+    }
+
     public override string AsString(ProgramContext programContext, Location location)
     {
         return $"({Name}) {Member}";

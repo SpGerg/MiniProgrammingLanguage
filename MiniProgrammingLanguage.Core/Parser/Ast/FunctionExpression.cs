@@ -14,6 +14,6 @@ public class FunctionExpression : AbstractEvaluableExpression
     
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        return new FunctionValue(FunctionDeclarationExpression.Create());
+        return new FunctionValue(FunctionDeclarationExpression.Create(programContext.Module));
     }
 }

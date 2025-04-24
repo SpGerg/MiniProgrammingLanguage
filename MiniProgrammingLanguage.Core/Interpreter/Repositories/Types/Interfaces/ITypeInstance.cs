@@ -5,7 +5,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 
-public interface ITypeInstance : IRepositoryInstance
+public interface ITypeInstance : IInstance
 {
     IReadOnlyList<ITypeMember> Members { get; }
 

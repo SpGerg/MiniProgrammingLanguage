@@ -4,5 +4,5 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 public interface ITypeMemberExpression
 {
-    ITypeMember Create();
+    ITypeMember Create(string module);
 }

@@ -33,7 +33,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
 
         foreach (var member in Members)
         {
-            var result = member.Create();
+            var result = member.Create(programContext.Module);
             
             if (result is TypeFunctionMemberInstance typeFunctionMemberInstance)
             {
@@ -41,6 +41,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
                 var variableMember = new TypeVariableMemberInstance
                 {
                     Parent = Name,
+                    Module = programContext.Module,
                     Type = result.Type,
                     Identification = new KeyTypeMemberIdentification
                     {
@@ -60,6 +61,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
         programContext.Variables.Add(new UserVariableInstance
         {
             Name = Name,
+            Module = programContext.Module,
             Value = new ObjectTypeValue(Name, ValueType.Type),
             Type = new ObjectTypeValue(Name, ValueType.Type),
             Root = Root
@@ -68,6 +70,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
         programContext.Types.Add(new UserTypeInstance
         {
             Name = Name,
+            Module = programContext.Module,
             Members = members,
             Root = Root
         });

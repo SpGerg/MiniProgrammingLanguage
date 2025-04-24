@@ -9,7 +9,7 @@ namespace MiniProgrammingLanguage.Std;
 
 public static class StdModule
 {
-    private const string Name = "std";
+    public const string Name = "std";
     
     public static ImplementModule Create()
     {

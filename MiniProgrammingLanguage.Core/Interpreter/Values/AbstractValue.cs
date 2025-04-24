@@ -15,10 +15,14 @@ public abstract class AbstractValue
     public abstract ValueType Type { get; }
     
     public abstract ValueType[] CanCast { get; }
+
+    public virtual bool IsValueType => true;
     
     public string Name { get; }
     
     public abstract bool Visit(IValueVisitor visitor);
+
+    public abstract AbstractValue Copy();
 
     public virtual string AsString(ProgramContext programContext, Location location)
     {

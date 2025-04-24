@@ -16,6 +16,19 @@ public static class TokenTypesExtensions
             _ => false
         };
     }
+    
+    public static bool IsOperator(this TokenType tokenType)
+    {
+        return tokenType switch
+        {
+            TokenType.Equals => true,
+            TokenType.Plus => true,
+            TokenType.Minus => true,
+            TokenType.Multiplication => true,
+            TokenType.Division => true,
+            _ => false
+        };
+    }
 
     public static string GetTranslation(this TokenType tokenType, ParserConfiguration parserConfiguration)
     {

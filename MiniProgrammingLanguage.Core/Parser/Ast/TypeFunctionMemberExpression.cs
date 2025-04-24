@@ -27,11 +27,12 @@ public class TypeFunctionMemberExpression : AbstractExpression, ITypeMemberExpre
     
     public bool IsAsync { get; }
 
-    public ITypeMember Create()
+    public ITypeMember Create(string module)
     {
         return new TypeFunctionMemberInstance
         {
             Parent = Parent,
+            Module = module,
             IsAsync = IsAsync,
             Identification = new FunctionTypeMemberIdentification
             {

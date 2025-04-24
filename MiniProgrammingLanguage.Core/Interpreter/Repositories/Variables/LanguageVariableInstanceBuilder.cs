@@ -8,6 +8,8 @@ public class LanguageVariableInstanceBuilder
 {
     public string Name { get; set; }
 
+    public string Module { get; set; } = "global";
+
     public Func<VariableGetterContext, AbstractValue> Bind { get; set; }
     
     public ObjectTypeValue Type { get; set; } = ObjectTypeValue.Any;
@@ -17,6 +19,13 @@ public class LanguageVariableInstanceBuilder
     public LanguageVariableInstanceBuilder SetName(string name)
     {
         Name = name;
+        
+        return this;
+    }
+    
+    public LanguageVariableInstanceBuilder SetModule(string module)
+    {
+        Module = module;
         
         return this;
     }
@@ -47,6 +56,7 @@ public class LanguageVariableInstanceBuilder
         return new LanguageVariableInstance
         {
             Name = Name,
+            Module = Module,
             Bind = Bind,
             Type = Type,
             Root = Root

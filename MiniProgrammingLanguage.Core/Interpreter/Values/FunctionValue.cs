@@ -23,6 +23,11 @@ public class FunctionValue : AbstractValue
         return visitor.Visit(this);
     }
     
+    public override AbstractValue Copy()
+    {
+        return new FunctionValue(Value);
+    }
+    
     public override string AsString(ProgramContext programContext, Location location)
     {
         var stringBuilder = new StringBuilder();

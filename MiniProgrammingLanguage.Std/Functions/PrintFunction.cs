@@ -11,6 +11,7 @@ public static class PrintFunction
     {
         return new LanguageFunctionInstanceBuilder()
             .SetName("print")
+            .SetModule(StdModule.Name)
             .SetBind(Print)
             .SetArguments(new FunctionArgument("content"))
             .SetReturn(ObjectTypeValue.Void)

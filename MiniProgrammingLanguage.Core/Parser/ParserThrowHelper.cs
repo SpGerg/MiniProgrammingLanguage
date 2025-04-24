@@ -10,6 +10,11 @@ public static class ParserThrowHelper
 {
     public static void ThrowTokenExpectedException(ParserConfiguration configuration, Location location, params TokenType[] tokenType)
     {
+        if (tokenType.Length is 0)
+        {
+            throw new TokenExpectedException("token", location);
+        }
+        
         if (tokenType.Length is 1)
         {
             var token = tokenType.First();

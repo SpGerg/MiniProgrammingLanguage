@@ -10,6 +10,7 @@ public static class TaskType
     {
         var id = new TypeVariableMemberInstanceBuilder()
             .SetParent("__task")
+            .SetModule(StdModule.Name)
             .SetIdentification(new KeyTypeMemberIdentification
             {
                 Identifier = "id"
@@ -21,6 +22,7 @@ public static class TaskType
 
         return new UserTypeInstanceBuilder()
             .SetName("__task")
+            .SetModule(StdModule.Name)
             .SetMembers(id)
             .Build();
     }

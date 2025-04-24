@@ -7,6 +7,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
@@ -110,7 +111,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         
         if (expression is FunctionCallExpression functionCallExpression)
         {
-            var type = programContext.Types.Get(functionCallExpression.Root, typeValue.Name, Location);
+            var type = programContext.Types.Get(functionCallExpression.Root, typeValue.Name, programContext.Module, Location);
             var function = type.Get(new FunctionTypeMemberIdentification
             {
                 Identifier = functionCallExpression.Name
@@ -133,9 +134,11 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 programContext.Variables.AddOrSet(programContext, new UserVariableInstance
                 {
                     Name = "self",
+                    Module = "system",
+                    Access = AccessType.ReadOnly,
                     Type = new ObjectTypeValue(typeValue.Name, ValueType.Type),
                     Value = typeValue,
-                    Root = userFunctionInstance.Body
+                    Root = userFunctionInstance.Body,
                 }, Location);
             }
 

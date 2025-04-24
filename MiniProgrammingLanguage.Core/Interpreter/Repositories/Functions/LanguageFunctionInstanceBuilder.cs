@@ -9,6 +9,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 public class LanguageFunctionInstanceBuilder
 {
     public string Name { get; set; }
+    
+    public string Module { get; set; }
 
     public FunctionArgument[] Arguments { get; set; } = Array.Empty<FunctionArgument>();
 
@@ -27,6 +29,13 @@ public class LanguageFunctionInstanceBuilder
         return this;
     }
     
+    public LanguageFunctionInstanceBuilder SetModule(string module)
+    {
+        Module = module;
+        
+        return this;
+    }
+
     public LanguageFunctionInstanceBuilder SetArguments(params FunctionArgument[] arguments)
     {
         Arguments = arguments;
@@ -67,6 +76,7 @@ public class LanguageFunctionInstanceBuilder
         return new LanguageFunctionInstance
         {
             Name = Name,
+            Module = Module,
             Arguments = Arguments,
             IsAsync = IsAsync,
             Bind = Bind,

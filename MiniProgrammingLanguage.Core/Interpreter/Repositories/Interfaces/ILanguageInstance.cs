@@ -1,5 +1,5 @@
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 
-public interface ILanguageInstance : IRepositoryInstance
+public interface ILanguageInstance : IInstance
 {
 }

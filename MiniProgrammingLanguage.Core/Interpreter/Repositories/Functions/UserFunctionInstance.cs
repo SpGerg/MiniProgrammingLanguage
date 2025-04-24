@@ -1,18 +1,21 @@
+using System.Linq;
 using MiniProgrammingLanguage.Core.Exceptions;
 using MiniProgrammingLanguage.Core.Interpreter.Exceptions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
-using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 
 public class UserFunctionInstance : IFunctionInstance
 {
     public required string Name { get; set; }
+    
+    public required string Module { get; init; }
     
     public required FunctionBodyExpression Root { get; set; }
 
@@ -23,6 +26,8 @@ public class UserFunctionInstance : IFunctionInstance
     public required ObjectTypeValue Return { get; init; }
     
     public required bool IsAsync { get; init; }
+    
+    public AccessType Access { get; init; }
 
     public bool IsDeclared => Body is not null;
 
@@ -32,6 +37,8 @@ public class UserFunctionInstance : IFunctionInstance
         {
             InterpreterThrowHelper.ThrowFunctionNotDeclaredException(Name, context.Location);
         }
+
+        var programContext = context.ProgramContext;
 
         for (var i = 0; i < Arguments.Length; i++)
         {
@@ -50,7 +57,7 @@ public class UserFunctionInstance : IFunctionInstance
             else
             {
                 var evaluableExpression = context.Arguments[i];
-                value = evaluableExpression.Evaluate(context.ProgramContext);
+                value = evaluableExpression.Evaluate(programContext);
             }
 
             if (!argument.Type.Is(value))
@@ -63,33 +70,34 @@ public class UserFunctionInstance : IFunctionInstance
             {
                 var functionInstance = functionValue.Value.Copy(argument.Name, Body);
 
-                context.ProgramContext.Functions.Add(functionInstance, context.Location, false);
+                programContext.Functions.Add(functionInstance, context.Location, false);
             }
 
-            context.ProgramContext.Variables.Add(new UserVariableInstance
+            programContext.Variables.Add(new UserVariableInstance
             {
                 Name = argument.Name,
+                Module = Module,
                 Root = Body,
                 Value = value
             }, context.Location, false);
         }
 
         Body.Token = context.Token;
-        var result = Body.Evaluate(context.ProgramContext);
         
+        var result = Body.Evaluate(programContext);
         context.ProgramContext.Clear(Body);
 
         if (!Return.Is(result))
         {
-            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Return.AsString(context.ProgramContext, context.Location), result.Type.ToString(), context.Location);
+            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Return.AsString(programContext, context.Location), result.Type.ToString(), context.Location);
         }
 
         return result;
     }
     
-    public bool TryChange(ProgramContext programContext, IRepositoryInstance repositoryInstance, Location location, out AbstractLanguageException exception)
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
     {
-        if (repositoryInstance is not UserFunctionInstance functionInstance)
+        if (instance is not UserFunctionInstance functionInstance)
         {
             exception = new CannotAccessException(Name, location);
             return false;
@@ -117,10 +125,12 @@ public class UserFunctionInstance : IFunctionInstance
         return new UserFunctionInstance
         {
             Name = name ?? Name,
+            Module = Module,
             Arguments = Arguments,
             Body = Body,
             IsAsync = IsAsync,
             Return = Return,
+            Access = Access,
             Root = root ?? Root
         };
     }

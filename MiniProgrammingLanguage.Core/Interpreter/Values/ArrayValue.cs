@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
@@ -22,6 +23,8 @@ public class ArrayValue : AbstractValue
 
     public override ValueType[] CanCast { get; } = { ValueType.String };
 
+    public override bool IsValueType => false;
+
     public IEnumerable<AbstractEvaluableExpression> Value { get; }
 
     private readonly int _count;
@@ -31,6 +34,11 @@ public class ArrayValue : AbstractValue
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public override AbstractValue Copy()
+    {
+        return new ArrayValue(Value);
     }
 
     public override string AsString(ProgramContext programContext, Location location)

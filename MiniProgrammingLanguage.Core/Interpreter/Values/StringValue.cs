@@ -24,6 +24,11 @@ public class StringValue : AbstractValue
         return visitor.Visit(this);
     }
     
+    public override AbstractValue Copy()
+    {
+        return new StringValue(Value);
+    }
+    
     public override string AsString(ProgramContext programContext, Location location)
     {
         return Value;

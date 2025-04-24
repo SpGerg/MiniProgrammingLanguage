@@ -47,17 +47,17 @@ public class ProgramContext
 
     public void Import(ProgramContext programContext, Location location)
     {
-        if (!programContext.IsGlobal && _importedModules.Contains(programContext.Module))
+        if (_importedModules.Contains(programContext.Module))
         {
-            InterpreterThrowHelper.ThrowCyclicImportException(programContext.Module, location);
+            return;
         }
         
         _importedModules.Push(programContext.Module);
         
-        Types.AddRange(programContext.Types.Entities);
-        Functions.AddRange(programContext.Functions.Entities);
-        Variables.AddRange(programContext.Variables.Entities);
-        Enums.AddRange(programContext.Enums.Entities);
+        Types.AddRange(programContext.Types.Entities, false);
+        Functions.AddRange(programContext.Functions.Entities, false);
+        Variables.AddRange(programContext.Variables.Entities, false);
+        Enums.AddRange(programContext.Enums.Entities, false);
         Tasks.AddRange(programContext.Tasks.Entities);
     }
     
@@ -65,7 +65,7 @@ public class ProgramContext
     {
         if (!implementModule.IsGlobal && _importedModules.Contains(implementModule.Name))
         {
-            InterpreterThrowHelper.ThrowCyclicImportException(implementModule.Name, implementModule.Location);
+            return;
         }
         
         _importedModules.Push(implementModule.Name);

@@ -10,6 +10,7 @@ public static class SleepFunction
     {
         return new LanguageFunctionInstanceBuilder()
             .SetName("sleep")
+            .SetModule(StdModule.Name)
             .SetBind(Sleep)
             .SetArguments(new FunctionArgument("milliseconds", ObjectTypeValue.RoundNumber))
             .SetReturn(ObjectTypeValue.Void)

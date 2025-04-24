@@ -22,7 +22,7 @@ public class ImplementFunctionDeclarationExpression : AbstractEvaluableExpressio
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var type = programContext.Types.Get(FunctionDeclarationExpression.Root, Type, Location);
+        var type = programContext.Types.Get(FunctionDeclarationExpression.Root, Type, programContext.Module, Location);
 
         if (type is not UserTypeInstance userTypeInstance)
         {
@@ -31,7 +31,7 @@ public class ImplementFunctionDeclarationExpression : AbstractEvaluableExpressio
             return null;
         }
         
-        var functionInstance = FunctionDeclarationExpression.Create();
+        var functionInstance = FunctionDeclarationExpression.Create(programContext.Module);
         
         var member = userTypeInstance.Get(new FunctionTypeMemberIdentification
         {

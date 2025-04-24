@@ -54,7 +54,10 @@ public readonly struct LexerConfiguration
             { TokenType.Import, "import" },
             { TokenType.Implement, "implement" },
             { TokenType.Enum, "enum" },
-            { TokenType.EnumMember, "enum_member" }
+            { TokenType.EnumMember, "enum_member" },
+            { TokenType.Static, "static" },
+            { TokenType.ReadOnly, "readonly" },
+            { TokenType.Call, "call" }
         }
     };
     

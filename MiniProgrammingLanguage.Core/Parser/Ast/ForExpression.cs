@@ -49,6 +49,7 @@ public class ForExpression : LoopExpression
         _userVariableInstance = new UserVariableInstance
         {
             Name = Name,
+            Module = ProgramContext.Module,
             Value = new NumberValue(0), 
             Root = Body
         };

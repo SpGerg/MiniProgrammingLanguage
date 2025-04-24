@@ -27,6 +27,11 @@ public class BooleanValue : AbstractValue
         return visitor.Visit(this);
     }
     
+    public override AbstractValue Copy()
+    {
+        return new BooleanValue(Value);
+    }
+    
     public override string AsString(ProgramContext programContext, Location location)
     {
         return Value.ToString();
