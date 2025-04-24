@@ -1,17 +1,11 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Exceptions;
-using MiniProgrammingLanguage.Core.Interpreter;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums.Interfaces;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Lexer;
 using MiniProgrammingLanguage.Core.Parser;
 
-namespace MiniProgrammingLanguage.Std
+namespace MiniProgrammingLanguage.Core.Interpreter
 {
     public class EntryPoint
     {
@@ -22,14 +16,13 @@ namespace MiniProgrammingLanguage.Std
         
         public string Filepath { get; set; }
 
-        public AbstractValue Run(out AbstractLanguageException exception,
-            IEnumerable<ITypeInstance> types = null, IEnumerable<IFunctionInstance> functions = null, IEnumerable<IEnumInstance> enums = null, IEnumerable<IVariableInstance> variables = null)
+        public AbstractValue Run(out AbstractLanguageException exception, params ImplementModule[] modules)
         {
             var content = File.ReadAllText(Filepath);
-            var lexer = new Lexer(content, Filepath, LexerConfiguration.Default);
+            var lexer = new Lexer.Lexer(content, Filepath, LexerConfiguration.Default);
             var tokens = lexer.Tokenize();
 
-            var parser = new Parser(tokens, Filepath, new ParserConfiguration
+            var parser = new Parser.Parser(tokens, Filepath, new ParserConfiguration
             {
                 LexerConfiguration = lexer.Configuration
             });
@@ -37,7 +30,7 @@ namespace MiniProgrammingLanguage.Std
 
             AbstractValue result = null;
 
-            var programContext = new ProgramContext(Filepath, types, functions, enums, variables);
+            var programContext = new ProgramContext(Filepath, modules);
 
             try
             {

@@ -1,0 +1,9 @@
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\bin\Debug\MiniProgrammingLanguage.SharpKit.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\bin\Debug\MiniProgrammingLanguage.SharpKit.pdb
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\bin\Debug\MiniProgrammingLanguage.Core.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\bin\Debug\MiniProgrammingLanguage.Core.pdb
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\obj\Debug\MiniProgrammingLanguage.SharpKit.csproj.AssemblyReference.cache
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\obj\Debug\MiniProgrammingLanguage.SharpKit.csproj.CoreCompileInputs.cache
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\obj\Debug\MiniProg.20AF4537.Up2Date
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\obj\Debug\MiniProgrammingLanguage.SharpKit.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.SharpKit\obj\Debug\MiniProgrammingLanguage.SharpKit.pdb

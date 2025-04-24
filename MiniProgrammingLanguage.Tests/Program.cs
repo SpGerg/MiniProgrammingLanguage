@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
+using MiniProgrammingLanguage.Core.Interpreter;
+using MiniProgrammingLanguage.SharpKit;
 using MiniProgrammingLanguage.Std;
-using MiniProgrammingLanguage.Std.Functions;
-using MiniProgrammingLanguage.Std.Types;
-using MiniProgrammingLanguage.Std.Variables;
 
 namespace MiniProgrammingLanguage.Tests
 {
@@ -14,18 +13,10 @@ namespace MiniProgrammingLanguage.Tests
             var filepath = Path.Combine(Directory.GetCurrentDirectory(), "script2.mpl");
             var entryPoint = new EntryPoint(filepath);
 
-            var print = PrintFunction.Create();
-            var sleep = SleepFunction.Create();
+            var stdModule = StdModule.Create();
+            var sharpKitModule = SharpKitModule.Create();
 
-            var task = TaskType.Create();
-
-            var module = ModuleVariable.Create();
-            
-            entryPoint.Run(out var exception,
-                new [] { task },
-                new [] { print, sleep },
-                null,
-                new [] { module });
+            entryPoint.Run(out var exception, stdModule, sharpKitModule);
 
             if (exception is not null)
             {

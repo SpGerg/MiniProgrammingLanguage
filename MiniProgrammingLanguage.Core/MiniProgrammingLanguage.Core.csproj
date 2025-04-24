@@ -42,6 +42,7 @@
         <Compile Include="Exceptions\AbstractLanguageException.cs" />
         <Compile Include="Extensions\CharExtensions.cs" />
         <Compile Include="Extensions\StringExtensions.cs" />
+        <Compile Include="Interpreter\EntryPoint.cs" />
         <Compile Include="Interpreter\Exceptions\AbstractInterpreterException.cs" />
         <Compile Include="Interpreter\Exceptions\ArgumentExceptedException.cs" />
         <Compile Include="Interpreter\Exceptions\CannotAccessException.cs" />
@@ -58,6 +59,7 @@
         <Compile Include="Interpreter\Exceptions\VariableNotFoundException.cs" />
         <Compile Include="Interpreter\Exceptions\WrongImportModuleException.cs" />
         <Compile Include="Interpreter\InterpreterThrowHelper.cs" />
+        <Compile Include="Interpreter\ImplementModule.cs" />
         <Compile Include="Interpreter\ProgramContext.cs" />
         <Compile Include="Interpreter\Repositories\AbstractInstancesRepository.cs" />
         <Compile Include="Interpreter\Repositories\Enums\EnumsRepository.cs" />

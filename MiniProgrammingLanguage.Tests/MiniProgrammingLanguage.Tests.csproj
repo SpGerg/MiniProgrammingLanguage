@@ -48,6 +48,10 @@
         <Project>{a51f9181-e300-4154-bc09-a14b843427fe}</Project>
         <Name>MiniProgrammingLanguage.Core</Name>
       </ProjectReference>
+      <ProjectReference Include="..\MiniProgrammingLanguage.SharpKit\MiniProgrammingLanguage.SharpKit.csproj">
+        <Project>{4c43fe55-5f08-40e5-8924-2801b17df913}</Project>
+        <Name>MiniProgrammingLanguage.SharpKit</Name>
+      </ProjectReference>
       <ProjectReference Include="..\MiniProgrammingLanguage.Std\MiniProgrammingLanguage.Std.csproj">
         <Project>{df2009b1-8e95-48a8-bd68-ed7eea6543fa}</Project>
         <Name>MiniProgrammingLanguage.Std</Name>

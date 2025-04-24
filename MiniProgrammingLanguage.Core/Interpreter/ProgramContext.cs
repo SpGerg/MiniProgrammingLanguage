@@ -15,40 +15,13 @@ namespace MiniProgrammingLanguage.Core.Interpreter;
 
 public class ProgramContext
 {
-    public ProgramContext(string filepath, IEnumerable<ITypeInstance> types = null, IEnumerable<IFunctionInstance> functions = null, IEnumerable<IEnumInstance> enums = null, IEnumerable<IVariableInstance> variables = null)
+    public ProgramContext(string filepath, params ImplementModule[] modules)
     {
         Filepath = filepath;
-        
-        if (variables is not null)
-        {
-            foreach (var variable in variables)
-            {
-                Variables.Add(variable);
-            }
-        }
 
-        if (functions is not null)
+        foreach (var module in modules)
         {
-            foreach (var function in functions)
-            {
-                Functions.Add(function);
-            }
-        }
-        
-        if (enums is not null)
-        {
-            foreach (var enumInstance in enums)
-            {
-                Enums.Add(enumInstance);
-            }
-        }
-
-        if (types is not null)
-        {
-            foreach (var type in types)
-            {
-                Types.Add(type);
-            }
+            Import(module);
         }
     }
 
@@ -58,7 +31,7 @@ public class ProgramContext
 
     public bool IsGlobal => Module is "global";
 
-    public IReadOnlyCollection<string> Imported => _importedModules;
+    public IEnumerable<string> Imported => _importedModules;
 
     public ITypesRepository Types { get; } = new TypesRepository();
     
@@ -84,7 +57,23 @@ public class ProgramContext
         Types.AddRange(programContext.Types.Entities);
         Functions.AddRange(programContext.Functions.Entities);
         Variables.AddRange(programContext.Variables.Entities);
+        Enums.AddRange(programContext.Enums.Entities);
         Tasks.AddRange(programContext.Tasks.Entities);
+    }
+    
+    public void Import(ImplementModule implementModule)
+    {
+        if (!implementModule.IsGlobal && _importedModules.Contains(implementModule.Name))
+        {
+            InterpreterThrowHelper.ThrowCyclicImportException(implementModule.Name, implementModule.Location);
+        }
+        
+        _importedModules.Push(implementModule.Name);
+        
+        Types.AddRange(implementModule.Types);
+        Functions.AddRange(implementModule.Functions);
+        Enums.AddRange(implementModule.Enums);
+        Variables.AddRange(implementModule.Variables);
     }
 
     public void Clear(FunctionBodyExpression functionBodyExpression)
