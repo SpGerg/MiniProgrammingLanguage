@@ -4,15 +4,14 @@
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{6E91843D-0B48-4A25-B382-1EA64B7374AC}</ProjectGuid>
-        <OutputType>Exe</OutputType>
+        <ProjectGuid>{DF2009B1-8E95-48A8-BD68-ED7EEA6543FA}</ProjectGuid>
+        <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>MiniProgrammingLanguage.Tests</RootNamespace>
-        <AssemblyName>MiniProgrammingLanguage.Tests</AssemblyName>
+        <RootNamespace>MiniProgrammingLanguage.Std</RootNamespace>
+        <AssemblyName>MiniProgrammingLanguage.Std</AssemblyName>
         <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
-        <LangVersion>9.0</LangVersion>
         <FileAlignment>512</FileAlignment>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,17 +39,18 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Program.cs" />
+        <Compile Include="EntryPoint.cs" />
+        <Compile Include="Functions\PrintFunction.cs" />
+        <Compile Include="Functions\SleepFunction.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Types\TaskType.cs" />
+        <Compile Include="Utilities\IsExternalInit.cs" />
+        <Compile Include="Variables\ModuleVariable.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core.csproj">
         <Project>{a51f9181-e300-4154-bc09-a14b843427fe}</Project>
         <Name>MiniProgrammingLanguage.Core</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\MiniProgrammingLanguage.Std\MiniProgrammingLanguage.Std.csproj">
-        <Project>{df2009b1-8e95-48a8-bd68-ed7eea6543fa}</Project>
-        <Name>MiniProgrammingLanguage.Std</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

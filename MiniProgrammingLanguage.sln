@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniProgrammingLanguage.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniProgrammingLanguage.Tests", "MiniProgrammingLanguage.Tests\MiniProgrammingLanguage.Tests.csproj", "{6E91843D-0B48-4A25-B382-1EA64B7374AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniProgrammingLanguage.Std", "MiniProgrammingLanguage.Std\MiniProgrammingLanguage.Std.csproj", "{DF2009B1-8E95-48A8-BD68-ED7EEA6543FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6E91843D-0B48-4A25-B382-1EA64B7374AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E91843D-0B48-4A25-B382-1EA64B7374AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E91843D-0B48-4A25-B382-1EA64B7374AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF2009B1-8E95-48A8-BD68-ED7EEA6543FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF2009B1-8E95-48A8-BD68-ED7EEA6543FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF2009B1-8E95-48A8-BD68-ED7EEA6543FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF2009B1-8E95-48A8-BD68-ED7EEA6543FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

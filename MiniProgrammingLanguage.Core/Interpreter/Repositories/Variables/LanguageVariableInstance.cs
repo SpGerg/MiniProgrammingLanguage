@@ -16,15 +16,15 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
     
     public required Func<VariableGetterContext, AbstractValue> Bind { get; set; }
     
-    public required ObjectTypeValue ObjectType { get; init; } = ObjectTypeValue.Any;
+    public required ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
     public AbstractValue GetValue(VariableGetterContext context)
     {
         var result = Bind.Invoke(context);
         
-        if (!ObjectType.Is(result))
+        if (!Type.Is(result))
         {
-            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, ObjectType.AsString(context.ProgramContext, context.Location), result.Type.ToString(), context.Location);
+            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Type.AsString(context.ProgramContext, context.Location), result.Type.ToString(), context.Location);
         }
 
         return result;

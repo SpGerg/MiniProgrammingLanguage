@@ -69,8 +69,10 @@
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionsRepository.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IUserFunctionInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\LanguageFunctionInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\LanguageFunctionInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Functions\UserFunctionInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\FunctionsRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Interfaces\IInstanceRoot.cs" />
         <Compile Include="Interpreter\Repositories\Interfaces\IInstancesRepository.cs" />
         <Compile Include="Interpreter\Repositories\Interfaces\ILanguageInstance.cs" />
         <Compile Include="Interpreter\Repositories\Interfaces\IRepository.cs" />
@@ -82,6 +84,7 @@
         <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypeMemberIdentification.cs" />
         <Compile Include="Interpreter\Repositories\Types\Interfaces\ITypesRepository.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeFunctionMemberInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Types\TypeVariableMemberInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeVariableMemberInstance.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypesRepository.cs" />
         <Compile Include="Interpreter\Repositories\Types\UserTypeInstance.cs" />
@@ -89,9 +92,11 @@
         <Compile Include="Interpreter\Repositories\Tasks\Interfaces\ITasksRepository.cs" />
         <Compile Include="Interpreter\Repositories\Tasks\TaskInstance.cs" />
         <Compile Include="Interpreter\Repositories\Tasks\TasksRepository.cs" />
+        <Compile Include="Interpreter\Repositories\Types\UserTypeInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Variables\Interfaces\IVariableInstance.cs" />
         <Compile Include="Interpreter\Repositories\Variables\Interfaces\IVariablesRepository.cs" />
         <Compile Include="Interpreter\Repositories\Variables\LanguageVariableInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Variables\LanguageVariableInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Variables\UserVariableInstance.cs" />
         <Compile Include="Interpreter\Repositories\Variables\VariableGetterContext.cs" />
         <Compile Include="Interpreter\Repositories\Variables\VariablesRepository.cs" />

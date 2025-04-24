@@ -43,7 +43,7 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
             programContext.Variables.AddOrSet(programContext, new UserVariableInstance
             {
                 Name = result.Name,
-                ObjectType = ObjectTypeValue.Function,
+                Type = ObjectTypeValue.Function,
                 Root = result.Root,
                 Value = value
             }, Location);

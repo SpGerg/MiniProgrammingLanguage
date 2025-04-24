@@ -7,8 +7,6 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interf
 
 public interface IFunctionInstance : IRepositoryInstance
 {
-    string Name { get; }
-    
     FunctionArgument[] Arguments { get; }
     
     ObjectTypeValue Return { get; }

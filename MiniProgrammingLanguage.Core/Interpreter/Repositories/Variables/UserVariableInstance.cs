@@ -13,15 +13,15 @@ public class UserVariableInstance : IVariableInstance
     
     public required FunctionBodyExpression Root { get; init; }
     
-    public ObjectTypeValue ObjectType { get; init; } = ObjectTypeValue.Any;
+    public ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
     public AbstractValue Value { get; set; } = new NoneValue();
     
     public AbstractValue GetValue(VariableGetterContext context)
     {
-        if (!ObjectType.Is(Value))
+        if (!Type.Is(Value))
         {
-            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, ObjectType.AsString(context.ProgramContext, context.Location), Value.Type.ToString(), context.Location);
+            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Type.AsString(context.ProgramContext, context.Location), Value.Type.ToString(), context.Location);
         }
 
         return Value;
@@ -35,9 +35,9 @@ public class UserVariableInstance : IVariableInstance
             return false;
         }
 
-        if (!ObjectType.Is(variableInstance.ObjectType))
+        if (!Type.Is(variableInstance.Type))
         {
-            exception = new IncorrectTypeException(ObjectType.ToString(), variableInstance.ObjectType.ToString(), location);
+            exception = new IncorrectTypeException(Type.ToString(), variableInstance.Type.ToString(), location);
             return false;
         }
 

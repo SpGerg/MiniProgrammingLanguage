@@ -38,7 +38,7 @@ public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
         programContext.Variables.Add(new UserVariableInstance
         {
             Name = Name,
-            ObjectType = new ObjectTypeValue(Name, ValueType.Enum),
+            Type = new ObjectTypeValue(Name, ValueType.Enum),
             Value = enumValue,
             Root = Root
         }, Location);

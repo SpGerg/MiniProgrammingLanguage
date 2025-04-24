@@ -7,3 +7,5 @@ C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Test
 C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Tests\obj\Debug\MiniProg.AC2B1914.Up2Date
 C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Tests\obj\Debug\MiniProgrammingLanguage.Tests.exe
 C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Tests\obj\Debug\MiniProgrammingLanguage.Tests.pdb
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Tests\bin\Debug\MiniProgrammingLanguage.Std.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Tests\bin\Debug\MiniProgrammingLanguage.Std.pdb

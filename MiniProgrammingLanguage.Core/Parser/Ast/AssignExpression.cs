@@ -37,7 +37,7 @@ public class AssignExpression : AbstractEvaluableExpression, IAssignExpression
             programContext.Variables.Add(new UserVariableInstance
             {
                 Name = Name,
-                ObjectType = Type,
+                Type = Type,
                 Root = Root,
                 Value = value
             }, Location);

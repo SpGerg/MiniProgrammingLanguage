@@ -1,0 +1,9 @@
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\bin\Debug\MiniProgrammingLanguage.Std.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\bin\Debug\MiniProgrammingLanguage.Std.pdb
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\bin\Debug\MiniProgrammingLanguage.Core.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\bin\Debug\MiniProgrammingLanguage.Core.pdb
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\obj\Debug\MiniProgrammingLanguage.Std.csproj.AssemblyReference.cache
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\obj\Debug\MiniProgrammingLanguage.Std.csproj.CoreCompileInputs.cache
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\obj\Debug\MiniProg.BB2A2606.Up2Date
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\obj\Debug\MiniProgrammingLanguage.Std.dll
+C:\Users\spger\Desktop\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Std\obj\Debug\MiniProgrammingLanguage.Std.pdb

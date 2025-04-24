@@ -61,7 +61,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
         {
             Name = Name,
             Value = new ObjectTypeValue(Name, ValueType.Type),
-            ObjectType = new ObjectTypeValue(Name, ValueType.Type),
+            Type = new ObjectTypeValue(Name, ValueType.Type),
             Root = Root
         });
         

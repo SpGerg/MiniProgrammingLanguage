@@ -5,7 +5,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables.Interf
 
 public interface IVariableInstance : IRepositoryInstance
 {
-    ObjectTypeValue ObjectType { get; }
+    ObjectTypeValue Type { get; }
 
     AbstractValue GetValue(VariableGetterContext variableGetterContext);
 }

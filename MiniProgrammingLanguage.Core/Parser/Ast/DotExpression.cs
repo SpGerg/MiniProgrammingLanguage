@@ -133,7 +133,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 programContext.Variables.AddOrSet(programContext, new UserVariableInstance
                 {
                     Name = "self",
-                    ObjectType = new ObjectTypeValue(typeValue.Name, ValueType.Type),
+                    Type = new ObjectTypeValue(typeValue.Name, ValueType.Type),
                     Value = typeValue,
                     Root = userFunctionInstance.Body
                 }, Location);
