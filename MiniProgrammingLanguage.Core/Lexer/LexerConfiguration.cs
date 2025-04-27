@@ -29,6 +29,7 @@ public readonly struct LexerConfiguration
             { TokenType.Minus, "-" },
             { TokenType.Greater, ">" },
             { TokenType.Less, "<" },
+            { TokenType.At, "@" },
             { TokenType.Function, "function" },
             { TokenType.Async, "async" },
             { TokenType.End, "end" },
@@ -57,7 +58,8 @@ public readonly struct LexerConfiguration
             { TokenType.EnumMember, "enum_member" },
             { TokenType.Static, "static" },
             { TokenType.ReadOnly, "readonly" },
-            { TokenType.Call, "call" }
+            { TokenType.Call, "call" },
+            { TokenType.Bindable, "bindable" }
         }
     };
     

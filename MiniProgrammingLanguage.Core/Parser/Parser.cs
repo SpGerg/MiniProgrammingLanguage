@@ -42,6 +42,8 @@ public class Parser
 
     public bool IsNotEnded => Position < Tokens.Count;
     
+    public bool IsEnded => !IsNotEnded;
+
     public string Filepath { get; }
 
     public int Position { get; private set; }
@@ -533,24 +535,48 @@ public class Parser
         return new TypeDeclarationExpression(name.Value, members, accessType, _root, name.Location);
     }
 
+    private IEnumerable<string> ParseAttributes()
+    {
+        if (!Match(TokenType.At))
+        {
+            return Array.Empty<string>();
+        }
+        
+        var attributes = new List<string>();
+        
+        while (Match(TokenType.At) && IsNotEnded)
+        {
+            var name = Current;
+
+            MatchOrException(TokenType.Word);
+            
+            attributes.Add(name.Value);
+        }
+
+        return attributes;
+    }
+
     private ITypeMemberExpression ParseTypeMember(string parent)
     {
+        var attributes = ParseAttributes();
+        var access = ParseAccess();
+        
         if (Match(TokenType.Async))
         {
             MatchOrException(TokenType.Function);
 
-            return ParseTypeFunctionMember(parent, true);
+            return ParseTypeFunctionMember(parent, true, attributes, access);
         }
         
         if (Match(TokenType.Function))
         {
-            return ParseTypeFunctionMember(parent, false);
+            return ParseTypeFunctionMember(parent, false, attributes, access);
         }
 
-        return ParseTypeKeyMember(parent);
+        return ParseTypeKeyMember(parent, attributes, access);
     }
     
-    private KeyTypeMemberExpression ParseTypeKeyMember(string parent)
+    private KeyTypeMemberExpression ParseTypeKeyMember(string parent, IEnumerable<string> attributes, AccessType accessType)
     {
         var name = Current;
 
@@ -558,10 +584,10 @@ public class Parser
 
         var type = ParseObjectType(true);
 
-        return new KeyTypeMemberExpression(name.Value, parent, type, name.Location);
+        return new KeyTypeMemberExpression(name.Value, parent, type, attributes, accessType, name.Location);
     }
     
-    private TypeFunctionMemberExpression ParseTypeFunctionMember(string parent, bool isAsync)
+    private TypeFunctionMemberExpression ParseTypeFunctionMember(string parent, bool isAsync, IEnumerable<string> attributes, AccessType accessType)
     {
         Match(TokenType.Function);
 
@@ -583,7 +609,7 @@ public class Parser
             returnValue = ObjectTypeValue.Any;
         }
 
-        return new TypeFunctionMemberExpression(parent, name.Value, arguments, returnValue, isAsync, name.Location);
+        return new TypeFunctionMemberExpression(parent, name.Value, arguments, returnValue, isAsync, attributes, accessType, name.Location);
     }
 
     private FunctionBodyExpression ParseFunctionBody(params TokenType[] endTokens)
@@ -681,6 +707,8 @@ public class Parser
         while (!Match(TokenType.RightParentheses))
         {
             arguments.Add(ParseBinary());
+
+            Match(TokenType.Comma);
         }
 
         return new FunctionCallExpression(name.Value, arguments.ToArray(), _root, name.Location);
@@ -968,6 +996,11 @@ public class Parser
         {
             accessType |= AccessType.ReadOnly;
         }
+        
+        if (Match(TokenType.Bindable))
+        {
+            accessType |= AccessType.Bindable;
+        }
 
         return accessType;
     }
@@ -1000,9 +1033,25 @@ public class Parser
         return this;
     }
 
-    private bool Is(params TokenType[] tokenTypes) => tokenTypes.Contains(Current.Type);
-    
-    private bool IsWithOffset(int offset, params TokenType[] tokenTypes) => tokenTypes.Contains(Tokens[Position + offset].Type);
+    private bool Is(params TokenType[] tokenTypes)
+    {
+        if (IsEnded)
+        {
+            return false;
+        }
+        
+        return tokenTypes.Contains(Current.Type);
+    }
+
+    private bool IsWithOffset(int offset, params TokenType[] tokenTypes)
+    {
+        if (Position + offset > Tokens.Count - 1)
+        {
+            return false;
+        }
+        
+        return tokenTypes.Contains(Tokens[Position + offset].Type);
+    }
 
     private void Skip()
     {

@@ -1,0 +1,10 @@
+type test
+    bindable Name
+end
+
+instance = create_type("MiniProgrammingLanguage.Tests.TestProject")
+
+result = create_based_on(create test, instance)
+result.Name = "Hello, world"
+
+print(get_base(result))

@@ -10,6 +10,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
@@ -103,7 +104,7 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
             var taskTypeValue = taskType.Create();
 
             var identification = new KeyTypeMemberIdentification { Identifier = "id" };
-            var member = taskTypeValue.Get(identification);
+            var member = (TypeMemberValue) taskTypeValue.Get(identification);
             
             member.Value = new NumberValue(task.Id);
 

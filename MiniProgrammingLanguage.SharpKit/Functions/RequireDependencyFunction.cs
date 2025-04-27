@@ -19,7 +19,7 @@ public static class RequireDependencyFunction
             .Build();
     }
 
-    private static AbstractValue RequireDependency(FunctionExecuteContext context)
+    public static AbstractValue RequireDependency(FunctionExecuteContext context)
     {
         var argument = context.Arguments.First();
         var content = argument.Evaluate(context.ProgramContext).AsString(context.ProgramContext, context.Location);

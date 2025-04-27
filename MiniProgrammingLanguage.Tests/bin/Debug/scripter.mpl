@@ -1,3 +1,5 @@
 module "scripter"
 
-static test = 123
+static enum check
+    left = 0
+end

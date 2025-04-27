@@ -96,10 +96,10 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
         });
         
         var expressions = parser.Parse();
-        expressions.Evaluate(moduleContext);
+        var result = expressions.Evaluate(moduleContext);
         
         programContext.Import(moduleContext, Location);
 
-        return new VoidValue();
+        return result;
     }
 }

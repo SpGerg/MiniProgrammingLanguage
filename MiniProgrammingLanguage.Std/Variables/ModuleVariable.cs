@@ -11,13 +11,13 @@ public static class ModuleVariable
         return new LanguageVariableInstanceBuilder()
             .SetName("__module")
             .SetModule(StdModule.Name)
-            .SetBind(GetModule)
+            .SetGetBindFunc(GetModule)
             .SetAccess(AccessType.Static)
             .SetType(ObjectTypeValue.String)
             .Build();
     }
     
-    private static AbstractValue GetModule(VariableGetterContext context)
+    public static AbstractValue GetModule(VariableGetterContext context)
     {
         return new StringValue(context.ProgramContext.Module);
     }

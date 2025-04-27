@@ -17,15 +17,17 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
     
     public required FunctionBodyExpression Root { get; init; }
     
-    public required Func<VariableGetterContext, AbstractValue> Bind { get; set; }
+    public required Func<VariableGetterContext, AbstractValue> GetBind { get; set; }
     
     public required ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
+    
+    public Func<VariableSetterContext, AbstractValue> SetBind { get; set; }
 
     public AccessType Access { get; init; } = AccessType.ReadOnly;
 
     public AbstractValue GetValue(VariableGetterContext context)
     {
-        var result = Bind.Invoke(context);
+        var result = GetBind.Invoke(context);
         
         if (!Type.Is(result))
         {
@@ -37,6 +39,41 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
     
     public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
     {
+        if (instance is not IVariableInstance variableInstance)
+        {
+            exception = new CannotAccessException(Name, location);
+            return false;
+        }
+        
+        if (SetBind is not null)
+        {
+            var getterContext = new VariableGetterContext
+            {
+                ProgramContext = programContext,
+                Location = location
+            };
+            
+            var context = new VariableSetterContext
+            {
+                ProgramContext = programContext,
+                Value = variableInstance.GetValue(getterContext),
+                Location = location
+            };
+
+            try
+            {
+                exception = null;
+                
+                SetBind.Invoke(context);
+            }
+            catch (AbstractLanguageException languageException)
+            {
+                exception = languageException;
+            }
+
+            return true;
+        }
+        
         exception = new CannotAccessException(Name, location);
         return false;
     }

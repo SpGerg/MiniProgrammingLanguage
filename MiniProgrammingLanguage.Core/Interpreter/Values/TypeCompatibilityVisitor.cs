@@ -16,6 +16,11 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(TypeValue typeValue)
     {
+        if (Type.ValueType is ValueType.Object)
+        {
+            return true;
+        }
+        
         return Type.ValueType is ValueType.Type && typeValue.Name == Type.Name;
     }
 
@@ -39,6 +44,11 @@ public class TypeCompatibilityVisitor : IValueVisitor
         return Type.ValueType is ValueType.None;
     }
 
+    public bool Visit(CSharpObjectValue cSharpObjectValue)
+    {
+        return Type.ValueType is ValueType.CSharpObject;
+    }
+
     public bool Visit(NumberValue numberValue)
     {
         return Type.ValueType is ValueType.Number;
@@ -46,6 +56,11 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(ObjectTypeValue objectTypeValue)
     {
+        if (objectTypeValue.ValueType is ValueType.Type && Type.ValueType is ValueType.Object)
+        {
+            return true;
+        }
+        
         return Type.ValueType == objectTypeValue.ValueType && Type.Name == objectTypeValue.Name;
     }
 

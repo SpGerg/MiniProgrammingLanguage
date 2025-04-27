@@ -170,6 +170,16 @@ namespace MiniProgrammingLanguage.Core.Lexer
                 buffer = string.Empty;
                 position = Position + 1;
             }
+            
+            if (!string.IsNullOrWhiteSpace(buffer) && !string.IsNullOrWhiteSpace(buffer))
+            {
+                tokens.Add(new Token
+                {
+                    Type = TokenType.Word,
+                    Value = buffer,
+                    Location = Source.GetLocationByPosition(position, Filepath)
+                });
+            }
 
             return tokens;
         }

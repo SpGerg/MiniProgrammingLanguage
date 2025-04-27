@@ -20,7 +20,7 @@ public static class PrintFunction
             .Build();
     }
     
-    private static AbstractValue Print(FunctionExecuteContext context)
+    public static AbstractValue Print(FunctionExecuteContext context)
     {
         var argument = context.Arguments[0];
         var content = argument.Evaluate(context.ProgramContext);

@@ -19,7 +19,7 @@ public static class SleepFunction
             .Build();
     }
     
-    private static AbstractValue Sleep(FunctionExecuteContext functionExecuteContext)
+    public static AbstractValue Sleep(FunctionExecuteContext functionExecuteContext)
     {
         var milliseconds = functionExecuteContext.Arguments[0];
         var time = milliseconds.Evaluate(functionExecuteContext.ProgramContext)

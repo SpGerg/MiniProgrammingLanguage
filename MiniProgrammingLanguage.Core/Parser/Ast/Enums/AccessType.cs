@@ -7,5 +7,6 @@ public enum AccessType : byte
 {
     None,
     Static,
-    ReadOnly
+    ReadOnly,
+    Bindable
 }

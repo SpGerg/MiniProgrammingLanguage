@@ -16,11 +16,12 @@ namespace MiniProgrammingLanguage.Tests
             var stdModule = StdModule.Create();
             var sharpKitModule = SharpKitModule.Create();
 
-            entryPoint.Run(out var exception, stdModule, sharpKitModule);
+            var result = entryPoint.Run(out var exception, stdModule, sharpKitModule);
 
             if (exception is not null)
             {
                 Console.WriteLine(exception.Message);
+                Console.WriteLine(exception.StackTrace);
             }
 
             Console.ReadLine();

@@ -1,20 +1,25 @@
+using System.Collections.Generic;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class TypeFunctionMemberExpression : AbstractExpression, ITypeMemberExpression
 {
-    public TypeFunctionMemberExpression(string parent, string name, FunctionArgument[] arguments, ObjectTypeValue returnValue, bool isAsync, Location location) : base(location)
+    public TypeFunctionMemberExpression(string parent, string name, FunctionArgument[] arguments, ObjectTypeValue returnValue, bool isAsync,
+        IEnumerable<string> attributes, AccessType accessType, Location location) : base(location)
     {
         Parent = parent;
         Name = name;
         Arguments = arguments;
         Return = returnValue;
         IsAsync = isAsync;
+        Attributes = attributes;
+        Access = accessType;
     }
     
     public string Parent { get; }
@@ -26,6 +31,10 @@ public class TypeFunctionMemberExpression : AbstractExpression, ITypeMemberExpre
     public ObjectTypeValue Return { get; }
     
     public bool IsAsync { get; }
+    
+    public IEnumerable<string> Attributes { get; }
+    
+    public AccessType Access { get; }
 
     public ITypeMember Create(string module)
     {
@@ -39,7 +48,9 @@ public class TypeFunctionMemberExpression : AbstractExpression, ITypeMemberExpre
                 Identifier = Name
             },
             Arguments = Arguments,
-            Return = Return
+            Return = Return,
+            Access = Access,
+            Attributes = Attributes
         };
     }
 }

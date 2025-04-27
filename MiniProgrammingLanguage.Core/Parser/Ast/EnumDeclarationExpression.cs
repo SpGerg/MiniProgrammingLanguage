@@ -46,6 +46,7 @@ public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
             Name = Name,
             Module = programContext.Module,
             Type = new ObjectTypeValue(Name, ValueType.Enum),
+            Access = Access | AccessType.ReadOnly,
             Value = enumValue,
             Root = Root
         }, Location);

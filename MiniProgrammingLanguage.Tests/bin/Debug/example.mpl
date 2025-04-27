@@ -47,13 +47,8 @@ type player_left_event_arguments
     player player
 end
 
----
-
 events.left.invoke((event_arguments) arguments)
 
----
-
-//Типы будут кастоваться в аргументах
 function show_broadcast_on_left(player_left_event_arguments arguments)
     exiled_api.map.broadcast("Player left")
 end

@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 public class TypeValue : AbstractValue
 {
-    public TypeValue(string name, IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> members) : base(name)
+    public TypeValue(string name, ITypeInstance value, IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> members) : base(name)
     {
-        _members = members;
+        Members = members;
+        Value = value;
     }
 
     public override ValueType Type => ValueType.Type;
@@ -22,11 +25,13 @@ public class TypeValue : AbstractValue
     };
     
     public override bool IsValueType => false;
-
-    public IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> Members => _members;
-
-    private readonly IReadOnlyDictionary<ITypeMemberIdentification, TypeMemberValue> _members;
     
+    public ITypeInstance Value { get; }
+
+    public IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> Members { get; }
+    
+    public object ObjectTarget { get; set; }
+
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
@@ -34,7 +39,7 @@ public class TypeValue : AbstractValue
 
     public override AbstractValue Copy()
     {
-        return new TypeValue(Name, _members);
+        return new TypeValue(Name, Value, Members);
     }
 
     public override float AsNumber(ProgramContext programContext, Location location)
@@ -64,13 +69,21 @@ public class TypeValue : AbstractValue
         stringBuilder.Append($"({Name}) ");
         stringBuilder.Append("{ ");
 
-        foreach (var member in _members)
+        foreach (var member in Members)
         {
-            var value = member.Value.Value;
+            var context = new TypeMemberGetterContext
+            {
+                ProgramContext = programContext,
+                Type = this,
+                Member = member.Value.Instance,
+                Location = location
+            };
+            
+            var value = member.Value.GetValue(context);
             
             stringBuilder.Append($"{member.Key.Identifier}: {(value is NoneValue ? "none" : value.AsString(programContext, location))}");
             
-            if (member.Value == _members.Last().Value)
+            if (member.Value == Members.Last().Value)
             {
                 continue;
             }
@@ -83,7 +96,7 @@ public class TypeValue : AbstractValue
         return stringBuilder.ToString();
     }
 
-    public TypeMemberValue Get(ITypeMemberIdentification typeMemberIdentification)
+    public ITypeMemberValue Get(ITypeMemberIdentification typeMemberIdentification)
     {
         return Members.FirstOrDefault(member => member.Key.Is(typeMemberIdentification)).Value;
     }

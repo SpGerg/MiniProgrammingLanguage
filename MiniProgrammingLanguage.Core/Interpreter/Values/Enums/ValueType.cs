@@ -8,11 +8,13 @@ public enum ValueType
     Boolean,
     Type,
     ObjectType,
+    Object,
     Any,
     Void,
     Array,
     Function,
     Enum,
     EnumMember,
+    CSharpObject,
     None
 }

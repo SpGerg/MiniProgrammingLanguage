@@ -40,9 +40,14 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Exceptions\ModuleNotFoundException.cs" />
+        <Compile Include="Functions\CreateBasedOnFunction.cs" />
+        <Compile Include="Functions\CreateTypeFunction.cs" />
+        <Compile Include="Functions\GetBaseFunction.cs" />
         <Compile Include="Functions\RequireDependencyFunction.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="SharpKitModule.cs" />
+        <Compile Include="TypesFactory.cs" />
+        <Compile Include="Variables\SharpKitVariable.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\MiniProgrammingLanguage.Core\MiniProgrammingLanguage.Core.csproj">

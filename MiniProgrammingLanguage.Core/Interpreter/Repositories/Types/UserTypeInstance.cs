@@ -7,6 +7,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identification
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
@@ -46,12 +47,22 @@ public class UserTypeInstance : ITypeInstance
     
     public TypeValue Create()
     {
-        var result = new Dictionary<ITypeMemberIdentification, TypeMemberValue>();
+        var result = new Dictionary<ITypeMemberIdentification, ITypeMemberValue>();
         
         foreach (var member in Members)
         {
-            if (member is TypeVariableMemberInstance typeMember && typeMember.IsFunctionInstance)
+            if (member is TypeVariableMemberInstance { IsFunctionInstance: true })
             {
+                continue;
+            }
+
+            if (member is ITypeLanguageMember languageMember)
+            {
+                result.Add(member.Identification, new TypeLanguageMemberValue(languageMember)
+                {
+                    Type = member.Type
+                });
+                
                 continue;
             }
             
@@ -62,7 +73,8 @@ public class UserTypeInstance : ITypeInstance
                 result.Add(member.Identification, new TypeMemberValue
                 {
                     Type = ObjectTypeValue.Function,
-                    Value = value
+                    Instance = member,
+                    Value = value,
                 });
                     
                 result.Add(new KeyTypeMemberIdentification
@@ -71,6 +83,7 @@ public class UserTypeInstance : ITypeInstance
                 }, new TypeMemberValue
                 {
                     Type = ObjectTypeValue.Function,
+                    Instance = member,
                     Value = value
                 });
                     
@@ -80,10 +93,11 @@ public class UserTypeInstance : ITypeInstance
             result.Add(member.Identification, new TypeMemberValue
             {
                 Type = member.Type,
+                Instance = member,
                 Value = new NoneValue()
             });
         }
 
-        return new TypeValue(Name, result);
+        return new TypeValue(Name, this, result);
     }
 }

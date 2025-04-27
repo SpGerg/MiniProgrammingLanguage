@@ -1,4 +1,5 @@
 using MiniProgrammingLanguage.Core.Interpreter;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
@@ -19,20 +20,29 @@ public class AssignTypeMemberExpression : AbstractEvaluableExpression, IAssignEx
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var left = Left.Dot(programContext);
+        var (type, member) = Left.Dot(programContext);
         var right = Right.Evaluate(programContext);
-
+        
         if (Left.Right is FunctionCallExpression functionCallExpression)
         {
             InterpreterThrowHelper.ThrowIncorrectTypeException("variable", $"{functionCallExpression.Name}()", Left.Location);
         }
         
-        if (!left.Type.Is(right))
+        if (!member.Type.Is(right))
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException(left.Type.ValueType.ToString(), right.Type.ToString(), Left.Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException(member.Type.ToString(), right.Type.ToString(), Left.Location);
         }
 
-        left.Value = right;
+        var setterContext = new TypeMemberSetterContext
+        {
+            ProgramContext = programContext,
+            Type = type,
+            Member = member.Instance,
+            Value = right,
+            Location = Location
+        };
+        
+        member.SetValue(setterContext);
 
         return right;
     }

@@ -20,6 +20,10 @@ public class ObjectTypeValue : AbstractValue
     
     public static ObjectTypeValue Function => new(string.Empty, ValueType.Function);
     
+    public static ObjectTypeValue Object => new(string.Empty, ValueType.Object);
+    
+    public static ObjectTypeValue CSharpObject => new(string.Empty, ValueType.CSharpObject);
+    
     public ObjectTypeValue(string name, ValueType valueType) : base(name)
     {
         Name = name;
@@ -33,7 +37,7 @@ public class ObjectTypeValue : AbstractValue
         ValueType.String
     };
     
-    public string Name { get; }
+    public string Name { get; } = string.Empty;
     
     public ValueType ValueType { get; }
 

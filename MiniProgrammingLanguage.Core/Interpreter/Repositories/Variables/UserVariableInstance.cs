@@ -26,7 +26,7 @@ public class UserVariableInstance : IVariableInstance
     {
         if (!Type.Is(Value))
         {
-            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Type.AsString(context.ProgramContext, context.Location), Value.Type.ToString(), context.Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException(Type.ToString(), Value.ToString(), context.Location);
         }
 
         return Value.IsValueType ? Value.Copy() : Value;

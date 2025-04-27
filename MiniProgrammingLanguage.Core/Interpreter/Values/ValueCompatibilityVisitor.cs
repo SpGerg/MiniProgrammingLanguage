@@ -54,6 +54,16 @@ public class ValueCompatibilityVisitor : IValueVisitor
         return Value.Type is ValueType.None;
     }
 
+    public bool Visit(CSharpObjectValue cSharpObjectValue)
+    {
+        if (Value is not CSharpObjectValue cSharpObject)
+        {
+            return false;
+        }
+
+        return cSharpObjectValue.Value == cSharpObject.Value;
+    }
+
     public bool Visit(NumberValue numberValue)
     {
         if (Value is RoundNumberValue roundNumberValue)

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
@@ -23,7 +25,9 @@ public class TypeFunctionMemberInstance : ITypeMember
     public required FunctionArgument[] Arguments { get; init; }
     
     public AccessType Access { get; init; }
-    
+
+    public IEnumerable<string> Attributes { get; init; } = Array.Empty<string>();
+
     public ObjectTypeValue Type { get; } = ObjectTypeValue.Function;
     
     public IFunctionInstance Value { get; set; }

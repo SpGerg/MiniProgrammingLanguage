@@ -1,14 +1,17 @@
+using System;
+using System.Collections.Generic;
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
-using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
+using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
@@ -30,7 +33,17 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
         if (left is TypeValue typeValue)
         {
-            return Dot(programContext, typeValue).Value;
+            var (_, member) = Dot(programContext, typeValue);
+            
+            var context = new TypeMemberGetterContext
+            {
+                ProgramContext = programContext,
+                Type = typeValue,
+                Member = member.Instance,
+                Location = Location
+            };
+            
+            return member.GetValue(context);
         }
         
         if (left is not EnumValue enumValue || Right is not VariableExpression variableExpression)
@@ -48,7 +61,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         return new EnumMemberValue(enumValue.Value.Name, variableExpression.Name);
     }
 
-    public TypeMemberValue Dot(ProgramContext context, TypeValue parent = null)
+    public (TypeValue, ITypeMemberValue) Dot(ProgramContext context, TypeValue parent = null)
     {
         if (parent is null)
         {
@@ -58,7 +71,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             {
                 InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), left.Type.ToString(), Location);
 
-                return null;
+                return (null, null);
             }
 
             if (Right is DotExpression dotExpression)
@@ -66,38 +79,59 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 return dotExpression.Dot(context, typeValue);
             }
 
-            return GetMemberFromType(context, typeValue, Right);
+            return (typeValue, GetMemberFromType(context, typeValue, Right));
         }
         else
         {
             if (Right is not DotExpression dotExpression)
             {
-                var dotMember = GetMemberFromType(context, parent, Left).Value;
-                
-                if (dotMember is not TypeValue dotTypeValue)
-                {
-                    InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), dotMember.Type.ToString(), Location);
+                var dotMember = GetMemberFromType(context, parent, Right);
 
-                    return null;
+                if (dotMember is null)
+                {
+                    InterpreterThrowHelper.ThrowMemberNotFoundException(parent.Name, "?", Location);
                 }
                 
-                return GetMemberFromType(context, dotTypeValue, Right);
+                var getterContext = new TypeMemberGetterContext
+                {
+                    ProgramContext = context,
+                    Type = parent,
+                    Member = dotMember.Instance,
+                    Location = Location
+                };
+
+                var value = dotMember.GetValue(getterContext);
+                
+                if (value is not TypeValue dotTypeValue)
+                {
+                    return (parent, dotMember);
+                }
+                
+                return (dotTypeValue, GetMemberFromType(context, dotTypeValue, Right));
             }
             
-            var left = GetMemberFromType(context, parent, dotExpression.Left).Value;
+            var left = GetMemberFromType(context, parent, dotExpression.Left);
+            
+            var leftContext = new TypeMemberGetterContext
+            {
+                ProgramContext = context,
+                Type = parent,
+                Member = left.Instance,
+                Location = Location
+            };
 
-            if (left is not TypeValue typeValue)
+            if (left.GetValue(leftContext) is not TypeValue typeValue)
             {
                 InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), left.Type.ToString(), Location);
                     
-                return null;
+                return (null, null);
             }
 
             return dotExpression.Dot(context, typeValue);
         }
     }
 
-    private TypeMemberValue GetMemberFromType(ProgramContext programContext, TypeValue typeValue, AbstractExpression expression)
+    private ITypeMemberValue GetMemberFromType(ProgramContext programContext, TypeValue typeValue, AbstractExpression expression)
     {
         if (expression is VariableExpression variableExpression)
         {
@@ -145,6 +179,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             return new TypeMemberValue
             {
                 Type = ObjectTypeValue.Function,
+                Instance = function,
                 Value = function.Value.Evaluate(new FunctionExecuteContext
                 {
                     ProgramContext = programContext,

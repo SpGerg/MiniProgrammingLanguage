@@ -15,6 +15,8 @@ public interface IValueVisitor
     
     bool Visit(NoneValue noneValue);
     
+    bool Visit(CSharpObjectValue cSharpObjectValue);
+    
     bool Visit(NumberValue numberValue);
     
     bool Visit(ObjectTypeValue objectTypeValue);

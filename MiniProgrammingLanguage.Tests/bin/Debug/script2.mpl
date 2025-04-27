@@ -1,3 +1,10 @@
-import scripter
+type test
+    bindable Name
+end
 
-print(test)
+instance = create_type("MiniProgrammingLanguage.Tests.TestProject")
+
+result = create_based_on(create test, instance)
+result.Name = "Hello, world"
+
+print(result.Name)

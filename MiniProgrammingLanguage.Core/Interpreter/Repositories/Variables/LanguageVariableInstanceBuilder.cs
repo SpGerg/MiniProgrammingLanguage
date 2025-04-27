@@ -11,7 +11,9 @@ public class LanguageVariableInstanceBuilder
 
     public string Module { get; set; } = "global";
 
-    public Func<VariableGetterContext, AbstractValue> Bind { get; set; }
+    public Func<VariableGetterContext, AbstractValue> GetBind { get; set; }
+    
+    public Func<VariableSetterContext, AbstractValue> SetBind { get; set; }
     
     public ObjectTypeValue Type { get; set; } = ObjectTypeValue.Any;
     
@@ -47,9 +49,16 @@ public class LanguageVariableInstanceBuilder
         return this;
     }
     
-    public LanguageVariableInstanceBuilder SetBind(Func<VariableGetterContext, AbstractValue> bind)
+    public LanguageVariableInstanceBuilder SetGetBindFunc(Func<VariableGetterContext, AbstractValue> bind)
     {
-        Bind = bind;
+        GetBind = bind;
+        
+        return this;
+    }
+    
+    public LanguageVariableInstanceBuilder SetSetBindFunc(Func<VariableSetterContext, AbstractValue> bind)
+    {
+        SetBind = bind;
         
         return this;
     }
@@ -67,7 +76,8 @@ public class LanguageVariableInstanceBuilder
         {
             Name = Name,
             Module = Module,
-            Bind = Bind,
+            GetBind = GetBind,
+            SetBind = SetBind,
             Access = Access,
             Type = Type,
             Root = Root
