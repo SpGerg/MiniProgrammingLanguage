@@ -4,7 +4,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
-public class TypeMemberValue : ITypeMemberValue
+public class TypeMemberValue : ITypeVariableMemberValue
 {
     public required AbstractValue Value { get; set; }
     

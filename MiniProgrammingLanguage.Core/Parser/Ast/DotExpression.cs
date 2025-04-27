@@ -4,6 +4,7 @@ using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
@@ -34,16 +35,35 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         if (left is TypeValue typeValue)
         {
             var (_, member) = Dot(programContext, typeValue);
-            
-            var context = new TypeMemberGetterContext
+
+            if (member is ITypeVariableMemberValue variableMember)
             {
-                ProgramContext = programContext,
-                Type = typeValue,
-                Member = member.Instance,
-                Location = Location
-            };
+                var context = new TypeMemberGetterContext
+                {
+                    ProgramContext = programContext,
+                    Type = typeValue,
+                    Member = member.Instance,
+                    Location = Location
+                };
+                
+                return variableMember.GetValue(context);
+            }
             
-            return member.GetValue(context);
+            if (member is ITypeFunctionMemberValue functionMember)
+            {
+                var context = new TypeFunctionExecuteContext
+                {
+                    ProgramContext = programContext,
+                    Type = typeValue,
+                    Arguments = ((FunctionCallExpression) Right).Arguments,
+                    Member = functionMember.Instance,
+                    Location = Location
+                };
+                
+                return functionMember.GetValue(context);
+            }
+
+            return new NoneValue();
         }
         
         if (left is not EnumValue enumValue || Right is not VariableExpression variableExpression)
@@ -61,136 +81,236 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         return new EnumMemberValue(enumValue.Value.Name, variableExpression.Name);
     }
 
-    public (TypeValue, ITypeMemberValue) Dot(ProgramContext context, TypeValue parent = null)
+    public (TypeValue Type, ITypeMemberValue Member) Dot(ProgramContext context, TypeValue parent = null)
     {
-        if (parent is null)
-        {
-            var left = Left.Evaluate(context);
-
-            if (left is not TypeValue typeValue)
-            {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), left.Type.ToString(), Location);
-
-                return (null, null);
-            }
-
-            if (Right is DotExpression dotExpression)
-            {
-                return dotExpression.Dot(context, typeValue);
-            }
-
-            return (typeValue, GetMemberFromType(context, typeValue, Right));
-        }
-        else
-        {
-            if (Right is not DotExpression dotExpression)
-            {
-                var dotMember = GetMemberFromType(context, parent, Right);
-
-                if (dotMember is null)
-                {
-                    InterpreterThrowHelper.ThrowMemberNotFoundException(parent.Name, "?", Location);
-                }
-                
-                var getterContext = new TypeMemberGetterContext
-                {
-                    ProgramContext = context,
-                    Type = parent,
-                    Member = dotMember.Instance,
-                    Location = Location
-                };
-
-                var value = dotMember.GetValue(getterContext);
-                
-                if (value is not TypeValue dotTypeValue)
-                {
-                    return (parent, dotMember);
-                }
-                
-                return (dotTypeValue, GetMemberFromType(context, dotTypeValue, Right));
-            }
-            
-            var left = GetMemberFromType(context, parent, dotExpression.Left);
-            
-            var leftContext = new TypeMemberGetterContext
-            {
-                ProgramContext = context,
-                Type = parent,
-                Member = left.Instance,
-                Location = Location
-            };
-
-            if (left.GetValue(leftContext) is not TypeValue typeValue)
-            {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), left.Type.ToString(), Location);
-                    
-                return (null, null);
-            }
-
-            return dotExpression.Dot(context, typeValue);
-        }
+        return parent is null
+            ? EvaluateRootExpression(context)
+            : EvaluateNestedExpression(context, parent);
     }
 
-    private ITypeMemberValue GetMemberFromType(ProgramContext programContext, TypeValue typeValue, AbstractExpression expression)
+    private (TypeValue Type, ITypeMemberValue Member) EvaluateRootExpression(ProgramContext context)
+    {
+        var leftValue = Left.Evaluate(context);
+
+        if (leftValue is not TypeValue typeValue)
+        {
+            InterpreterThrowHelper.ThrowIncorrectTypeException(
+                ValueType.Type.ToString(), leftValue.Type.ToString(),
+                Location
+            );
+            return (null, null);
+        }
+
+        return Right is DotExpression dotExpression
+            ? dotExpression.Dot(context, typeValue)
+            : (typeValue, GetTypeMember(context, typeValue, Right));
+    }
+
+    private (TypeValue Type, ITypeMemberValue Member) EvaluateNestedExpression(
+        ProgramContext context,
+        TypeValue parent)
+    {
+        if (Right is not DotExpression dotExpression)
+        {
+            return HandleSingleMemberAccess(context, parent);
+        }
+
+        var (_, memberType) = ResolveLeftMember(context, parent, dotExpression);
+        
+        return dotExpression.Dot(context, memberType);
+    }
+
+    private (TypeValue Type, ITypeMemberValue Member) HandleSingleMemberAccess(
+        ProgramContext context,
+        TypeValue parent)
+    {
+        var member = GetTypeMember(context, parent, Right);
+
+        if (member is null)
+        {
+            InterpreterThrowHelper.ThrowMemberNotFoundException(
+                parent.Name,
+                "?",
+                Location
+            );
+            return (null, null);
+        }
+
+        var memberValue = GetMemberValue(context, parent, member);
+
+        return memberValue is TypeValue nestedType
+            ? (nestedType, GetTypeMember(context, nestedType, Right))
+            : (parent, member);
+    }
+
+    private ITypeMemberValue GetTypeMember(
+        ProgramContext context,
+        TypeValue type,
+        AbstractEvaluableExpression expression)
     {
         if (expression is VariableExpression variableExpression)
         {
-            var result = typeValue.Get(new KeyTypeMemberIdentification
+            var result = type.Get(new KeyTypeMemberIdentification
             {
                 Identifier = variableExpression.Name
             });
 
             return result;
         }
-        
+
         if (expression is FunctionCallExpression functionCallExpression)
         {
-            var type = programContext.Types.Get(functionCallExpression.Root, typeValue.Name, programContext.Module, Location);
+            var typeValue = context.Types.Get(functionCallExpression.Root, type.Name, context.Module,
+                Location);
             var function = type.Get(new FunctionTypeMemberIdentification
             {
                 Identifier = functionCallExpression.Name
-            }) as TypeFunctionMemberInstance;
+            });
 
-            if (function?.Value is null)
+            if (function.Instance is ITypeLanguageFunctionMember languageFunctionMember)
             {
-                InterpreterThrowHelper.ThrowMemberNotFoundException(typeValue.Name, functionCallExpression.Name, expression.Location);
+                return new TypeMemberValue
+                {
+                    Type = ObjectTypeValue.Function,
+                    Instance = function.Instance,
+                    Value = languageFunctionMember.Bind.Invoke(new TypeFunctionExecuteContext
+                    {
+                        ProgramContext = context,
+                        Type = type,
+                        Member = languageFunctionMember,
+                        Arguments = functionCallExpression.Arguments,
+                        Location = Location
+                    })
+                };
             }
 
-            if (!function.Value.IsDeclared)
+            if (function.Instance is not TypeFunctionMemberInstance functionInstance)
             {
-                InterpreterThrowHelper.ThrowFunctionNotDeclaredException(function.Value.Name, Location);
+                return null;
+            }
+
+            if (functionInstance?.Value is null)
+            {
+                InterpreterThrowHelper.ThrowMemberNotFoundException(typeValue.Name, functionCallExpression.Name,
+                    expression.Location);
+            }
+
+            if (!functionInstance.Value.IsDeclared)
+            {
+                InterpreterThrowHelper.ThrowFunctionNotDeclaredException(functionInstance.Value.Name, Location);
 
                 return null;
             }
 
-            if (function.Value is UserFunctionInstance userFunctionInstance)
-            {
-                programContext.Variables.AddOrSet(programContext, new UserVariableInstance
+            if (functionInstance.Value is UserFunctionInstance userFunctionInstance)
+                context.Variables.AddOrSet(context, new UserVariableInstance
                 {
                     Name = "self",
                     Module = "system",
                     Access = AccessType.ReadOnly,
                     Type = new ObjectTypeValue(typeValue.Name, ValueType.Type),
-                    Value = typeValue,
-                    Root = userFunctionInstance.Body,
+                    Value = type,
+                    Root = userFunctionInstance.Body
                 }, Location);
-            }
 
             return new TypeMemberValue
             {
                 Type = ObjectTypeValue.Function,
-                Instance = function,
-                Value = function.Value.Evaluate(new FunctionExecuteContext
+                Instance = function.Instance,
+                Value = functionInstance.Value.Evaluate(new FunctionExecuteContext
                 {
-                    ProgramContext = programContext,
+                    ProgramContext = context,
                     Arguments = functionCallExpression.Arguments,
                     Location = Location
                 })
             };
         }
 
-        InterpreterThrowHelper.ThrowMemberNotFoundException(typeValue.Name, "?", expression.Location);
+        InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, "?", expression.Location);
 
         return null;
+    }
+
+    private AbstractValue GetMemberValue(
+        ProgramContext context,
+        TypeValue parent,
+        ITypeMemberValue member)
+    {
+        return member switch
+        {
+            ITypeVariableMemberValue variable => GetVariableValue(context, parent, variable),
+            ITypeFunctionMemberValue function => ExecuteFunction(context, parent, function),
+            _ => throw new NotSupportedException($"Unsupported member type: {member.GetType()}")
+        };
+    }
+
+    private AbstractValue GetVariableValue(
+        ProgramContext context,
+        TypeValue parent,
+        ITypeVariableMemberValue variable)
+    {
+        var getterContext = CreateMemberGetterContext(context, parent, variable.Instance);
+        return variable.GetValue(getterContext);
+    }
+
+    private AbstractValue ExecuteFunction(
+        ProgramContext context,
+        TypeValue parent,
+        ITypeFunctionMemberValue function)
+    {
+        var functionContext = CreateFunctionContext(
+            context,
+            parent,
+            function.Instance,
+            ((FunctionCallExpression)Right).Arguments
+        );
+        return function.GetValue(functionContext);
+    }
+
+    private (AbstractValue Value, TypeValue Type) ResolveLeftMember(
+        ProgramContext context,
+        TypeValue parent,
+        DotExpression dotExpression)
+    {
+        var member = GetTypeMember(context, parent, dotExpression.Left);
+        var value = GetMemberValue(context, parent, member);
+
+        if (value is not TypeValue typeValue)
+        {
+            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), value.Type.ToString(), Location);
+            return (null, null);
+        }
+
+        return (value, typeValue);
+    }
+
+    private TypeMemberGetterContext CreateMemberGetterContext(
+        ProgramContext context,
+        TypeValue type,
+        ITypeMember member)
+    {
+        return new TypeMemberGetterContext
+        {
+            ProgramContext = context,
+            Type = type,
+            Member = member,
+            Location = Location
+        };
+    }
+
+    private TypeFunctionExecuteContext CreateFunctionContext(
+        ProgramContext context,
+        TypeValue type,
+        ITypeMember member,
+        AbstractEvaluableExpression[] arguments)
+    {
+        return new TypeFunctionExecuteContext
+        {
+            ProgramContext = context,
+            Type = type,
+            Member = member,
+            Arguments = arguments,
+            Location = Location
+        };
     }
 }

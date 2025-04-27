@@ -15,6 +15,7 @@ public static class TypesFactory
             int => new RoundNumberValue(Convert.ToInt32(target)),
             float => new NumberValue(Convert.ToSingle(target)),
             bool => new BooleanValue(Convert.ToBoolean(target)),
+            null => new NoneValue(),
             _ => null
         };
     }

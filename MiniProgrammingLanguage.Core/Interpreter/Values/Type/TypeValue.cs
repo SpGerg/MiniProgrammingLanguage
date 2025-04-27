@@ -71,16 +71,25 @@ public class TypeValue : AbstractValue
 
         foreach (var member in Members)
         {
-            var context = new TypeMemberGetterContext
+            AbstractValue value = null;
+
+            if (member.Value is ITypeVariableMemberValue variableMember)
             {
-                ProgramContext = programContext,
-                Type = this,
-                Member = member.Value.Instance,
-                Location = location
-            };
-            
-            var value = member.Value.GetValue(context);
-            
+                var context = new TypeMemberGetterContext
+                {
+                    ProgramContext = programContext,
+                    Type = this,
+                    Member = variableMember.Instance,
+                    Location = location
+                };
+                
+                value = variableMember.GetValue(context);
+            }
+            else
+            {
+                value = member.Value.Type;
+            }
+
             stringBuilder.Append($"{member.Key.Identifier}: {(value is NoneValue ? "none" : value.AsString(programContext, location))}");
             
             if (member.Value == Members.Last().Value)

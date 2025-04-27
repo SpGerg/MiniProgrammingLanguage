@@ -4,9 +4,9 @@ using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
-public class TypeLanguageMemberValue : ITypeMemberValue
+public class TypeLanguageVariableMemberValue : ITypeVariableMemberValue
 {
-    public TypeLanguageMemberValue(ITypeLanguageMember typeMember)
+    public TypeLanguageVariableMemberValue(ITypeLanguageVariableMember typeMember)
     {
         _typeMember = typeMember;
         Instance = typeMember;
@@ -16,7 +16,7 @@ public class TypeLanguageMemberValue : ITypeMemberValue
     
     public ITypeMember Instance { get; }
 
-    private readonly ITypeLanguageMember _typeMember;
+    private readonly ITypeLanguageVariableMember _typeMember;
 
     public AbstractValue GetValue(TypeMemberGetterContext getterContext)
     {

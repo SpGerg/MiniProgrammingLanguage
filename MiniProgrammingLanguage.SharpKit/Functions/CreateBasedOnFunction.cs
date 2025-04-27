@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MiniProgrammingLanguage.Core.Interpreter;
@@ -15,17 +16,19 @@ namespace MiniProgrammingLanguage.SharpKit.Functions;
 
 public static class CreateBasedOnFunction
 {
+    private static string IgnoreCaseAttribute = "sharp_kit_ignore_case";
+    
     public static LanguageFunctionInstance Create()
     {
         return new LanguageFunctionInstanceBuilder()
             .SetName("create_based_on")
-            .SetBind(Include)
+            .SetBind(CreatedBasedOn)
             .SetAccess(AccessType.Static | AccessType.ReadOnly)
             .SetArguments(new FunctionArgument("type_instance", ObjectTypeValue.Object), new FunctionArgument("cs_type", ObjectTypeValue.CSharpObject))
             .Build();
     }
 
-    public static AbstractValue Include(FunctionExecuteContext context)
+    public static AbstractValue CreatedBasedOn(FunctionExecuteContext context)
     {
         var typeArgument = context.Arguments.FirstOrDefault();
         var typeInstance = typeArgument.Evaluate(context.ProgramContext);
@@ -43,24 +46,42 @@ public static class CreateBasedOnFunction
         var csObject = ((CSharpObjectValue) csType).Value;
         var csObjectType = csObject.GetType();
         
+        var properties = csObjectType.GetProperties();
+        var methods = csObjectType.GetMethods();
+        
         foreach (var member in typeValue.Value.Members)
         {
-            if (member is not ITypeLanguageMember languageMember)
-            {
-                continue;
-            }
-
-            var properties = csObjectType.GetProperties();
-            var csMember = properties.FirstOrDefault(property => property.Name == member.Identification.Identifier);
-
-            if (csMember is null)
-            {
-                continue;
-            }
-
-            languageMember.Property = csMember;
+            var isIgnoreCase = member.Attributes.Contains(IgnoreCaseAttribute);
             
-            BindProperty(languageMember);
+            if (member is ITypeLanguageVariableMember variableMember)
+            {
+                var csProperty = properties.FirstOrDefault(property => IsNameEquals(property, variableMember.Identification, isIgnoreCase));
+
+                if (csProperty is null)
+                {
+                    continue;
+                }
+
+                variableMember.Property = csProperty;
+            
+                BindProperty(variableMember);
+                
+                continue;
+            }
+
+            if (member is ITypeLanguageFunctionMember functionMember)
+            {
+                var csMethod = methods.FirstOrDefault(method => IsNameEquals(method, functionMember.Identification, isIgnoreCase));
+
+                if (csMethod is null)
+                {
+                    continue;
+                }
+
+                functionMember.Method = csMethod;
+
+                BindMethod(functionMember);
+            }
         }
 
         typeValue.ObjectTarget = csObject;
@@ -68,33 +89,78 @@ public static class CreateBasedOnFunction
         return typeInstance;
     }
 
-    private static void BindProperty(ITypeLanguageMember languageMember)
+    private static void BindProperty(ITypeLanguageVariableMember variableMember)
     {
-        languageMember.GetBind = GetBindProperty;
-        languageMember.SetBind = SetBindProperty;
+        variableMember.GetBind = GetBindProperty;
+        variableMember.SetBind = SetBindProperty;
+    }
+    
+    private static void BindMethod(ITypeLanguageFunctionMember functionMember)
+    {
+        functionMember.Bind = ExecuteBindMethod;
     }
 
-    private static AbstractValue GetBindProperty(TypeMemberGetterContext getterContext)
+    private static AbstractValue ExecuteBindMethod(TypeFunctionExecuteContext context)
     {
-        if (getterContext.Member is not ITypeLanguageMember languageMember)
+        if (context.Member is not ITypeLanguageFunctionMember functionMember)
         {
             return new NoneValue();
         }
+        
+        var arguments = new object[context.Arguments.Length];
 
-        var result = languageMember.Property.GetValue(getterContext.Type.ObjectTarget);
+        for (var i = 0; i < context.Arguments.Length; i++)
+        {
+            var argument = context.Arguments[i];
+            
+            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext));
+        }
+        
+        var result = functionMember.Method.Invoke(context.Type.ObjectTarget, arguments);
+
+        if (functionMember.Method.ReturnType == typeof(void))
+        {
+            return new VoidValue();
+        }
+        
+        return TypesFactory.Create(result);
+    }
+    
+    private static AbstractValue GetBindProperty(TypeMemberGetterContext context)
+    {
+        if (context.Member is not ITypeLanguageVariableMember variableMember)
+        {
+            InterpreterThrowHelper.ThrowMemberNotFoundException(context.Type.Name, context.Member.Identification.Identifier, context.Location);
+
+            return null;
+        }
+        
+        var result = variableMember.Property.GetValue(context.Type.ObjectTarget);
 
         return TypesFactory.Create(result);
     }
     
-    private static void SetBindProperty(TypeMemberSetterContext setterContext)
+    private static void SetBindProperty(TypeMemberSetterContext context)
     {
-        if (setterContext.Member is not ITypeLanguageMember languageMember)
+        if (context.Member is not ITypeLanguageVariableMember variableMember)
         {
+            InterpreterThrowHelper.ThrowMemberNotFoundException(context.Type.Name, context.Member.Identification.Identifier, context.Location);
+
             return;
         }
-
-        var value = TypesFactory.Create(setterContext.Value);
         
-        languageMember.Property.SetValue(setterContext.Type.ObjectTarget, value);
+        var value = TypesFactory.Create(context.Value);
+        
+        variableMember.Property.SetValue(context.Type.ObjectTarget, value);
+    }
+
+    private static bool IsNameEquals(MemberInfo memberInfo, ITypeMemberIdentification identification, bool isIgnoreCase)
+    {
+        if (isIgnoreCase)
+        {
+            return memberInfo.Name.Equals(identification.Identifier, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return memberInfo.Name == identification.Identifier;
     }
 }

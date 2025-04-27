@@ -544,13 +544,20 @@ public class Parser
         
         var attributes = new List<string>();
         
-        while (Match(TokenType.At) && IsNotEnded)
+        while (IsNotEnded)
         {
             var name = Current;
 
             MatchOrException(TokenType.Word);
             
             attributes.Add(name.Value);
+
+            if (Match(TokenType.At))
+            {
+                continue;
+            }
+            
+            break;
         }
 
         return attributes;

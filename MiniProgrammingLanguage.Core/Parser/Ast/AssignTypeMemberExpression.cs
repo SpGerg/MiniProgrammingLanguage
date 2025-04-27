@@ -1,7 +1,9 @@
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
@@ -33,16 +35,23 @@ public class AssignTypeMemberExpression : AbstractEvaluableExpression, IAssignEx
             InterpreterThrowHelper.ThrowIncorrectTypeException(member.Type.ToString(), right.Type.ToString(), Left.Location);
         }
 
+        if (member is not ITypeVariableMemberValue variableMember)
+        {
+            InterpreterThrowHelper.ThrowCannotAccessException(member.Instance.Identification.Identifier, Left.Location);
+
+            return null;
+        }
+
         var setterContext = new TypeMemberSetterContext
         {
             ProgramContext = programContext,
             Type = type,
-            Member = member.Instance,
+            Member = (ITypeLanguageVariableMember) member.Instance,
             Value = right,
             Location = Location
         };
         
-        member.SetValue(setterContext);
+        variableMember.SetValue(setterContext);
 
         return right;
     }

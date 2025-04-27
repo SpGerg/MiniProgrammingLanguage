@@ -38,6 +38,24 @@ public class TypeFunctionMemberExpression : AbstractExpression, ITypeMemberExpre
 
     public ITypeMember Create(string module)
     {
+        if (Access.HasFlag(AccessType.Bindable))
+        {
+            return new TypeLanguageFunctionMemberInstance
+            {
+                Parent = Parent,
+                Module = module,
+                IsAsync = IsAsync,
+                Identification = new FunctionTypeMemberIdentification
+                {
+                    Identifier = Name
+                },
+                Arguments = Arguments,
+                Return = Return,
+                Access = Access,
+                Attributes = Attributes
+            };
+        }
+        
         return new TypeFunctionMemberInstance
         {
             Parent = Parent,

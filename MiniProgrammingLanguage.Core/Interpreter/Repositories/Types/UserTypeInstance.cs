@@ -56,9 +56,9 @@ public class UserTypeInstance : ITypeInstance
                 continue;
             }
 
-            if (member is ITypeLanguageMember languageMember)
+            if (member is ITypeLanguageVariableMember languageMember)
             {
-                result.Add(member.Identification, new TypeLanguageMemberValue(languageMember)
+                result.Add(member.Identification, new TypeLanguageVariableMemberValue(languageMember)
                 {
                     Type = member.Type
                 });

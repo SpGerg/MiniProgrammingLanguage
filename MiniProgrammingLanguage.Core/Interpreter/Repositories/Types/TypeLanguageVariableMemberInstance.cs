@@ -7,7 +7,7 @@ using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 
-public class TypeLanguageVariableMemberInstance : ITypeLanguageMember
+public class TypeLanguageVariableMemberInstance : ITypeLanguageVariableMember
 {
     public required string Parent { get; init; }
     
