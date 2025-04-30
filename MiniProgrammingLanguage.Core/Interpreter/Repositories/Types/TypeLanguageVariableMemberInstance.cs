@@ -15,13 +15,13 @@ public class TypeLanguageVariableMemberInstance : ITypeLanguageVariableMember
     
     public required ITypeMemberIdentification Identification { get; init; }
 
-    public required AbstractValue Default { get; init; } = new NoneValue();
+    public AbstractValue Default { get; init; } = new NoneValue();
     
     public IEnumerable<string> Attributes { get; init; } = Array.Empty<string>();
 
     public AccessType Access { get; init; }
 
-    public ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
+    public ObjectTypeValue Type { get; set; } = ObjectTypeValue.Any;
     
     public Func<TypeMemberGetterContext, AbstractValue> GetBind { get; set; }
     

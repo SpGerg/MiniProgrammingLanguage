@@ -20,10 +20,9 @@ public static class PrintFunction
             .Build();
     }
     
-    public static AbstractValue Print(FunctionExecuteContext context)
+    public static AbstractValue Print(LanguageFunctionExecuteContext context)
     {
-        var argument = context.Arguments[0];
-        var content = argument.Evaluate(context.ProgramContext);
+        var content = context.Arguments[0];
 
         var message = string.Empty;
 

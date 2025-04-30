@@ -14,7 +14,7 @@ public class TypeVariableMemberInstance : ITypeMember
     
     public required ITypeMemberIdentification Identification { get; init; }
 
-    public required AbstractValue Default { get; init; } = new NoneValue();
+    public AbstractValue Default { get; init; } = new NoneValue();
     
     public IEnumerable<string> Attributes { get; init; } = Array.Empty<string>();
 

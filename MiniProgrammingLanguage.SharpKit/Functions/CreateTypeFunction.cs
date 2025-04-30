@@ -21,10 +21,10 @@ public static class CreateTypeFunction
             .Build();
     }
 
-    public static AbstractValue Create(FunctionExecuteContext context)
+    public static AbstractValue Create(LanguageFunctionExecuteContext context)
     {
         var argument = context.Arguments.FirstOrDefault();
-        var content = argument.Evaluate(context.ProgramContext).AsString(context.ProgramContext, context.Location);
+        var content = argument.AsString(context.ProgramContext, context.Location);
 
         Type csType = null;
 

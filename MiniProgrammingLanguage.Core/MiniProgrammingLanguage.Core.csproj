@@ -70,6 +70,7 @@
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionsRepository.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IUserFunctionInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Functions\LanguageFunctionExecuteContext.cs" />
         <Compile Include="Interpreter\Repositories\Functions\LanguageFunctionInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\LanguageFunctionInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Functions\UserFunctionInstance.cs" />

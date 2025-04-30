@@ -40,6 +40,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Exceptions\ModuleNotFoundException.cs" />
+        <Compile Include="Exceptions\NotSameNameException.cs" />
         <Compile Include="Functions\CreateBasedOnFunction.cs" />
         <Compile Include="Functions\CreateTypeFunction.cs" />
         <Compile Include="Functions\GetBaseFunction.cs" />

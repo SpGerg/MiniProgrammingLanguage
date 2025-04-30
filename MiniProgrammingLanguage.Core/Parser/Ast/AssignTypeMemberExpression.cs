@@ -46,7 +46,7 @@ public class AssignTypeMemberExpression : AbstractEvaluableExpression, IAssignEx
         {
             ProgramContext = programContext,
             Type = type,
-            Member = (ITypeLanguageVariableMember) member.Instance,
+            Member = member.Instance,
             Value = right,
             Location = Location
         };

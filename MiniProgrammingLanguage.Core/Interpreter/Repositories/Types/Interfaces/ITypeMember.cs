@@ -7,6 +7,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces
 public interface ITypeMember
 {
     string Parent { get; }
+    
+    string Module { get; }
 
     ITypeMemberIdentification Identification { get; }
     

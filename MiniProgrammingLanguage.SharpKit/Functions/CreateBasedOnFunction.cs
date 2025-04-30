@@ -10,6 +10,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
+using MiniProgrammingLanguage.SharpKit.Exceptions;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.SharpKit.Functions;
@@ -28,10 +29,9 @@ public static class CreateBasedOnFunction
             .Build();
     }
 
-    public static AbstractValue CreatedBasedOn(FunctionExecuteContext context)
+    public static AbstractValue CreatedBasedOn(LanguageFunctionExecuteContext context)
     {
-        var typeArgument = context.Arguments.FirstOrDefault();
-        var typeInstance = typeArgument.Evaluate(context.ProgramContext);
+        var typeInstance = context.Arguments.FirstOrDefault();
 
         if (typeInstance is not TypeValue typeValue)  
         {
@@ -39,12 +39,16 @@ public static class CreateBasedOnFunction
 
             return null;
         }
-
-        var csTypeArgument = context.Arguments[1];
-        var csType = csTypeArgument.Evaluate(context.ProgramContext);
+        
+        var csType = context.Arguments[1];
 
         var csObject = ((CSharpObjectValue) csType).Value;
         var csObjectType = csObject.GetType();
+        
+        if (typeInstance.Name != csObjectType.Name)
+        {
+            throw new NotSameNameException(typeInstance.Name, csObjectType.Name, context.Location);
+        }
         
         var properties = csObjectType.GetProperties();
         var methods = csObjectType.GetMethods();
@@ -62,7 +66,10 @@ public static class CreateBasedOnFunction
                     continue;
                 }
 
+                variableMember.Type = TypesFactory.GetObjectTypeByType(csProperty.PropertyType, context.ProgramContext, csObject, out var implementModule);
                 variableMember.Property = csProperty;
+                
+                context.ProgramContext.Import(implementModule);
             
                 BindProperty(variableMember);
                 
@@ -85,8 +92,45 @@ public static class CreateBasedOnFunction
         }
 
         typeValue.ObjectTarget = csObject;
+        typeValue.Value.Type = csObjectType;
 
         return typeInstance;
+    }
+    
+    public static AbstractValue ExecuteBindMethod(TypeFunctionExecuteContext context)
+    {
+        if (context.Member is not ITypeLanguageFunctionMember functionMember)
+        {
+            return new NoneValue();
+        }
+        
+        var arguments = new object[context.Arguments.Length];
+
+        for (var i = 0; i < context.Arguments.Length; i++)
+        {
+            var argument = context.Arguments[i];
+            
+            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext), context.ProgramContext);
+        }
+
+        var parameters = functionMember.Method.GetParameters();
+        
+        if (parameters.Length > arguments.Length)
+        {
+            InterpreterThrowHelper.ThrowArgumentExceptedException(parameters[arguments.Length].Name, context.Location);
+        }
+        
+        var result = functionMember.Method.Invoke(context.Type.ObjectTarget, arguments);
+
+        if (functionMember.Method.ReturnType == typeof(void))
+        {
+            return new VoidValue();
+        }
+        
+        var type = TypesFactory.Create(result, context.ProgramContext, out var implementModule);
+        context.ProgramContext.Import(implementModule);
+
+        return type;
     }
 
     private static void BindProperty(ITypeLanguageVariableMember variableMember)
@@ -100,33 +144,7 @@ public static class CreateBasedOnFunction
         functionMember.Bind = ExecuteBindMethod;
     }
 
-    private static AbstractValue ExecuteBindMethod(TypeFunctionExecuteContext context)
-    {
-        if (context.Member is not ITypeLanguageFunctionMember functionMember)
-        {
-            return new NoneValue();
-        }
-        
-        var arguments = new object[context.Arguments.Length];
-
-        for (var i = 0; i < context.Arguments.Length; i++)
-        {
-            var argument = context.Arguments[i];
-            
-            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext));
-        }
-        
-        var result = functionMember.Method.Invoke(context.Type.ObjectTarget, arguments);
-
-        if (functionMember.Method.ReturnType == typeof(void))
-        {
-            return new VoidValue();
-        }
-        
-        return TypesFactory.Create(result);
-    }
-    
-    private static AbstractValue GetBindProperty(TypeMemberGetterContext context)
+    public static AbstractValue GetBindProperty(TypeMemberGetterContext context)
     {
         if (context.Member is not ITypeLanguageVariableMember variableMember)
         {
@@ -136,11 +154,13 @@ public static class CreateBasedOnFunction
         }
         
         var result = variableMember.Property.GetValue(context.Type.ObjectTarget);
+        var type = TypesFactory.Create(result, context.ProgramContext, out var implementModule);
+        context.ProgramContext.Import(implementModule);
 
-        return TypesFactory.Create(result);
+        return type;
     }
     
-    private static void SetBindProperty(TypeMemberSetterContext context)
+    public static void SetBindProperty(TypeMemberSetterContext context)
     {
         if (context.Member is not ITypeLanguageVariableMember variableMember)
         {
@@ -149,8 +169,7 @@ public static class CreateBasedOnFunction
             return;
         }
         
-        var value = TypesFactory.Create(context.Value);
-        
+        var value = TypesFactory.Create(context.Value, context.ProgramContext);
         variableMember.Property.SetValue(context.Type.ObjectTarget, value);
     }
 

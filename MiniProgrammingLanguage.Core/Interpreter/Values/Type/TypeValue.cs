@@ -1,22 +1,27 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
-using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
+using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 public class TypeValue : AbstractValue
 {
-    public TypeValue(string name, ITypeInstance value, IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> members) : base(name)
+    public TypeValue(ITypeInstance value, IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> members) : base(value.Name)
     {
         Members = members;
         Value = value;
     }
 
+    public TypeValue(ITypeInstance value) : this(value, value.Create().Members)
+    {
+    }
+    
     public override ValueType Type => ValueType.Type;
 
     public override ValueType[] CanCast { get; } =
@@ -39,7 +44,7 @@ public class TypeValue : AbstractValue
 
     public override AbstractValue Copy()
     {
-        return new TypeValue(Name, Value, Members);
+        return new TypeValue(Value, Members);
     }
 
     public override float AsNumber(ProgramContext programContext, Location location)

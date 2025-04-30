@@ -19,11 +19,10 @@ public static class SleepFunction
             .Build();
     }
     
-    public static AbstractValue Sleep(FunctionExecuteContext functionExecuteContext)
+    public static AbstractValue Sleep(LanguageFunctionExecuteContext functionExecuteContext)
     {
         var milliseconds = functionExecuteContext.Arguments[0];
-        var time = milliseconds.Evaluate(functionExecuteContext.ProgramContext)
-            .AsRoundNumber(functionExecuteContext.ProgramContext, functionExecuteContext.Location);
+        var time = milliseconds.AsRoundNumber(functionExecuteContext.ProgramContext, functionExecuteContext.Location);
 
         functionExecuteContext.Token.WaitHandle.WaitOne(time);
 

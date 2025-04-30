@@ -11,4 +11,6 @@ public interface ITypeLanguageVariableMember : ITypeLanguageMember
     Action<TypeMemberSetterContext> SetBind { get; set; }
     
     PropertyInfo Property { get; set; }
+    
+    ObjectTypeValue Type { get; set; }
 }

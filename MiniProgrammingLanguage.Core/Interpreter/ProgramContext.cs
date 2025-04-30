@@ -47,6 +47,11 @@ public class ProgramContext
 
     public void Import(ProgramContext programContext, Location location)
     {
+        if (programContext is null)
+        {
+            return;
+        }
+        
         if (_importedModules.Contains(programContext.Module))
         {
             return;
@@ -63,6 +68,11 @@ public class ProgramContext
     
     public void Import(ImplementModule implementModule)
     {
+        if (implementModule is null)
+        {
+            return;
+        }
+        
         if (!implementModule.IsGlobal && _importedModules.Contains(implementModule.Name))
         {
             return;

@@ -66,7 +66,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
                     continue;
                 } 
                 
-                if (_numberTokenizer.TryGetDigit(out _))
+                if (string.IsNullOrEmpty(buffer) && _numberTokenizer.TryGetDigit(out _))
                 {
                     tokens.Add(_numberTokenizer.Tokenize());
                     

@@ -15,7 +15,7 @@ public class LanguageFunctionInstanceBuilder
 
     public FunctionArgument[] Arguments { get; set; } = Array.Empty<FunctionArgument>();
 
-    public Func<FunctionExecuteContext, AbstractValue> Bind { get; set; }
+    public Func<LanguageFunctionExecuteContext, AbstractValue> Bind { get; set; }
     
     public ObjectTypeValue Return { get; set; } = ObjectTypeValue.Any;
     
@@ -67,7 +67,7 @@ public class LanguageFunctionInstanceBuilder
         return this;
     }
     
-    public LanguageFunctionInstanceBuilder SetBind(Func<FunctionExecuteContext, AbstractValue> bind)
+    public LanguageFunctionInstanceBuilder SetBind(Func<LanguageFunctionExecuteContext, AbstractValue> bind)
     {
         Bind = bind;
         

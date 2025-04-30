@@ -19,10 +19,10 @@ public static class RequireDependencyFunction
             .Build();
     }
 
-    public static AbstractValue RequireDependency(FunctionExecuteContext context)
+    public static AbstractValue RequireDependency(LanguageFunctionExecuteContext context)
     {
         var argument = context.Arguments.First();
-        var content = argument.Evaluate(context.ProgramContext).AsString(context.ProgramContext, context.Location);
+        var content = argument.AsString(context.ProgramContext, context.Location);
 
         foreach (var module in context.ProgramContext.Imported)
         {

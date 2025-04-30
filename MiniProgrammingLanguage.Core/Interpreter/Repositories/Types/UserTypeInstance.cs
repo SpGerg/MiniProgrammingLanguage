@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Exceptions;
@@ -22,6 +23,8 @@ public class UserTypeInstance : ITypeInstance
     public required IReadOnlyList<ITypeMember> Members { get; set; }
 
     public required FunctionBodyExpression Root { get; init; }
+    
+    public Type Type { get; set; }
     
     public AccessType Access { get; init; }
 
@@ -98,6 +101,8 @@ public class UserTypeInstance : ITypeInstance
             });
         }
 
-        return new TypeValue(Name, this, result);
+        var typeValue = new TypeValue(this, result);
+        
+        return typeValue;
     }
 }

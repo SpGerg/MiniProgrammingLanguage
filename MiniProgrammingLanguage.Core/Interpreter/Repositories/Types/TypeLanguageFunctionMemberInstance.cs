@@ -37,6 +37,8 @@ public class TypeLanguageFunctionMemberInstance : ITypeLanguageFunctionMember
 
     public AbstractValue Default { get; } = new NoneValue();
 
+    private readonly FunctionValue _functionValue;
+
     public FunctionValue Create(FunctionBodyExpression root = null)
     {
         return new FunctionValue(new LanguageFunctionInstance
@@ -46,7 +48,7 @@ public class TypeLanguageFunctionMemberInstance : ITypeLanguageFunctionMember
             Bind = context => Bind.Invoke(new TypeFunctionExecuteContext
             {
                 ProgramContext = context.ProgramContext,
-                Arguments = context.Arguments,
+                Arguments = context.ArgumentsExpressions,
                 Location = context.Location,
                 Member = null,
                 TokenSource = context.TokenSource,

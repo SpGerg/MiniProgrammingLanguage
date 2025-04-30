@@ -6,6 +6,8 @@ namespace MiniProgrammingLanguage.Tests
     {
         public string Name { get; set; }
 
+        public AnotherTest AnotherTest { get; set; }
+
         public string Execute(string content)
         {
             Console.WriteLine(content);

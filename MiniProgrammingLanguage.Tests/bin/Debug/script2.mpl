@@ -1,15 +1,29 @@
-type test
+type TestProject
     @sharp_kit_ignore_case
     bindable name
     @sharp_kit_ignore_case
     bindable function execute(argument)
+    @sharp_kit_ignore_case
+    bindable anotherTest
+end
+
+type g
+    name
 end
 
 instance = create_type("MiniProgrammingLanguage.Tests.TestProject")
 
-result = create_based_on(create test, instance)
+rgr = create g
+rgr.name = 123
+
+result = create_based_on(create TestProject, instance)
+result.anotherTest = create AnotherTest
+result.anotherTest.Tg = "123"
+
 result.name = "Hello, world"
+
+print(result.anotherTest.Testificate2(result, true, true))
 
 other = result.execute("Yes")
 
-print(other)
+print(result)

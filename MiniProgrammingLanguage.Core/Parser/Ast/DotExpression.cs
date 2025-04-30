@@ -135,12 +135,8 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             );
             return (null, null);
         }
-
-        var memberValue = GetMemberValue(context, parent, member);
-
-        return memberValue is TypeValue nestedType
-            ? (nestedType, GetTypeMember(context, nestedType, Right))
-            : (parent, member);
+        
+        return (parent, member);
     }
 
     private ITypeMemberValue GetTypeMember(
@@ -155,6 +151,11 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 Identifier = variableExpression.Name
             });
 
+            if (result is null)
+            {
+                InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, variableExpression.Name, Location);
+            }
+            
             return result;
         }
 
@@ -166,6 +167,11 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             {
                 Identifier = functionCallExpression.Name
             });
+
+            if (function is null)
+            {
+                InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, functionCallExpression.Name, Location);
+            }
 
             if (function.Instance is ITypeLanguageFunctionMember languageFunctionMember)
             {
@@ -238,6 +244,8 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
     {
         return member switch
         {
+            TypeLanguageFunctionMemberValue languageFunction => ExecuteFunction(context, parent, languageFunction),
+            TypeLanguageVariableMemberValue languageVariable => GetVariableValue(context, parent, languageVariable),
             ITypeVariableMemberValue variable => GetVariableValue(context, parent, variable),
             ITypeFunctionMemberValue function => ExecuteFunction(context, parent, function),
             _ => throw new NotSupportedException($"Unsupported member type: {member.GetType()}")

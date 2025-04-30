@@ -19,10 +19,9 @@ public static class GetBaseFunction
             .Build();
     }
 
-    private static AbstractValue GetBase(FunctionExecuteContext context)
+    private static AbstractValue GetBase(LanguageFunctionExecuteContext context)
     {
-        var argument = context.Arguments.FirstOrDefault();
-        var content = argument.Evaluate(context.ProgramContext);
+        var content = context.Arguments.FirstOrDefault();
 
         var typeValue = (TypeValue) content;
 
