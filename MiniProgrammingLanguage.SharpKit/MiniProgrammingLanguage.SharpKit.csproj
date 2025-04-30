@@ -41,13 +41,16 @@
     <ItemGroup>
         <Compile Include="Exceptions\ModuleNotFoundException.cs" />
         <Compile Include="Exceptions\NotSameNameException.cs" />
-        <Compile Include="Functions\CreateBasedOnFunction.cs" />
-        <Compile Include="Functions\CreateTypeFunction.cs" />
+        <Compile Include="Factory\ClassCreator.cs" />
+        <Compile Include="Factory\MethodBinder.cs" />
+        <Compile Include="Factory\PropertyBinder.cs" />
+        <Compile Include="Factory\TypesFactory.cs" />
+        <Compile Include="Functions\BindFunction.cs" />
+        <Compile Include="Functions\GetTypeFunction.cs" />
         <Compile Include="Functions\GetBaseFunction.cs" />
         <Compile Include="Functions\RequireDependencyFunction.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="SharpKitModule.cs" />
-        <Compile Include="TypesFactory.cs" />
         <Compile Include="Variables\SharpKitVariable.cs" />
     </ItemGroup>
     <ItemGroup>

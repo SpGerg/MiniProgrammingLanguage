@@ -25,6 +25,13 @@ public class CreateExpression : AbstractEvaluableExpression
             InterpreterThrowHelper.ThrowTypeNotFoundException(Name, Location);
         }
 
-        return type.Create();
+        var result = type.Create();
+
+        if (result.Value.Type is not null)
+        {
+            result.ObjectTarget = Activator.CreateInstance(result.Value.Type);
+        }
+
+        return result;
     }
 }

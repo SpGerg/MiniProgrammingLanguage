@@ -54,6 +54,16 @@ public class ValueCompatibilityVisitor : IValueVisitor
         return Value.Type is ValueType.None;
     }
 
+    public bool Visit(TypeInstanceValue typeInstanceValue)
+    {
+        if (Value is not TypeInstanceValue instanceValue)
+        {
+            return false;
+        }
+
+        return typeInstanceValue.Value == instanceValue.Value;
+    }
+
     public bool Visit(CSharpObjectValue cSharpObjectValue)
     {
         if (Value is not CSharpObjectValue cSharpObject)

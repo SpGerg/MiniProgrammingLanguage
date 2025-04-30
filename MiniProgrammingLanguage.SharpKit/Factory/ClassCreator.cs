@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using MiniProgrammingLanguage.Core;
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
@@ -15,119 +14,28 @@ using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 using MiniProgrammingLanguage.SharpKit.Functions;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
-namespace MiniProgrammingLanguage.SharpKit;
+namespace MiniProgrammingLanguage.SharpKit.Factory;
 
-public static class TypesFactory
+public static class ClassCreator
 {
-    public const string GeneratedMemberAttribute = "sharp_kit_generated_type";
+    public static readonly Type AsyncAttribute = typeof(AsyncStateMachineAttribute);
     
-    private static readonly Type asyncAttribute = typeof(AsyncStateMachineAttribute);
-    
-    public static AbstractValue Create(object target, ProgramContext programContext, out ImplementModule implementModule)
+    public static TypeValue Create(Type target, ProgramContext programContext, object objectTarget, out ImplementModule implementModule)
     {
-        AbstractValue result = target switch
-        {
-            string => new StringValue(Convert.ToString(target)),
-            int => new RoundNumberValue(Convert.ToInt32(target)),
-            float => new NumberValue(Convert.ToSingle(target)),
-            bool => new BooleanValue(Convert.ToBoolean(target)),
-            null => new NoneValue(),
-            _ => null
-        };
-
-        if (result is null)
-        {
-            var types = new List<ITypeInstance>();
-            var type = CreateClassOrStructureByObject(target, programContext, ref types);
-
-            implementModule = new ImplementModule
-            {
-                Name = "global",
-                Types = types
-            };
-
-            return type;
-        }
-
-        implementModule = null;
-        return result;
-    }
-
-    public static object Create(AbstractValue target, ProgramContext programContext)
-    {
-        object result = target.Type switch
-        {
-            ValueType.String => target.AsString(null, Location.Default),
-            ValueType.RoundNumber => target.AsRoundNumber(null, Location.Default),
-            ValueType.Number => target.AsNumber(null, Location.Default),
-            ValueType.Boolean => target.AsBoolean(null, Location.Default),
-            ValueType.Void => typeof(void),
-            _ => null,
-        };
-
-        if (result is null && target is TypeValue typeValue)
-        {
-            return typeValue.ObjectTarget ?? (typeValue.ObjectTarget = Activator.CreateInstance(typeValue.Value.Type));
-        }
-        
-        return result;
-    }
-    
-    public static ObjectTypeValue GetObjectTypeByType(Type target, ProgramContext programContext, object objectTarget, out ImplementModule implementModule)
-    {
-        if (target == typeof(string))
-        {
-            implementModule = null;
-            return ObjectTypeValue.String;
-        }
-        
-        if (target == typeof(int))
-        {
-            implementModule = null;
-            return ObjectTypeValue.RoundNumber;
-        }
-        
-        if (target == typeof(bool))
-        {
-            implementModule = null;
-            return ObjectTypeValue.Boolean;
-        }
-        
-        if (target == typeof(object))
-        {
-            implementModule = null;
-            return ObjectTypeValue.Object;
-        }
-        
-        if (target == typeof(void))
-        {
-            implementModule = null;
-            return ObjectTypeValue.Void;
-        }
-
         var types = new List<ITypeInstance>();
-        var type = CreateClassOrStructureByType(target, programContext, objectTarget, ref types);
-
+        var type = CreateClassOrStructure(target, programContext, objectTarget, types);
+        
         implementModule = new ImplementModule
         {
             Name = "global",
             Types = types
         };
 
-        return new ObjectTypeValue(type.Name, ValueType.Type);
+        return type;
     }
 
-    public static ObjectTypeValue GetObjectTypeByObject(object target, ProgramContext programContext, out ImplementModule implementModule)
-    {
-        return GetObjectTypeByType(target.GetType(), programContext, target, out implementModule);
-    }
-
-    public static AbstractValue CreateClassOrStructureByObject(object target, ProgramContext programContext, ref List<ITypeInstance> types)
-    {
-        return CreateClassOrStructureByType(target.GetType(), programContext, target, ref types);
-    }
-    
-    public static AbstractValue CreateClassOrStructureByType(Type type, ProgramContext programContext, object objectTarget, ref List<ITypeInstance> types)
+    private static TypeValue CreateClassOrStructure(Type type, ProgramContext programContext, object objectTarget,
+        List<ITypeInstance> types)
     {
         var exists = types.FirstOrDefault(entity => entity.Name == type.Name);
 
@@ -186,7 +94,7 @@ public static class TypesFactory
 
         return result;
     }
-
+    
     public static TypeLanguageVariableMemberInstance CreateVariableOfFunctionMemberByProperty(ITypeLanguageFunctionMember functionMember)
     {
         return new TypeLanguageVariableMemberInstance
@@ -206,7 +114,7 @@ public static class TypesFactory
     public static TypeLanguageVariableMemberInstance CreateVariableMemberByProperty(PropertyInfo property,
         ProgramContext programContext, object objectTarget, ref List<ITypeInstance> types)
     {
-        var type = GetObjectTypeByType(property.PropertyType, programContext, objectTarget, out var implementModule);
+        var type = TypesFactory.GetObjectTypeByType(property.PropertyType, programContext, objectTarget, out var implementModule);
         
         if (implementModule is not null)
         {
@@ -221,8 +129,8 @@ public static class TypesFactory
             {
                 Identifier = property.Name
             },
-            GetBind = CreateBasedOnFunction.GetBindProperty,
-            SetBind = CreateBasedOnFunction.SetBindProperty,
+            GetBind = PropertyBinder.GetBindProperty,
+            SetBind = PropertyBinder.SetBindProperty,
             Type = type,
             Property = property
         };
@@ -231,7 +139,7 @@ public static class TypesFactory
     public static TypeLanguageFunctionMemberInstance CreateFunctionMemberByMethod(MethodInfo method, ProgramContext programContext, object objectTarget, 
         ref List<ITypeInstance> types)
     {
-        var returnType = GetObjectTypeByType(method.ReturnType, programContext, objectTarget, out var implementModule);
+        var returnType = TypesFactory.GetObjectTypeByType(method.ReturnType, programContext, objectTarget, out var implementModule);
             
         if (implementModule is not null)
         {
@@ -244,7 +152,7 @@ public static class TypesFactory
         for (var i = 0; i < parameters.Length; i++)
         {
             var parameter = parameters[i];
-            var parameterType = GetObjectTypeByType(parameter.ParameterType, programContext, objectTarget, out implementModule);
+            var parameterType = TypesFactory.GetObjectTypeByType(parameter.ParameterType, programContext, objectTarget, out implementModule);
                 
             if (implementModule is not null)
             {
@@ -263,9 +171,9 @@ public static class TypesFactory
                 Identifier = method.Name
             },
             Return = returnType,
-            IsAsync = method.GetCustomAttribute(asyncAttribute) is not null,
+            IsAsync = method.GetCustomAttribute(AsyncAttribute) is not null,
             Arguments = arguments,
-            Bind = CreateBasedOnFunction.ExecuteBindMethod,
+            Bind = MethodBinder.ExecuteBindMethod,
             Method = method,
             Access = AccessType.Bindable | AccessType.Static
         };

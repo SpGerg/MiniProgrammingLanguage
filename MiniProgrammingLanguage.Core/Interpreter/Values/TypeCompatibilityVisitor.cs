@@ -44,6 +44,21 @@ public class TypeCompatibilityVisitor : IValueVisitor
         return Type.ValueType is ValueType.None;
     }
 
+    public bool Visit(TypeInstanceValue typeInstanceValue)
+    {
+        if (Type.Name != typeInstanceValue.Name)
+        {
+            return string.IsNullOrEmpty(Type.Name);
+        }
+        
+        if (Type.ValueType is ValueType.Type)
+        {
+            return true;
+        }
+        
+        return Type.ValueType is ValueType.TypeInstance;
+    }
+
     public bool Visit(CSharpObjectValue cSharpObjectValue)
     {
         return Type.ValueType is ValueType.CSharpObject;

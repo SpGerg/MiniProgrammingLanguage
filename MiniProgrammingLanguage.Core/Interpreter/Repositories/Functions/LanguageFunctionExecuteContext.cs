@@ -9,6 +9,7 @@ public class LanguageFunctionExecuteContext
     public LanguageFunctionExecuteContext(FunctionExecuteContext context, AbstractValue[] arguments)
     {
         ProgramContext = context.ProgramContext;
+        Root = context.Root;
         ArgumentsExpressions = context.Arguments;
         Arguments = arguments;
         Location = context.Location;
@@ -21,9 +22,11 @@ public class LanguageFunctionExecuteContext
     
     public AbstractValue[] Arguments { get;}
 
-    public CancellationToken Token => TokenSource.Token;
-    
+    public FunctionBodyExpression Root { get; }
+
     public Location Location { get; }
+    
+    public CancellationToken Token => TokenSource.Token;
     
     internal CancellationTokenSource TokenSource { get; }
 }

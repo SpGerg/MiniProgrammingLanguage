@@ -69,6 +69,7 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
             var context = new FunctionExecuteContext
             {
                 ProgramContext = programContext,
+                Root = Root,
                 Arguments = Arguments,
                 Location = Location
             };
@@ -113,7 +114,8 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
 
         return function.Evaluate(new FunctionExecuteContext
         {
-            ProgramContext = programContext, 
+            ProgramContext = programContext,
+            Root = Root,
             Arguments = Arguments,
             Location = Location
         });

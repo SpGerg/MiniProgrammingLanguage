@@ -18,15 +18,18 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class DotExpression : AbstractEvaluableExpression, IStatement
 {
-    public DotExpression(AbstractEvaluableExpression left, AbstractEvaluableExpression right, Location location) : base(location)
+    public DotExpression(AbstractEvaluableExpression left, AbstractEvaluableExpression right, FunctionBodyExpression root, Location location) : base(location)
     {
         Left = left;
         Right = right;
+        Root = root;
     }
 
     public AbstractEvaluableExpression Left { get; }
     
     public AbstractEvaluableExpression Right { get; }
+    
+    public FunctionBodyExpression Root { get; }
     
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
@@ -57,6 +60,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                     Type = typeValue,
                     Arguments = ((FunctionCallExpression) Right).Arguments,
                     Member = functionMember.Instance,
+                    Root = Root,
                     Location = Location
                 };
                 
@@ -185,6 +189,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                         Type = type,
                         Member = languageFunctionMember,
                         Arguments = functionCallExpression.Arguments,
+                        Root = Root,
                         Location = Location
                     })
                 };
@@ -227,6 +232,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 {
                     ProgramContext = context,
                     Arguments = functionCallExpression.Arguments,
+                    Root = Root,
                     Location = Location
                 })
             };
@@ -318,6 +324,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             Type = type,
             Member = member,
             Arguments = arguments,
+            Root = Root,
             Location = Location
         };
     }

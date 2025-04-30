@@ -15,8 +15,8 @@ public static class SharpKitModule
     public static ImplementModule Create()
     {
         var requireDependency = RequireDependencyFunction.Create();
-        var createBasedOn = CreateBasedOnFunction.Create();
-        var createType = CreateTypeFunction.Create();
+        var createBasedOn = BindFunction.Create();
+        var createType = GetTypeFunction.Create();
         var getBase = GetBaseFunction.Create();
 
         var sharpKitVariable = SharpKitVariable.Create();

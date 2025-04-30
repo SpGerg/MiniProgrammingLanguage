@@ -24,6 +24,8 @@ public class ObjectTypeValue : AbstractValue
     
     public static ObjectTypeValue CSharpObject => new(string.Empty, ValueType.CSharpObject);
     
+    public static ObjectTypeValue TypeInstance => new(string.Empty, ValueType.TypeInstance);
+    
     public ObjectTypeValue(string name, ValueType valueType) : base(name)
     {
         Name = name;

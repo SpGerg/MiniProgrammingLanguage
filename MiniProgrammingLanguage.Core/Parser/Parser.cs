@@ -330,18 +330,18 @@ public class Parser
                     case AssignTypeMemberExpression assignTypeMemberExpression:
                     {
                         var parent = new DotExpression(last,
-                            assignTypeMemberExpression.Left.Left, right.Location);
+                            assignTypeMemberExpression.Left.Left, _root, right.Location);
                         var member = new DotExpression(parent,
-                            assignTypeMemberExpression.Left.Right, right.Location);
+                            assignTypeMemberExpression.Left.Right, _root, right.Location);
                         right = new AssignTypeMemberExpression(member, assignTypeMemberExpression.Right,
                             right.Location);
                         return right;
                     }
                     case DotExpression dotExpression:
-                        return new DotExpression(new DotExpression(left, dotExpression.Left, left.Location),
-                            dotExpression.Right, dotExpression.Location);
+                        return new DotExpression(new DotExpression(left, dotExpression.Left, _root, left.Location),
+                            dotExpression.Right, _root, dotExpression.Location);
                     default:
-                        return new DotExpression(left, right, left.Location);
+                        return new DotExpression(left, right, _root, left.Location);
                 }
             }
 
@@ -379,7 +379,7 @@ public class Parser
             {
                 if (IsWithOffset(-3, TokenType.Dot))
                     return new AssignTypeMemberExpression(
-                        new DotExpression(last, left, left.Location),
+                        new DotExpression(last, left, _root, left.Location),
                         ParseMultiplicative(),
                         left.Location
                     );

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Parser;
@@ -37,8 +36,6 @@ public class TypeLanguageFunctionMemberInstance : ITypeLanguageFunctionMember
 
     public AbstractValue Default { get; } = new NoneValue();
 
-    private readonly FunctionValue _functionValue;
-
     public FunctionValue Create(FunctionBodyExpression root = null)
     {
         return new FunctionValue(new LanguageFunctionInstance
@@ -48,6 +45,7 @@ public class TypeLanguageFunctionMemberInstance : ITypeLanguageFunctionMember
             Bind = context => Bind.Invoke(new TypeFunctionExecuteContext
             {
                 ProgramContext = context.ProgramContext,
+                Root = context.Root,
                 Arguments = context.ArgumentsExpressions,
                 Location = context.Location,
                 Member = null,

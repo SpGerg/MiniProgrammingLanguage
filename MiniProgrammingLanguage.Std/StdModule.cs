@@ -15,6 +15,7 @@ public static class StdModule
     {
         var print = PrintFunction.Create();
         var sleep = SleepFunction.Create();
+        var typeofFunction = TypeofFunction.Create();
 
         var task = TaskType.Create();
 
@@ -24,7 +25,7 @@ public static class StdModule
         {
             Name = Name,
             Types = new[] { task },
-            Functions = new[] { print, sleep },
+            Functions = new[] { print, sleep, typeofFunction },
             Variables = new[] { module },
             Enums = Array.Empty<IEnumInstance>()
         };

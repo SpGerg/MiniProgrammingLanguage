@@ -1,29 +1,16 @@
-type TestProject
+type Player
     @sharp_kit_ignore_case
     bindable name
     @sharp_kit_ignore_case
-    bindable function execute(argument)
-    @sharp_kit_ignore_case
-    bindable anotherTest
+    bindable function broadcast(content)
 end
 
-type g
-    name
+player_class = get_type("MiniProgrammingLanguage.Tests.Player")
+
+bind(typeof("Player"), player_class)
+
+player = create Player
+
+for i in 1000000
+    player.broadcast(i)
 end
-
-instance = create_type("MiniProgrammingLanguage.Tests.TestProject")
-
-rgr = create g
-rgr.name = 123
-
-result = create_based_on(create TestProject, instance)
-result.anotherTest = create AnotherTest
-result.anotherTest.Tg = "123"
-
-result.name = "Hello, world"
-
-print(result.anotherTest.Testificate2(result, true, true))
-
-other = result.execute("Yes")
-
-print(result)

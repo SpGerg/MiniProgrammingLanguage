@@ -41,6 +41,7 @@
     <ItemGroup>
         <Compile Include="Functions\PrintFunction.cs" />
         <Compile Include="Functions\SleepFunction.cs" />
+        <Compile Include="Functions\TypeofFunction.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="StdModule.cs" />
         <Compile Include="Types\TaskType.cs" />

@@ -130,6 +130,7 @@
         <Compile Include="Interpreter\Values\Type\Interfaces\ITypeFunctionMemberValue.cs" />
         <Compile Include="Interpreter\Values\Type\Interfaces\ITypeMemberValue.cs" />
         <Compile Include="Interpreter\Values\Type\Interfaces\ITypeVariableMemberValue.cs" />
+        <Compile Include="Interpreter\Values\Type\TypeInstanceValue.cs" />
         <Compile Include="Interpreter\Values\Type\TypeLanguageFunctionMemberValue.cs" />
         <Compile Include="Interpreter\Values\Type\TypeLanguageVariableMemberValue.cs" />
         <Compile Include="Interpreter\Values\Type\TypeMemberValue.cs" />
