@@ -9,7 +9,7 @@ public class BooleanExpression : AbstractEvaluableExpression
     {
         Value = value;
     }
-    
+
     public bool Value { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)

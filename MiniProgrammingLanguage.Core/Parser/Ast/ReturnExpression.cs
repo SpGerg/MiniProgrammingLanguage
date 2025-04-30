@@ -11,9 +11,9 @@ public class ReturnExpression : AbstractEvaluableExpression, IControlFlowStateme
     {
         EvaluableExpression = evaluableExpression;
     }
-    
+
     public AbstractEvaluableExpression EvaluableExpression { get; }
-    
+
     public StateType State { get; private set; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)

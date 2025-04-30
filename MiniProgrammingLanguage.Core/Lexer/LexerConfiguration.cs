@@ -62,7 +62,7 @@ public readonly struct LexerConfiguration
             { TokenType.Bindable, "bindable" }
         }
     };
-    
+
     public IReadOnlyDictionary<TokenType, string> Configuration { get; init; }
 
     public string GetString(TokenType tokenType)
@@ -71,7 +71,7 @@ public readonly struct LexerConfiguration
     }
 
     public TokenType IsToken(char value) => IsToken(value.ToString());
-    
+
     public TokenType IsToken(string value)
     {
         var result = Configuration.FirstOrDefault(pair => pair.Value == value);
@@ -81,7 +81,7 @@ public readonly struct LexerConfiguration
         {
             return TokenType.None;
         }
-        
+
         return result.Key;
     }
 }

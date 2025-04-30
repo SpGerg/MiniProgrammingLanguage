@@ -11,9 +11,9 @@ public class TypeLanguageVariableMemberValue : ITypeVariableMemberValue
         _typeMember = typeMember;
         Instance = typeMember;
     }
-    
+
     public required ObjectTypeValue Type { get; init; }
-    
+
     public ITypeMember Instance { get; }
 
     private readonly ITypeLanguageVariableMember _typeMember;
@@ -22,9 +22,10 @@ public class TypeLanguageVariableMemberValue : ITypeVariableMemberValue
     {
         if (_typeMember.GetBind is null)
         {
-            InterpreterThrowHelper.ThrowFunctionNotDeclaredException(_typeMember.Identification.Identifier, getterContext.Location);
+            InterpreterThrowHelper.ThrowFunctionNotDeclaredException(_typeMember.Identification.Identifier,
+                getterContext.Location);
         }
-        
+
         return _typeMember.GetBind.Invoke(getterContext);
     }
 
@@ -32,9 +33,10 @@ public class TypeLanguageVariableMemberValue : ITypeVariableMemberValue
     {
         if (_typeMember.SetBind is null)
         {
-            InterpreterThrowHelper.ThrowFunctionNotDeclaredException(_typeMember.Identification.Identifier, setterContext.Location);
+            InterpreterThrowHelper.ThrowFunctionNotDeclaredException(_typeMember.Identification.Identifier,
+                setterContext.Location);
         }
-        
+
         _typeMember.SetBind.Invoke(setterContext);
     }
 }

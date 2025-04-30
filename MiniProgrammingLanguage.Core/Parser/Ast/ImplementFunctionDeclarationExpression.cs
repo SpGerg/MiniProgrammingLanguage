@@ -10,14 +10,15 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class ImplementFunctionDeclarationExpression : AbstractEvaluableExpression, IStatement
 {
-    public ImplementFunctionDeclarationExpression(string type, FunctionDeclarationExpression functionDeclarationExpression, Location location) : base(location)
+    public ImplementFunctionDeclarationExpression(string type,
+        FunctionDeclarationExpression functionDeclarationExpression, Location location) : base(location)
     {
         Type = type;
         FunctionDeclarationExpression = functionDeclarationExpression;
     }
 
     public string Type { get; }
-    
+
     public FunctionDeclarationExpression FunctionDeclarationExpression { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
@@ -30,9 +31,9 @@ public class ImplementFunctionDeclarationExpression : AbstractEvaluableExpressio
 
             return null;
         }
-        
+
         var functionInstance = FunctionDeclarationExpression.Create(programContext.Module);
-        
+
         var member = userTypeInstance.Get(new FunctionTypeMemberIdentification
         {
             Identifier = functionInstance.Name
@@ -44,7 +45,7 @@ public class ImplementFunctionDeclarationExpression : AbstractEvaluableExpressio
 
             return null;
         }
-        
+
         functionMemberInstance.Value = functionInstance;
 
         return new VoidValue();

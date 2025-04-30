@@ -15,7 +15,7 @@ public class EnumMemberValue : AbstractValue
     public override ValueType[] CanCast { get; } = { ValueType.String };
 
     public string Member { get; }
-    
+
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);

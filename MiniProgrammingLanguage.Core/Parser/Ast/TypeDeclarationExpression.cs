@@ -15,22 +15,23 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
 {
-    public TypeDeclarationExpression(string name, IReadOnlyList<ITypeMemberExpression> members, AccessType accessType, FunctionBodyExpression root, Location location) : base(location)
+    public TypeDeclarationExpression(string name, IReadOnlyList<ITypeMemberExpression> members, AccessType accessType,
+        FunctionBodyExpression root, Location location) : base(location)
     {
         Name = name;
         Members = members;
         Access = accessType;
         Root = root;
     }
-    
+
     public string Name { get; }
-    
+
     public IReadOnlyList<ITypeMemberExpression> Members { get; }
-    
+
     public FunctionBodyExpression Root { get; }
-    
+
     public AccessType Access { get; }
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var members = new List<ITypeMember>();
@@ -38,7 +39,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
         foreach (var member in Members)
         {
             var result = member.Create(programContext.Module);
-            
+
             if (result is TypeFunctionMemberInstance typeFunctionMemberInstance)
             {
                 var value = typeFunctionMemberInstance.Create();
@@ -58,7 +59,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
 
                 members.Add(variableMember);
             }
-            
+
             members.Add(result);
         }
 
@@ -70,7 +71,7 @@ public class TypeDeclarationExpression : AbstractEvaluableExpression, IStatement
             Type = new ObjectTypeValue(Name, ValueType.Type),
             Root = Root
         });
-        
+
         programContext.Types.Add(new UserTypeInstance
         {
             Name = Name,

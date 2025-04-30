@@ -17,19 +17,20 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
 {
-    public FunctionCallExpression(string name, AbstractEvaluableExpression[] arguments, FunctionBodyExpression root, Location location) : base(location)
+    public FunctionCallExpression(string name, AbstractEvaluableExpression[] arguments, FunctionBodyExpression root,
+        Location location) : base(location)
     {
         Name = name;
         Arguments = arguments;
         Root = root;
     }
-    
+
     public string Name { get; }
-    
+
     public AbstractEvaluableExpression[] Arguments { get; }
-    
+
     public FunctionBodyExpression Root { get; }
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var function = programContext.Functions.Get(Root, Name, programContext.Module, Location);
@@ -51,7 +52,8 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
 
             if (value is not FunctionValue functionValue)
             {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Function.ToString(), value.ToString(), Location);
+                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Function.ToString(), value.ToString(),
+                    Location);
 
                 return null;
             }
@@ -75,7 +77,7 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
             };
 
             Task<AbstractValue> task = null;
-            
+
             task = Task.Run(() =>
             {
                 var result = function.Evaluate(context);
@@ -88,7 +90,7 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
 
                 return result;
             });
-            
+
             programContext.Tasks.Add(new TaskInstance
             {
                 Task = task,
@@ -101,12 +103,12 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
             {
                 InterpreterThrowHelper.ThrowTypeNotFoundException(Name, Location);
             }
-            
+
             var taskTypeValue = taskType.Create();
 
             var identification = new KeyTypeMemberIdentification { Identifier = "id" };
-            var member = (TypeMemberValue) taskTypeValue.Get(identification);
-            
+            var member = (TypeMemberValue)taskTypeValue.Get(identification);
+
             member.Value = new NumberValue(task.Id);
 
             return taskTypeValue;

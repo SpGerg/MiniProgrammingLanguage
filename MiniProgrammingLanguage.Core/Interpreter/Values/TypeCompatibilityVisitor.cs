@@ -11,7 +11,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
     {
         Type = objectTypeValue;
     }
-    
+
     public ObjectTypeValue Type { get; }
 
     public bool Visit(TypeValue typeValue)
@@ -20,7 +20,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
         {
             return true;
         }
-        
+
         return Type.ValueType is ValueType.Type && typeValue.Name == Type.Name;
     }
 
@@ -50,12 +50,12 @@ public class TypeCompatibilityVisitor : IValueVisitor
         {
             return string.IsNullOrEmpty(Type.Name);
         }
-        
+
         if (Type.ValueType is ValueType.Type)
         {
             return true;
         }
-        
+
         return Type.ValueType is ValueType.TypeInstance;
     }
 
@@ -75,7 +75,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
         {
             return true;
         }
-        
+
         return Type.ValueType == objectTypeValue.ValueType && Type.Name == objectTypeValue.Name;
     }
 
@@ -90,7 +90,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
         {
             return Type.ValueType is ValueType.Enum;
         }
-        
+
         return Type.ValueType is ValueType.Enum && Type.Name == enumValue.Value.Name;
     }
 
@@ -105,7 +105,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
         {
             return Type.ValueType is ValueType.EnumMember;
         }
-        
+
         return Type.ValueType is ValueType.EnumMember && Type.Name == enumMemberValue.Name;
     }
 

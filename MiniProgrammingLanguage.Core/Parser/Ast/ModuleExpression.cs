@@ -12,7 +12,7 @@ public class ModuleExpression : AbstractEvaluableExpression, IStatement
     }
 
     public StringExpression StringExpression { get; }
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         programContext.Module = StringExpression.Value;

@@ -8,24 +8,25 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class BinaryExpression : AbstractEvaluableExpression
 {
-    public BinaryExpression(BinaryOperatorType operatorType, AbstractEvaluableExpression left, AbstractEvaluableExpression right, Location location) : base(location)
+    public BinaryExpression(BinaryOperatorType operatorType, AbstractEvaluableExpression left,
+        AbstractEvaluableExpression right, Location location) : base(location)
     {
         Operator = operatorType;
         Left = left;
         Right = right;
     }
-    
+
     public BinaryOperatorType Operator { get; }
-    
+
     public AbstractEvaluableExpression Left { get; }
-    
+
     public AbstractEvaluableExpression Right { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         return Operator switch
         {
-            _ => EvaluateWithSameValue(programContext),
+            _ => EvaluateWithSameValue(programContext)
         };
     }
 
@@ -33,9 +34,9 @@ public class BinaryExpression : AbstractEvaluableExpression
     {
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
-        
+
         var leftType = new ObjectTypeValue(left.Name, left.Type);
-        
+
         if (!leftType.Is(right))
         {
             InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
@@ -67,28 +68,30 @@ public class BinaryExpression : AbstractEvaluableExpression
     {
         return new BooleanValue(left.AsBoolean(context, Location) && right.AsBoolean(context, Location));
     }
-    
+
     private AbstractValue Or(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         return new BooleanValue(left.AsBoolean(context, Location) || right.AsBoolean(context, Location));
     }
-    
+
     private AbstractValue Greater(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         return left.Type switch
         {
             ValueType.Number => new BooleanValue(left.AsNumber(context, Location) > right.AsNumber(context, Location)),
-            ValueType.RoundNumber => new BooleanValue(left.AsRoundNumber(context, Location) > right.AsRoundNumber(context, Location)),
+            ValueType.RoundNumber => new BooleanValue(left.AsRoundNumber(context, Location) >
+                                                      right.AsRoundNumber(context, Location)),
             _ => null
         };
     }
-    
+
     private AbstractValue Less(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         return left.Type switch
         {
             ValueType.Number => new BooleanValue(left.AsNumber(context, Location) < right.AsNumber(context, Location)),
-            ValueType.RoundNumber => new BooleanValue(left.AsRoundNumber(context, Location) < right.AsRoundNumber(context, Location)),
+            ValueType.RoundNumber => new BooleanValue(left.AsRoundNumber(context, Location) <
+                                                      right.AsRoundNumber(context, Location)),
             _ => null
         };
     }
@@ -97,51 +100,54 @@ public class BinaryExpression : AbstractEvaluableExpression
     {
         return new BooleanValue(left.Is(right));
     }
-    
+
     private AbstractValue Plus(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         return left.Type switch
         {
             ValueType.String => new StringValue(left.AsString(context, Location) + right.AsString(context, Location)),
             ValueType.Number => new NumberValue(left.AsNumber(context, Location) + right.AsNumber(context, Location)),
-            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) + right.AsNumber(context, Location)),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) +
+                                                     right.AsNumber(context, Location)),
             _ => null
         };
     }
-    
+
     private AbstractValue Minus(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         return left.Type switch
         {
             ValueType.Number => new NumberValue(left.AsNumber(context, Location) - right.AsNumber(context, Location)),
-            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) - right.AsNumber(context, Location)),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) -
+                                                     right.AsNumber(context, Location)),
             _ => null
         };
     }
-    
+
     private AbstractValue Multiplication(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         return left.Type switch
         {
             ValueType.Number => new NumberValue(left.AsNumber(context, Location) * right.AsNumber(context, Location)),
-            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) * right.AsNumber(context, Location)),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) *
+                                                     right.AsNumber(context, Location)),
             _ => null
         };
     }
-    
+
     private AbstractValue Division(ProgramContext context, AbstractValue left, AbstractValue right)
     {
         var rightNumber = right.AsNumber(context, Location);
-        
+
         if (rightNumber == 0)
         {
             InterpreterThrowHelper.ThrowDivideByZeroException(Location);
         }
-        
+
         return left.Type switch
         {
             ValueType.Number => new NumberValue(left.AsNumber(context, Location) / rightNumber),
-            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) / (int) rightNumber),
+            ValueType.RoundNumber => new NumberValue(left.AsNumber(context, Location) / (int)rightNumber),
             _ => null
         };
     }

@@ -9,7 +9,7 @@ public class TasksRepository : ITasksRepository
     public IEnumerable<ITaskInstance> Entities => _entities;
 
     private readonly List<ITaskInstance> _entities = new();
-    
+
     public void Add(ITaskInstance entity)
     {
         _entities.Add(entity);
@@ -39,14 +39,14 @@ public class TasksRepository : ITasksRepository
     {
         return _entities.FirstOrDefault(entity => entity.Task.Id == id);
     }
-    
+
     public void Clear()
     {
         foreach (var entity in _entities)
         {
             entity.Token.Cancel();
         }
-        
+
         _entities.Clear();
     }
 }

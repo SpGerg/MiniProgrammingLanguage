@@ -8,7 +8,8 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class FunctionBodyExpression : AbstractEvaluableExpression
 {
-    public FunctionBodyExpression(IStatement[] statements, FunctionBodyExpression root, Location location) : base(location)
+    public FunctionBodyExpression(IStatement[] statements, FunctionBodyExpression root, Location location) :
+        base(location)
     {
         Statements = statements;
         Root = root;
@@ -16,11 +17,11 @@ public class FunctionBodyExpression : AbstractEvaluableExpression
     }
 
     public IStatement[] Statements { get; set; }
-    
+
     public CancellationToken Token { get; set; }
-    
+
     public FunctionBodyExpression Root { get; }
-    
+
     public StateType State { get; private set; }
 
     public bool IsEnded => State is StateType.Stopped;
@@ -28,18 +29,18 @@ public class FunctionBodyExpression : AbstractEvaluableExpression
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var token = Token;
-        
+
         AbstractValue result = new VoidValue();
 
         State = StateType.Running;
-        
+
         foreach (var statement in Statements)
         {
             if (token.IsCancellationRequested)
             {
                 break;
             }
-            
+
             result = statement.Evaluate(programContext);
 
             if (statement is not IControlFlowStatement controlFlowStatement)

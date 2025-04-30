@@ -19,7 +19,7 @@ public class EnumValue : AbstractValue
     public override ValueType Type => ValueType.Enum;
 
     public override ValueType[] CanCast { get; } = { ValueType.String };
-    
+
     public IEnumInstance Value { get; }
 
     private KeyValuePair<string, int> _last;
@@ -47,7 +47,7 @@ public class EnumValue : AbstractValue
             {
                 continue;
             }
-            
+
             stringBuilder.Append(", ");
         }
 

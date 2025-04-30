@@ -11,20 +11,21 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
 {
-    public EnumDeclarationExpression(string name, IReadOnlyDictionary<string, int> members, FunctionBodyExpression root, AccessType access, Location location) : base(location)
+    public EnumDeclarationExpression(string name, IReadOnlyDictionary<string, int> members, FunctionBodyExpression root,
+        AccessType access, Location location) : base(location)
     {
         Name = name;
         Members = members;
         Access = access;
         Root = root;
     }
-    
+
     public string Name { get; }
-    
+
     public IReadOnlyDictionary<string, int> Members { get; }
-    
+
     public AccessType Access { get; }
-    
+
     public FunctionBodyExpression Root { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
@@ -39,7 +40,7 @@ public class EnumDeclarationExpression : AbstractEvaluableExpression, IStatement
         };
 
         var enumValue = enumInstance.Create();
-        
+
         programContext.Enums.Add(enumInstance, Location);
         programContext.Variables.Add(new UserVariableInstance
         {

@@ -7,9 +7,9 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 public class TypeMemberValue : ITypeVariableMemberValue
 {
     public required AbstractValue Value { get; set; }
-    
+
     public required ITypeMember Instance { get; init; }
-    
+
     public ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
     public AbstractValue GetValue(TypeMemberGetterContext getterContext)

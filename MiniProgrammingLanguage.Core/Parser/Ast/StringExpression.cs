@@ -11,7 +11,7 @@ public class StringExpression : AbstractEvaluableExpression
     }
 
     public override bool IsValue => true;
-    
+
     public string Value { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)

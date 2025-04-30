@@ -11,7 +11,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 public class UserVariableInstance : IVariableInstance
 {
     public required string Name { get; init; }
-    
+
     public required string Module { get; init; }
 
     public required FunctionBodyExpression Root { get; init; }
@@ -19,7 +19,7 @@ public class UserVariableInstance : IVariableInstance
     public ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
     public AbstractValue Value { get; set; } = new NoneValue();
-    
+
     public AccessType Access { get; init; }
 
     public AbstractValue GetValue(VariableGetterContext context)
@@ -31,8 +31,9 @@ public class UserVariableInstance : IVariableInstance
 
         return Value.IsValueType ? Value.Copy() : Value;
     }
-    
-    public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
+
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
+        out AbstractLanguageException exception)
     {
         if (instance is not IVariableInstance variableInstance)
         {
@@ -55,7 +56,7 @@ public class UserVariableInstance : IVariableInstance
         Value = variableInstance.GetValue(new VariableGetterContext
         {
             ProgramContext = programContext,
-            Location = location,
+            Location = location
         });
 
         exception = null;

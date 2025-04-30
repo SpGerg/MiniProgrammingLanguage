@@ -9,10 +9,11 @@ public interface IInstance
     string Name { get; }
 
     string Module { get; }
-    
+
     AccessType Access { get; }
 
     FunctionBodyExpression Root { get; }
 
-    bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception);
+    bool TryChange(ProgramContext programContext, IInstance instance, Location location,
+        out AbstractLanguageException exception);
 }

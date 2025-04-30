@@ -17,15 +17,15 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 public class UserTypeInstance : ITypeInstance
 {
     public required string Name { get; init; }
-    
+
     public required string Module { get; init; }
 
     public required IReadOnlyList<ITypeMember> Members { get; set; }
 
     public required FunctionBodyExpression Root { get; init; }
-    
+
     public Type Type { get; set; }
-    
+
     public AccessType Access { get; init; }
 
     public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
@@ -47,11 +47,11 @@ public class UserTypeInstance : ITypeInstance
     {
         return Members.FirstOrDefault(member => member.Identification.Is(identification));
     }
-    
+
     public TypeValue Create()
     {
         var result = new Dictionary<ITypeMemberIdentification, ITypeMemberValue>();
-        
+
         foreach (var member in Members)
         {
             if (member is TypeVariableMemberInstance { IsFunctionInstance: true })
@@ -65,21 +65,21 @@ public class UserTypeInstance : ITypeInstance
                 {
                     Type = member.Type
                 });
-                
+
                 continue;
             }
-            
+
             if (member is TypeFunctionMemberInstance typeFunctionMemberInstance)
             {
                 var value = typeFunctionMemberInstance.Create();
-                
+
                 result.Add(member.Identification, new TypeMemberValue
                 {
                     Type = ObjectTypeValue.Function,
                     Instance = member,
-                    Value = value,
+                    Value = value
                 });
-                    
+
                 result.Add(new KeyTypeMemberIdentification
                 {
                     Identifier = member.Identification.Identifier
@@ -89,10 +89,10 @@ public class UserTypeInstance : ITypeInstance
                     Instance = member,
                     Value = value
                 });
-                    
+
                 continue;
             }
-                
+
             result.Add(member.Identification, new TypeMemberValue
             {
                 Type = member.Type,
@@ -102,7 +102,7 @@ public class UserTypeInstance : ITypeInstance
         }
 
         var typeValue = new TypeValue(this, result);
-        
+
         return typeValue;
     }
 }

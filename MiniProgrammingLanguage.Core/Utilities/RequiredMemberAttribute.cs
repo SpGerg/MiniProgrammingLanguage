@@ -1,3 +1,5 @@
 namespace System.Runtime.CompilerServices;
 
-internal class RequiredMemberAttribute {}
+internal class RequiredMemberAttribute
+{
+}

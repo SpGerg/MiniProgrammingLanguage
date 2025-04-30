@@ -15,23 +15,24 @@ public class FunctionValue : AbstractValue
     public override ValueType Type => ValueType.Function;
 
     public override ValueType[] CanCast { get; } = { ValueType.String };
-    
+
     public IFunctionInstance Value { get; set; }
-    
+
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
     }
-    
+
     public override AbstractValue Copy()
     {
         return new FunctionValue(Value);
     }
-    
+
     public override string AsString(ProgramContext programContext, Location location)
     {
         var stringBuilder = new StringBuilder();
-        stringBuilder.Append("{ " + $"name: {Value.Name}, async: {Value.IsAsync}, declared: {Value.IsDeclared}, return: {Value.Return}, arguments: ");
+        stringBuilder.Append("{ " +
+                             $"name: {Value.Name}, async: {Value.IsAsync}, declared: {Value.IsDeclared}, return: {Value.Return}, arguments: ");
 
         foreach (var argument in Value.Arguments)
         {

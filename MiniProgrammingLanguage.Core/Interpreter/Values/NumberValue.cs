@@ -11,21 +11,21 @@ public class NumberValue : AbstractValue
     }
 
     public override ValueType Type => ValueType.Number;
-    
+
     public override ValueType[] CanCast { get; } =
     {
         ValueType.String,
         ValueType.Number,
         ValueType.RoundNumber
     };
-    
+
     public float Value { get; }
 
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
     }
-    
+
     public override AbstractValue Copy()
     {
         return new NumberValue(Value);

@@ -9,26 +9,26 @@ public class StringValue : AbstractValue
     {
         Value = value;
     }
-    
+
     public override ValueType Type => ValueType.String;
-    
+
     public override ValueType[] CanCast { get; } =
     {
         ValueType.String
     };
-    
+
     public string Value { get; }
-    
+
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
     }
-    
+
     public override AbstractValue Copy()
     {
         return new StringValue(Value);
     }
-    
+
     public override string AsString(ProgramContext programContext, Location location)
     {
         return Value;
@@ -38,7 +38,8 @@ public class StringValue : AbstractValue
     {
         if (!float.TryParse(Value, out var value))
         {
-            InterpreterThrowHelper.ThrowCannotCastException(ValueType.String.ToString(), ValueType.Number.ToString(), location);
+            InterpreterThrowHelper.ThrowCannotCastException(ValueType.String.ToString(), ValueType.Number.ToString(),
+                location);
         }
 
         return value;
@@ -48,7 +49,8 @@ public class StringValue : AbstractValue
     {
         if (!int.TryParse(Value, out var value))
         {
-            InterpreterThrowHelper.ThrowCannotCastException(ValueType.String.ToString(), ValueType.RoundNumber.ToString(), location);
+            InterpreterThrowHelper.ThrowCannotCastException(ValueType.String.ToString(),
+                ValueType.RoundNumber.ToString(), location);
         }
 
         return value;

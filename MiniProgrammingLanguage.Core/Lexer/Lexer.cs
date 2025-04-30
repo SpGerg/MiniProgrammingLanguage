@@ -16,21 +16,21 @@ namespace MiniProgrammingLanguage.Core.Lexer
             _stringTokenizer = new StringTokenizer(this);
             _numberTokenizer = new NumberTokenizer(this);
         }
-        
+
         public string Source { get; }
-        
+
         public string Filepath { get; }
-        
+
         public LexerConfiguration Configuration { get; }
 
         public char Current => Source[Position];
-        
+
         public char Previous => Source[Position - 1];
-        
+
         public int Position { get; set; }
 
         public bool IsNotEnded => Position < Source.Length;
-        
+
         public bool IsEnded => !IsNotEnded;
 
         private readonly StringTokenizer _stringTokenizer;
@@ -40,7 +40,7 @@ namespace MiniProgrammingLanguage.Core.Lexer
         public IReadOnlyList<Token> Tokenize()
         {
             var tokens = new List<Token>();
-            
+
             var buffer = string.Empty;
             var position = Position + 1;
 
@@ -57,29 +57,29 @@ namespace MiniProgrammingLanguage.Core.Lexer
                             Location = Source.GetLocationByPosition(position, Filepath)
                         });
                     }
-                    
+
                     buffer = string.Empty;
                     position = Position + 1;
-                    
+
                     Skip();
 
                     continue;
-                } 
-                
+                }
+
                 if (string.IsNullOrEmpty(buffer) && _numberTokenizer.TryGetDigit(out _))
                 {
                     tokens.Add(_numberTokenizer.Tokenize());
-                    
+
                     continue;
                 }
 
                 if (_stringTokenizer.IsQuote())
                 {
                     tokens.Add(_stringTokenizer.Tokenize());
-                    
+
                     continue;
                 }
-                
+
                 var current = Current;
 
                 buffer += current;
@@ -96,23 +96,23 @@ namespace MiniProgrammingLanguage.Core.Lexer
                     {
                         buffer = string.Empty;
                         position = Position + 1;
-                        
+
                         continue;
                     }
-                    
+
                     var result = buffer.Remove(buffer.Length - 1);
                     var token = Configuration.IsToken(result);
-                    
+
                     tokens.Add(new Token
                     {
                         Type = token is TokenType.None ? TokenType.Word : token,
                         Value = result,
                         Location = Source.GetLocationByPosition(position, Filepath)
                     });
-                    
+
                     buffer = string.Empty;
                     position = Position + 1;
-                    
+
                     continue;
                 }
 
@@ -138,20 +138,20 @@ namespace MiniProgrammingLanguage.Core.Lexer
                         Value = buffer,
                         Location = Source.GetLocationByPosition(position, Filepath)
                     });
-                    
+
                     buffer = string.Empty;
                     position = Position + 1;
-                    
+
                     continue;
                 }
 
                 var currentString = current.ToString();
-                
+
                 if (currentString != buffer)
                 {
                     var result = buffer.Remove(buffer.Length - 1);
                     var token = Configuration.IsToken(result);
-                        
+
                     tokens.Add(new Token
                     {
                         Type = token is TokenType.None ? TokenType.Word : token,
@@ -159,18 +159,18 @@ namespace MiniProgrammingLanguage.Core.Lexer
                         Location = Source.GetLocationByPosition(position, Filepath)
                     });
                 }
-                    
+
                 tokens.Add(new Token
                 {
                     Type = operatorToken,
                     Value = currentString,
                     Location = Source.GetLocationByPosition(position, Filepath)
                 });
-                    
+
                 buffer = string.Empty;
                 position = Position + 1;
             }
-            
+
             if (!string.IsNullOrWhiteSpace(buffer) && !string.IsNullOrWhiteSpace(buffer))
             {
                 tokens.Add(new Token

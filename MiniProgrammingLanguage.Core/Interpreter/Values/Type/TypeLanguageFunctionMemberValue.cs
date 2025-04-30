@@ -11,13 +11,13 @@ public class TypeLanguageFunctionMemberValue : ITypeFunctionMemberValue
         _typeMember = typeMember;
         Instance = typeMember;
     }
-    
+
     public required ObjectTypeValue Type { get; init; }
-    
+
     public ITypeMember Instance { get; }
-    
+
     private readonly ITypeLanguageFunctionMember _typeMember;
-    
+
     public AbstractValue GetValue(TypeFunctionExecuteContext context)
     {
         return _typeMember.Bind.Invoke(context);

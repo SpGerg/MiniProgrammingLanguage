@@ -32,29 +32,30 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         if (entity.Root is null)
         {
             GlobalEntities.Add(entity);
-            
+
             return;
         }
-    
+
         if (!BodiesEntities.TryGetValue(entity.Root, out var list))
         {
             BodiesEntities[entity.Root] = list = new List<T>();
         }
-    
+
         list.Add(entity);
     }
-    
+
     public void Add(T entity)
     {
         Add(entity, Location.Default);
     }
+
     public bool Remove(T entity)
     {
         if (entity.Root is null)
         {
             return GlobalEntities.Remove(entity);
         }
-        
+
         return BodiesEntities.TryGetValue(entity.Root, out var instances) && instances.Remove(entity);
     }
 
@@ -65,7 +66,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
             Add(entity, Location.Default, isCheckExisting);
         }
     }
-    
+
     public void AddRange(IEnumerable<T> entities)
     {
         AddRange(entities, true);
@@ -78,7 +79,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         if (instance is null)
         {
             Add(entity, location, false);
-            
+
             return true;
         }
 
@@ -89,11 +90,11 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
         throw exception;
     }
-    
+
     public void Set(ProgramContext programContext, T entity, Location location)
     {
         var instance = Get(entity.Root, entity.Name, programContext.Module, location);
-    
+
         if (instance.TryChange(programContext, entity, location, out var exception))
         {
             return;
@@ -105,7 +106,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     public T Get(FunctionBodyExpression functionBody, string name, string module, Location location)
     {
         var currentBody = functionBody;
-    
+
         while (currentBody is not null)
         {
             if (BodiesEntities.TryGetValue(currentBody, out var instances))
@@ -115,7 +116,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
                     return instance;
                 }
             }
-            
+
             currentBody = currentBody.Root;
         }
 
@@ -125,7 +126,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         {
             InterpreterThrowHelper.ThrowCannotAccessException(entity.Name, location);
         }
-    
+
         return entity;
     }
 
@@ -134,7 +135,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         if (functionBodyExpression is null)
         {
             Clear();
-            
+
             return;
         }
 

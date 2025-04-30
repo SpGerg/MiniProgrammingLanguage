@@ -7,7 +7,7 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 public interface ITypeMemberExpression
 {
     IEnumerable<string> Attributes { get; }
-    
+
     AccessType Access { get; }
 
     ITypeMember Create(string module);

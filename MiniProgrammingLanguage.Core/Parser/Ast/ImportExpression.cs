@@ -16,7 +16,7 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
     {
         Filepath = filepath;
     }
-    
+
     public AbstractEvaluableExpression Filepath { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
@@ -64,7 +64,7 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
         }
 
         var filepath = Path.Combine(directory, $"{content}.mpl");
-        
+
         var source = string.Empty;
 
         try
@@ -94,10 +94,10 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
         {
             LexerConfiguration = lexer.Configuration
         });
-        
+
         var expressions = parser.Parse();
         var result = expressions.Evaluate(moduleContext);
-        
+
         programContext.Import(moduleContext, Location);
 
         return result;

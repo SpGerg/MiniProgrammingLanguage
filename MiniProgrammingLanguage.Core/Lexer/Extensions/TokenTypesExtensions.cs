@@ -16,7 +16,7 @@ public static class TokenTypesExtensions
             _ => false
         };
     }
-    
+
     public static bool IsOperator(this TokenType tokenType)
     {
         return tokenType switch

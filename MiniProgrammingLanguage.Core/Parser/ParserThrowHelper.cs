@@ -8,23 +8,24 @@ namespace MiniProgrammingLanguage.Core.Parser;
 
 public static class ParserThrowHelper
 {
-    public static void ThrowTokenExpectedException(ParserConfiguration configuration, Location location, params TokenType[] tokenType)
+    public static void ThrowTokenExpectedException(ParserConfiguration configuration, Location location,
+        params TokenType[] tokenType)
     {
         if (tokenType.Length is 0)
         {
             throw new TokenExpectedException("token", location);
         }
-        
+
         if (tokenType.Length is 1)
         {
             var token = tokenType.First();
             var message = token.GetTranslation(configuration);
-            
+
             throw new TokenExpectedException($"'{message}'", location);
         }
-        
+
         var stringBuilder = new StringBuilder();
-        
+
         foreach (var token in tokenType)
         {
             var message = token.GetTranslation(configuration);
@@ -32,21 +33,21 @@ public static class ParserThrowHelper
             if (token == tokenType.Last())
             {
                 stringBuilder.Append($"or '{message}'");
-                
+
                 break;
             }
-            
+
             stringBuilder.Append($"'{message}', ");
         }
 
         throw new TokenExpectedException(stringBuilder.ToString(), location);
     }
-    
-    public static void ThrowValueExceptedException(Location location) 
+
+    public static void ThrowValueExceptedException(Location location)
     {
         throw new ValueExpectedException(location);
     }
-    
+
     public static void ThrowTypeExceptedException(Location location)
     {
         throw new TypeExpectedException(location);
@@ -56,7 +57,7 @@ public static class ParserThrowHelper
     {
         throw new InvalidNumberFormatException(number, location);
     }
-    
+
     public static void ThrowStatementExceptedException(Location location)
     {
         throw new StatementExceptedException(location);

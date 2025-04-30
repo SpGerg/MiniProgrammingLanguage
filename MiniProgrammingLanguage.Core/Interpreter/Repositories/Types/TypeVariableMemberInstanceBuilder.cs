@@ -8,58 +8,58 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 public class TypeVariableMemberInstanceBuilder
 {
     public string Parent { get; set; }
-    
+
     public string Module { get; set; }
-    
+
     public KeyTypeMemberIdentification Identification { get; set; }
-    
+
     public ObjectTypeValue Type { get; set; }
-    
+
     public AbstractValue Default { get; set; }
-    
+
     public AccessType Access { get; set; }
 
     public FunctionBodyExpression Root { get; set; }
-    
+
     public TypeVariableMemberInstanceBuilder SetParent(string parent)
     {
         Parent = parent;
-        
+
         return this;
     }
-    
+
     public TypeVariableMemberInstanceBuilder SetModule(string module)
     {
         Module = module;
-        
+
         return this;
     }
-    
+
     public TypeVariableMemberInstanceBuilder SetType(ObjectTypeValue typeValue)
     {
         Type = typeValue;
-        
+
         return this;
     }
-    
+
     public TypeVariableMemberInstanceBuilder SetIdentification(KeyTypeMemberIdentification identification)
     {
         Identification = identification;
-        
+
         return this;
     }
-    
+
     public TypeVariableMemberInstanceBuilder SetDefault(AbstractValue defaultValue)
     {
         Default = defaultValue;
-        
+
         return this;
     }
-    
+
     public TypeVariableMemberInstanceBuilder SetAccess(AccessType accessType)
     {
         Access = accessType;
-        
+
         return this;
     }
 

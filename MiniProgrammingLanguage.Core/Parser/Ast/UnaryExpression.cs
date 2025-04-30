@@ -6,14 +6,15 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class UnaryExpression : AbstractEvaluableExpression
 {
-    public UnaryExpression(BinaryOperatorType operatorType, AbstractEvaluableExpression evaluableExpression, Location location) : base(location)
+    public UnaryExpression(BinaryOperatorType operatorType, AbstractEvaluableExpression evaluableExpression,
+        Location location) : base(location)
     {
         Operator = operatorType;
         EvaluableExpression = evaluableExpression;
     }
-    
+
     public BinaryOperatorType Operator { get; }
-    
+
     public AbstractEvaluableExpression EvaluableExpression { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)

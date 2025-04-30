@@ -13,13 +13,13 @@ public abstract class AbstractValue
     }
 
     public abstract ValueType Type { get; }
-    
+
     public abstract ValueType[] CanCast { get; }
 
     public virtual bool IsValueType => true;
-    
+
     public string Name { get; }
-    
+
     public abstract bool Visit(IValueVisitor visitor);
 
     public abstract AbstractValue Copy();
@@ -27,7 +27,7 @@ public abstract class AbstractValue
     public virtual string AsString(ProgramContext programContext, Location location)
     {
         InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.String.ToString(), location);
-        
+
         return null;
     }
 
@@ -58,19 +58,19 @@ public abstract class AbstractValue
         {
             return true;
         }
-        
+
         var visitor = new TypeCompatibilityVisitor(objectTypeValue);
 
         return Visit(visitor);
     }
-    
+
     public bool Is(AbstractValue abstractValue)
     {
         if (this is ObjectTypeValue objectTypeValue)
         {
             return abstractValue.Is(objectTypeValue);
         }
-        
+
         var visitor = new ValueCompatibilityVisitor(abstractValue);
 
         return Visit(visitor);
@@ -81,8 +81,8 @@ public abstract class AbstractValue
         return valueType switch
         {
             ValueType.Number => new NumberValue(AsNumber(programContext, location)),
-            ValueType.Boolean => new BooleanValue(AsBoolean(programContext,location)),
-            ValueType.String => new StringValue(AsString(programContext,location)),
+            ValueType.Boolean => new BooleanValue(AsBoolean(programContext, location)),
+            ValueType.String => new StringValue(AsString(programContext, location)),
             _ => null
         };
     }

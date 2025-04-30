@@ -8,17 +8,18 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class IfExpression : AbstractEvaluableExpression, IStatement, IControlFlowStatement
 {
-    public IfExpression(AbstractEvaluableExpression condition, FunctionBodyExpression body, FunctionBodyExpression elseBody, Location location) : base(location)
+    public IfExpression(AbstractEvaluableExpression condition, FunctionBodyExpression body,
+        FunctionBodyExpression elseBody, Location location) : base(location)
     {
         Condition = condition;
         Body = body;
         ElseBody = elseBody;
     }
-    
+
     public AbstractEvaluableExpression Condition { get; }
-    
+
     public FunctionBodyExpression Body { get; }
-    
+
     public FunctionBodyExpression ElseBody { get; }
 
     public StateType State { get; private set; }
@@ -29,18 +30,20 @@ public class IfExpression : AbstractEvaluableExpression, IStatement, IControlFlo
 
         if (Condition is VariableExpression variableExpression)
         {
-            var variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name, programContext.Module, Location);
-            
+            var variable = programContext.Variables.Get(variableExpression.Root, variableExpression.Name,
+                programContext.Module, Location);
+
             result = new BooleanValue(variable is not null);
         }
         else
         {
             result = Condition.Evaluate(programContext);
         }
-        
+
         if (result is not BooleanValue booleanValue)
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Boolean.ToString(), result.Type.ToString(), Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Boolean.ToString(), result.Type.ToString(),
+                Location);
 
             return null;
         }

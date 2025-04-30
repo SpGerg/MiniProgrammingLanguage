@@ -26,7 +26,7 @@ public class ProgramContext
     }
 
     public string Module { get; set; } = "global";
-    
+
     public string Filepath { get; set; }
 
     public bool IsGlobal => Module is "global";
@@ -34,11 +34,11 @@ public class ProgramContext
     public IEnumerable<string> Imported => _importedModules;
 
     public ITypesRepository Types { get; } = new TypesRepository();
-    
+
     public IFunctionsRepository Functions { get; } = new FunctionsRepository();
 
     public IEnumsRepository Enums { get; } = new EnumsRepository();
-    
+
     public IVariablesRepository Variables { get; } = new VariablesRepository();
 
     public ITasksRepository Tasks { get; } = new TasksRepository();
@@ -51,35 +51,35 @@ public class ProgramContext
         {
             return;
         }
-        
+
         if (_importedModules.Contains(programContext.Module))
         {
             return;
         }
-        
+
         _importedModules.Push(programContext.Module);
-        
+
         Types.AddRange(programContext.Types.Entities, false);
         Functions.AddRange(programContext.Functions.Entities, false);
         Variables.AddRange(programContext.Variables.Entities, false);
         Enums.AddRange(programContext.Enums.Entities, false);
         Tasks.AddRange(programContext.Tasks.Entities);
     }
-    
+
     public void Import(ImplementModule implementModule)
     {
         if (implementModule is null)
         {
             return;
         }
-        
+
         if (!implementModule.IsGlobal && _importedModules.Contains(implementModule.Name))
         {
             return;
         }
-        
+
         _importedModules.Push(implementModule.Name);
-        
+
         Types.AddRange(implementModule.Types);
         Functions.AddRange(implementModule.Functions);
         Enums.AddRange(implementModule.Enums);

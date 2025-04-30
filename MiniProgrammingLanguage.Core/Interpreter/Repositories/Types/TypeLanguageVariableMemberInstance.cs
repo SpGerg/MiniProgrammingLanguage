@@ -10,23 +10,23 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 public class TypeLanguageVariableMemberInstance : ITypeLanguageVariableMember
 {
     public required string Parent { get; init; }
-    
+
     public required string Module { get; init; }
-    
+
     public required ITypeMemberIdentification Identification { get; init; }
 
     public AbstractValue Default { get; init; } = new NoneValue();
-    
+
     public IEnumerable<string> Attributes { get; init; } = Array.Empty<string>();
 
     public AccessType Access { get; init; }
 
     public ObjectTypeValue Type { get; set; } = ObjectTypeValue.Any;
-    
+
     public Func<TypeMemberGetterContext, AbstractValue> GetBind { get; set; }
-    
+
     public Action<TypeMemberSetterContext> SetBind { get; set; }
-    
+
     public PropertyInfo Property { get; set; }
 
     public bool IsFunctionInstance { get; init; }

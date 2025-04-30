@@ -13,15 +13,15 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums;
 public class UserEnumInstance : IEnumInstance
 {
     public required string Name { get; init; }
-    
+
     public required string Module { get; init; }
 
     public required FunctionBodyExpression Root { get; init; }
-    
+
     public required IReadOnlyDictionary<string, int> Members { get; init; }
 
     public AccessType Access { get; init; } = AccessType.ReadOnly;
-    
+
     public bool TryGetByName(string name, out int value)
     {
         return Members.TryGetValue(name, out value);
@@ -47,7 +47,7 @@ public class UserEnumInstance : IEnumInstance
         exception = new CannotAccessException(Name, location);
         return false;
     }
-    
+
     public EnumValue Create()
     {
         return new EnumValue(this);

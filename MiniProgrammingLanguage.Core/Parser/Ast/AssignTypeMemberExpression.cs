@@ -10,29 +10,32 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class AssignTypeMemberExpression : AbstractEvaluableExpression, IAssignExpression
 {
-    public AssignTypeMemberExpression(DotExpression left, AbstractEvaluableExpression right, Location location) : base(location)
+    public AssignTypeMemberExpression(DotExpression left, AbstractEvaluableExpression right, Location location) :
+        base(location)
     {
         Left = left;
         Right = right;
     }
-    
+
     public DotExpression Left { get; }
-    
+
     public AbstractEvaluableExpression Right { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var (type, member) = Left.Dot(programContext);
         var right = Right.Evaluate(programContext);
-        
+
         if (Left.Right is FunctionCallExpression functionCallExpression)
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException("variable", $"{functionCallExpression.Name}()", Left.Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException("variable", $"{functionCallExpression.Name}()",
+                Left.Location);
         }
-        
+
         if (!member.Type.Is(right))
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException(member.Type.ToString(), right.Type.ToString(), Left.Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException(member.Type.ToString(), right.Type.ToString(),
+                Left.Location);
         }
 
         if (member is not ITypeVariableMemberValue variableMember)
@@ -50,7 +53,7 @@ public class AssignTypeMemberExpression : AbstractEvaluableExpression, IAssignEx
             Value = right,
             Location = Location
         };
-        
+
         variableMember.SetValue(setterContext);
 
         return right;

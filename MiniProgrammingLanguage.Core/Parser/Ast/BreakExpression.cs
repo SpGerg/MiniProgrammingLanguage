@@ -10,13 +10,13 @@ public class BreakExpression : AbstractEvaluableExpression, IControlFlowStatemen
     public BreakExpression(Location location) : base(location)
     {
     }
-    
+
     public StateType State { get; private set; }
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         State = StateType.Stopped;
-        
+
         return new VoidValue();
     }
 }

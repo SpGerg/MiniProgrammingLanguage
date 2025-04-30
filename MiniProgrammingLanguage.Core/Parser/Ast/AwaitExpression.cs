@@ -12,7 +12,7 @@ public class AwaitExpression : AbstractEvaluableExpression, IStatement
     {
         FunctionCall = functionCallExpression;
     }
-    
+
     public FunctionCallExpression FunctionCall { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
@@ -26,7 +26,7 @@ public class AwaitExpression : AbstractEvaluableExpression, IStatement
             return null;
         }
 
-        var idMember = (TypeMemberValue) typeValue.Get(new KeyTypeMemberIdentification
+        var idMember = (TypeMemberValue)typeValue.Get(new KeyTypeMemberIdentification
         {
             Identifier = "id"
         });
@@ -46,7 +46,7 @@ public class AwaitExpression : AbstractEvaluableExpression, IStatement
         }
 
         task.Task.Wait();
-        
+
         return task.Task.Result;
     }
 }

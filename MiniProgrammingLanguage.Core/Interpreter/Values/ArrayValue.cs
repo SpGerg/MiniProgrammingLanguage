@@ -18,7 +18,7 @@ public class ArrayValue : AbstractValue
         _count = Value.Count();
         _last = Value.Last();
     }
-    
+
     public override ValueType Type => ValueType.Array;
 
     public override ValueType[] CanCast { get; } = { ValueType.String };
@@ -49,10 +49,12 @@ public class ArrayValue : AbstractValue
         foreach (var value in Value)
         {
             var result = value.Evaluate(programContext);
-            var message = result is NoneValue ? "none" : $"{result.Type.ToString().ToLower()}: {result.AsString(programContext, location)}";
-            
+            var message = result is NoneValue
+                ? "none"
+                : $"{result.Type.ToString().ToLower()}: {result.AsString(programContext, location)}";
+
             stringBuilder.Append(message);
-            
+
             if (value == _last)
             {
                 continue;
@@ -60,7 +62,7 @@ public class ArrayValue : AbstractValue
 
             stringBuilder.Append(", ");
         }
-        
+
         stringBuilder.Append(" ]");
 
         return stringBuilder.ToString();

@@ -13,14 +13,14 @@ public class NumberTokenizer : AbstractTokenizer
     {
         var buffer = string.Empty;
         var position = Lexer.Position;
-        
+
         while (Lexer.IsNotEnded)
         {
             if (Lexer.Current is '.')
             {
                 buffer += ',';
                 Lexer.Skip();
-                
+
                 continue;
             }
 
@@ -28,10 +28,10 @@ public class NumberTokenizer : AbstractTokenizer
             {
                 buffer += digit;
                 Lexer.Skip();
-                
+
                 continue;
             }
-            
+
             break;
         }
 
@@ -46,7 +46,7 @@ public class NumberTokenizer : AbstractTokenizer
     public bool TryGetDigit(out char digit)
     {
         digit = Lexer.Current;
-        
+
         return int.TryParse(digit.ToString(), out _);
     }
 }

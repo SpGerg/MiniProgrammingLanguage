@@ -5,7 +5,8 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class ForExpression : LoopExpression
 {
-    public ForExpression(AbstractEvaluableExpression condition, AbstractEvaluableExpression variable, BinaryExpression step, string name, FunctionBodyExpression body, Location location) : base(body, location)
+    public ForExpression(AbstractEvaluableExpression condition, AbstractEvaluableExpression variable,
+        BinaryExpression step, string name, FunctionBodyExpression body, Location location) : base(body, location)
     {
         Condition = condition;
         Variable = variable;
@@ -14,17 +15,17 @@ public class ForExpression : LoopExpression
 
         _isAssign = Variable is AssignExpression;
     }
-    
+
     public AbstractEvaluableExpression Condition { get; }
 
     public AbstractEvaluableExpression Variable { get; }
 
     public BinaryExpression Step { get; }
-    
+
     public string Name { get; }
-    
+
     private readonly bool _isAssign;
-    
+
     private UserVariableInstance _userVariableInstance;
 
     public override bool IsContinue
@@ -32,7 +33,7 @@ public class ForExpression : LoopExpression
         get
         {
             var condition = Condition.Evaluate(ProgramContext);
-            
+
             return condition.AsBoolean(ProgramContext, Location);
         }
     }
@@ -42,7 +43,7 @@ public class ForExpression : LoopExpression
         if (_isAssign)
         {
             Variable.Evaluate(ProgramContext);
-            
+
             return;
         }
 
@@ -50,13 +51,13 @@ public class ForExpression : LoopExpression
         {
             Name = Name,
             Module = ProgramContext.Module,
-            Value = new NumberValue(0), 
+            Value = new NumberValue(0),
             Root = Body
         };
 
         ProgramContext.Variables.Add(_userVariableInstance, Location, false);
     }
-    
+
     public override void OnIteration()
     {
         _userVariableInstance.Value = Step.Evaluate(ProgramContext);

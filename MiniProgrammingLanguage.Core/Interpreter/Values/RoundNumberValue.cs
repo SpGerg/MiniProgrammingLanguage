@@ -13,19 +13,19 @@ public class RoundNumberValue : AbstractValue
     public override ValueType Type => ValueType.RoundNumber;
 
     public override ValueType[] CanCast { get; } = { ValueType.String, ValueType.Number };
-    
+
     public int Value { get; }
-    
+
     public override bool Visit(IValueVisitor visitor)
     {
         return visitor.Visit(this);
     }
-    
+
     public override AbstractValue Copy()
     {
         return new RoundNumberValue(Value);
     }
-    
+
     public override string AsString(ProgramContext programContext, Location location)
     {
         return Value.ToString();

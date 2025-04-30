@@ -5,14 +5,15 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class CastExpression : AbstractEvaluableExpression
 {
-    public CastExpression(ObjectTypeValue objectTypeValue, AbstractEvaluableExpression evaluableExpression, Location location) : base(location)
+    public CastExpression(ObjectTypeValue objectTypeValue, AbstractEvaluableExpression evaluableExpression,
+        Location location) : base(location)
     {
         ObjectTypeValue = objectTypeValue;
         EvaluableExpression = evaluableExpression;
     }
-    
+
     public ObjectTypeValue ObjectTypeValue { get; }
-    
+
     public AbstractEvaluableExpression EvaluableExpression { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
@@ -22,7 +23,8 @@ public class CastExpression : AbstractEvaluableExpression
 
         if (casted is null)
         {
-            InterpreterThrowHelper.ThrowCannotCastException(result.Type.ToString(), ObjectTypeValue.ValueType.ToString(), Location);
+            InterpreterThrowHelper.ThrowCannotCastException(result.Type.ToString(),
+                ObjectTypeValue.ValueType.ToString(), Location);
         }
 
         return casted;

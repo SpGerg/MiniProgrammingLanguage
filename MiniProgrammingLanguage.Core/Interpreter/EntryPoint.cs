@@ -13,7 +13,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter
         {
             Filepath = filepath;
         }
-        
+
         public string Filepath { get; set; }
 
         public AbstractValue Run(out AbstractLanguageException exception, params ImplementModule[] modules)

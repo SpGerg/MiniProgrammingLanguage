@@ -13,14 +13,14 @@ public class ValueCompatibilityVisitor : IValueVisitor
     }
 
     public AbstractValue Value { get; }
-    
+
     public bool Visit(TypeValue typeValue)
     {
         if (Value is not TypeValue type)
         {
             return false;
         }
-        
+
         return type.Name == typeValue.Name;
     }
 
@@ -35,7 +35,7 @@ public class ValueCompatibilityVisitor : IValueVisitor
         {
             return false;
         }
-        
+
         return boolean.Value == booleanValue.Value;
     }
 
@@ -45,7 +45,7 @@ public class ValueCompatibilityVisitor : IValueVisitor
         {
             return false;
         }
-        
+
         return functionValue.Value == function.Value;
     }
 
@@ -80,12 +80,12 @@ public class ValueCompatibilityVisitor : IValueVisitor
         {
             return roundNumberValue.Value == numberValue.Value;
         }
-        
+
         if (Value is not NumberValue number)
         {
             return false;
         }
-        
+
         return numberValue.Value == number.Value;
     }
 
@@ -95,7 +95,7 @@ public class ValueCompatibilityVisitor : IValueVisitor
         {
             return false;
         }
-        
+
         return objectTypeValue.ValueType == objectType.ValueType && objectTypeValue.Name == objectType.Name;
     }
 
@@ -105,7 +105,7 @@ public class ValueCompatibilityVisitor : IValueVisitor
         {
             return false;
         }
-        
+
         return roundNumberValue.Value == roundNumber.Value;
     }
 
@@ -125,7 +125,7 @@ public class ValueCompatibilityVisitor : IValueVisitor
         {
             return false;
         }
-        
+
         return @string.Value == stringValue.Value;
     }
 

@@ -18,7 +18,8 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class DotExpression : AbstractEvaluableExpression, IStatement
 {
-    public DotExpression(AbstractEvaluableExpression left, AbstractEvaluableExpression right, FunctionBodyExpression root, Location location) : base(location)
+    public DotExpression(AbstractEvaluableExpression left, AbstractEvaluableExpression right,
+        FunctionBodyExpression root, Location location) : base(location)
     {
         Left = left;
         Right = right;
@@ -26,11 +27,11 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
     }
 
     public AbstractEvaluableExpression Left { get; }
-    
+
     public AbstractEvaluableExpression Right { get; }
-    
+
     public FunctionBodyExpression Root { get; }
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var left = Left.Evaluate(programContext);
@@ -48,38 +49,40 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                     Member = member.Instance,
                     Location = Location
                 };
-                
+
                 return variableMember.GetValue(context);
             }
-            
+
             if (member is ITypeFunctionMemberValue functionMember)
             {
                 var context = new TypeFunctionExecuteContext
                 {
                     ProgramContext = programContext,
                     Type = typeValue,
-                    Arguments = ((FunctionCallExpression) Right).Arguments,
+                    Arguments = ((FunctionCallExpression)Right).Arguments,
                     Member = functionMember.Instance,
                     Root = Root,
                     Location = Location
                 };
-                
+
                 return functionMember.GetValue(context);
             }
 
             return new NoneValue();
         }
-        
+
         if (left is not EnumValue enumValue || Right is not VariableExpression variableExpression)
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Enum.ToString(), left.Type.ToString(), Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Enum.ToString(), left.Type.ToString(),
+                Location);
 
             return null;
         }
 
         if (!enumValue.Value.TryGetByName(variableExpression.Name, out _))
         {
-            InterpreterThrowHelper.ThrowMemberNotFoundException(enumValue.Value.Name, variableExpression.Name, Location);
+            InterpreterThrowHelper.ThrowMemberNotFoundException(enumValue.Value.Name, variableExpression.Name,
+                Location);
         }
 
         return new EnumMemberValue(enumValue.Value.Name, variableExpression.Name);
@@ -120,7 +123,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         }
 
         var (_, memberType) = ResolveLeftMember(context, parent, dotExpression);
-        
+
         return dotExpression.Dot(context, memberType);
     }
 
@@ -139,7 +142,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             );
             return (null, null);
         }
-        
+
         return (parent, member);
     }
 
@@ -159,7 +162,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             {
                 InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, variableExpression.Name, Location);
             }
-            
+
             return result;
         }
 
@@ -291,7 +294,8 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
         if (value is not TypeValue typeValue)
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), value.Type.ToString(), Location);
+            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Type.ToString(), value.Type.ToString(),
+                Location);
             return (null, null);
         }
 

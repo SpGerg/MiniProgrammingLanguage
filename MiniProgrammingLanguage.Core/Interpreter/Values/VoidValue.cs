@@ -8,10 +8,10 @@ public class VoidValue : AbstractValue
     public VoidValue() : base(string.Empty)
     {
     }
-    
+
     public override ValueType Type => ValueType.Void;
-    
-    public override ValueType[] CanCast { get; } = {};
+
+    public override ValueType[] CanCast { get; } = { };
 
     public override bool IsValueType => false;
 
@@ -19,7 +19,7 @@ public class VoidValue : AbstractValue
     {
         return visitor.Visit(this);
     }
-    
+
     public override AbstractValue Copy()
     {
         return new VoidValue();

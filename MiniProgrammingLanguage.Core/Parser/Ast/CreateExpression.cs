@@ -11,9 +11,9 @@ public class CreateExpression : AbstractEvaluableExpression
         Name = name;
         Root = root;
     }
-    
+
     public string Name { get; }
-    
+
     public FunctionBodyExpression Root { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)

@@ -13,19 +13,19 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 public class TypeLanguageFunctionMemberInstance : ITypeLanguageFunctionMember
 {
     public required string Parent { get; init; }
-    
+
     public required string Module { get; init; }
-    
+
     public required ITypeMemberIdentification Identification { get; init; }
-    
+
     public required ObjectTypeValue Return { get; init; }
-    
+
     public required bool IsAsync { get; init; }
-    
+
     public required FunctionArgument[] Arguments { get; init; }
-    
+
     public Func<TypeFunctionExecuteContext, AbstractValue> Bind { get; set; }
-    
+
     public MethodInfo Method { get; set; }
 
     public AccessType Access { get; init; }

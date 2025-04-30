@@ -12,15 +12,15 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
 {
     public required string Name { get; init; }
-    
+
     public required string Module { get; init; }
-    
+
     public required FunctionBodyExpression Root { get; init; }
-    
+
     public required Func<VariableGetterContext, AbstractValue> GetBind { get; set; }
-    
+
     public required ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
-    
+
     public Func<VariableSetterContext, AbstractValue> SetBind { get; set; }
 
     public AccessType Access { get; init; } = AccessType.ReadOnly;
@@ -28,23 +28,25 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
     public AbstractValue GetValue(VariableGetterContext context)
     {
         var result = GetBind.Invoke(context);
-        
+
         if (!Type.Is(result))
         {
-            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Type.AsString(context.ProgramContext, context.Location), result.Type.ToString(), context.Location);
+            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name,
+                Type.AsString(context.ProgramContext, context.Location), result.Type.ToString(), context.Location);
         }
 
         return result;
     }
-    
-    public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
+
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
+        out AbstractLanguageException exception)
     {
         if (instance is not IVariableInstance variableInstance)
         {
             exception = new CannotAccessException(Name, location);
             return false;
         }
-        
+
         if (SetBind is not null)
         {
             var getterContext = new VariableGetterContext
@@ -52,7 +54,7 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
                 ProgramContext = programContext,
                 Location = location
             };
-            
+
             var context = new VariableSetterContext
             {
                 ProgramContext = programContext,
@@ -63,7 +65,7 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
             try
             {
                 exception = null;
-                
+
                 SetBind.Invoke(context);
             }
             catch (AbstractLanguageException languageException)
@@ -73,7 +75,7 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
 
             return true;
         }
-        
+
         exception = new CannotAccessException(Name, location);
         return false;
     }

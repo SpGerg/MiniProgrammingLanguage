@@ -17,16 +17,16 @@ public class LanguageFunctionExecuteContext
     }
 
     public ProgramContext ProgramContext { get; }
-    
-    public AbstractEvaluableExpression[] ArgumentsExpressions { get;}
-    
-    public AbstractValue[] Arguments { get;}
+
+    public AbstractEvaluableExpression[] ArgumentsExpressions { get; }
+
+    public AbstractValue[] Arguments { get; }
 
     public FunctionBodyExpression Root { get; }
 
     public Location Location { get; }
-    
+
     public CancellationToken Token => TokenSource.Token;
-    
+
     internal CancellationTokenSource TokenSource { get; }
 }

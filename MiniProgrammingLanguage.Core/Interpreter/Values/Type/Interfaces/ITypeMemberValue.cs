@@ -5,6 +5,6 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 public interface ITypeMemberValue
 {
     ObjectTypeValue Type { get; }
-    
+
     ITypeMember Instance { get; }
 }

@@ -11,9 +11,9 @@ public class VariableExpression : AbstractEvaluableExpression
         Name = name;
         Root = root;
     }
-    
+
     public string Name { get; }
-    
+
     public FunctionBodyExpression Root { get; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
@@ -24,7 +24,7 @@ public class VariableExpression : AbstractEvaluableExpression
         {
             InterpreterThrowHelper.ThrowVariableNotFoundException(Name, Location);
         }
-        
+
         return variable.GetValue(new VariableGetterContext
         {
             ProgramContext = programContext,

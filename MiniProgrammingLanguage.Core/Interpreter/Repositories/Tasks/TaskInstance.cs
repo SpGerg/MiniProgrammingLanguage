@@ -8,6 +8,6 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Tasks;
 public class TaskInstance : ITaskInstance
 {
     public required Task<AbstractValue> Task { get; init; }
-    
+
     public required CancellationTokenSource Token { get; init; }
 }

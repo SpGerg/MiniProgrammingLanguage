@@ -10,7 +10,8 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
 {
-    public KeyTypeMemberExpression(string name, string parent, ObjectTypeValue type, IEnumerable<string> attributes, AccessType access, Location location) : base(location)
+    public KeyTypeMemberExpression(string name, string parent, ObjectTypeValue type, IEnumerable<string> attributes,
+        AccessType access, Location location) : base(location)
     {
         Parent = parent;
         Name = name;
@@ -18,15 +19,15 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
         Attributes = attributes;
         Access = access;
     }
-    
+
     public string Parent { get; }
 
     public string Name { get; }
 
     public ObjectTypeValue Type { get; }
-    
+
     public IEnumerable<string> Attributes { get; }
-    
+
     public AccessType Access { get; }
 
     public ITypeMember Create(string module)
@@ -47,7 +48,7 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
                 Attributes = Attributes
             };
         }
-        
+
         return new TypeVariableMemberInstance
         {
             Parent = Parent,

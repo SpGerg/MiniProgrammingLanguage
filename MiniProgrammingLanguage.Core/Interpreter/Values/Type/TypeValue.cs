@@ -12,7 +12,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
 public class TypeValue : AbstractValue
 {
-    public TypeValue(ITypeInstance value, IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> members) : base(value.Name)
+    public TypeValue(ITypeInstance value, IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> members) :
+        base(value.Name)
     {
         Members = members;
         Value = value;
@@ -21,20 +22,20 @@ public class TypeValue : AbstractValue
     public TypeValue(ITypeInstance value) : this(value, value.Create().Members)
     {
     }
-    
+
     public override ValueType Type => ValueType.Type;
 
     public override ValueType[] CanCast { get; } =
     {
         ValueType.String
     };
-    
+
     public override bool IsValueType => false;
-    
+
     public ITypeInstance Value { get; }
 
     public IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> Members { get; }
-    
+
     public object ObjectTarget { get; set; }
 
     public override bool Visit(IValueVisitor visitor)
@@ -49,21 +50,24 @@ public class TypeValue : AbstractValue
 
     public override float AsNumber(ProgramContext programContext, Location location)
     {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Type.ToString(), ValueType.Number.ToString(), location);
+        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Type.ToString(), ValueType.Number.ToString(),
+            location);
 
         return -1;
     }
 
     public override int AsRoundNumber(ProgramContext programContext, Location location)
     {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Type.ToString(), ValueType.RoundNumber.ToString(), location);
+        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Type.ToString(), ValueType.RoundNumber.ToString(),
+            location);
 
         return -1;
     }
 
     public override bool AsBoolean(ProgramContext programContext, Location location)
     {
-        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Type.ToString(), ValueType.Boolean.ToString(), location);
+        InterpreterThrowHelper.ThrowCannotCastException(ValueType.Type.ToString(), ValueType.Boolean.ToString(),
+            location);
 
         return false;
     }
@@ -87,7 +91,7 @@ public class TypeValue : AbstractValue
                     Member = variableMember.Instance,
                     Location = location
                 };
-                
+
                 value = variableMember.GetValue(context);
             }
             else
@@ -95,16 +99,17 @@ public class TypeValue : AbstractValue
                 value = member.Value.Type;
             }
 
-            stringBuilder.Append($"{member.Key.Identifier}: {(value is NoneValue ? "none" : value.AsString(programContext, location))}");
-            
+            stringBuilder.Append(
+                $"{member.Key.Identifier}: {(value is NoneValue ? "none" : value.AsString(programContext, location))}");
+
             if (member.Value == Members.Last().Value)
             {
                 continue;
             }
-            
+
             stringBuilder.Append(", ");
         }
-        
+
         stringBuilder.Append(" }");
 
         return stringBuilder.ToString();

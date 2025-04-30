@@ -14,22 +14,23 @@ public static class InterpreterThrowHelper
     {
         throw new FunctionNotFoundException(name, location);
     }
-    
+
     public static void ThrowCannotCastException(string from, string to, Location location)
     {
         throw new CannotCastException(from, to, location);
     }
-    
-    public static void ThrowInvalidReturnTypeException(string function, string excepted, string returned, Location location)
+
+    public static void ThrowInvalidReturnTypeException(string function, string excepted, string returned,
+        Location location)
     {
         throw new InvalidReturnTypeException(function, excepted, returned, location);
     }
-    
+
     public static void ThrowVariableNotFoundException(string variable, Location location)
     {
         throw new VariableNotFoundException(variable, location);
     }
-    
+
     public static void ThrowIncorrectTypeException(string expected, string received, Location location)
     {
         throw new IncorrectTypeException(expected, received, location);

@@ -17,7 +17,7 @@ public class TypeInstanceValue : AbstractValue
     {
         ValueType.String
     };
-    
+
     public ITypeInstance Value { get; }
 
     public override string AsString(ProgramContext programContext, Location location)

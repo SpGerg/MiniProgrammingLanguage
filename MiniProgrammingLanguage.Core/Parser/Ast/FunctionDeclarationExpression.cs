@@ -10,7 +10,9 @@ namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
 public class FunctionDeclarationExpression : AbstractEvaluableExpression, IStatement
 {
-    public FunctionDeclarationExpression(string name, FunctionArgument[] arguments, FunctionBodyExpression body, ObjectTypeValue returnObjectType, bool isAsync, AccessType access, FunctionBodyExpression root, Location location) : base(location)
+    public FunctionDeclarationExpression(string name, FunctionArgument[] arguments, FunctionBodyExpression body,
+        ObjectTypeValue returnObjectType, bool isAsync, AccessType access, FunctionBodyExpression root,
+        Location location) : base(location)
     {
         Name = name;
         Arguments = arguments;
@@ -22,26 +24,26 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
     }
 
     public string Name { get; }
-    
+
     public FunctionArgument[] Arguments { get; }
-    
+
     public FunctionBodyExpression Body { get; }
-    
+
     public ObjectTypeValue ReturnObject { get; }
-    
+
     public AccessType Access { get; }
-    
+
     public bool IsAsync { get; }
-    
+
     public FunctionBodyExpression Root { get; }
 
     public bool IsAnonymous => Name == string.Empty;
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         var result = Create(programContext.Module);
         var value = result.Create();
-        
+
         if (!IsAnonymous)
         {
             programContext.Variables.AddOrSet(programContext, new UserVariableInstance
@@ -55,7 +57,7 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
         }
 
         programContext.Functions.AddOrSet(programContext, Create(programContext.Module), Location);
-        
+
         return value;
     }
 

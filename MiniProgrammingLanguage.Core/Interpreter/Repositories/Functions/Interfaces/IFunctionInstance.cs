@@ -8,16 +8,16 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions.Interf
 public interface IFunctionInstance : IInstance
 {
     FunctionArgument[] Arguments { get; }
-    
+
     ObjectTypeValue Return { get; }
-    
+
     bool IsAsync { get; }
-    
+
     bool IsDeclared { get; }
-    
+
     AbstractValue Evaluate(FunctionExecuteContext context);
 
     FunctionValue Create();
-    
+
     IFunctionInstance Copy(string name = null, FunctionBodyExpression root = null);
 }

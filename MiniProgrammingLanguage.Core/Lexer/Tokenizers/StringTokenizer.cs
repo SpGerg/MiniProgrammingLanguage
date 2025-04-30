@@ -16,22 +16,22 @@ public class StringTokenizer : AbstractTokenizer
         {
             Lexer.Skip();
         }
-        
+
         var buffer = string.Empty;
-        
+
         while (Lexer.IsNotEnded)
         {
             if (IsQuote())
             {
                 Lexer.Skip();
-                
+
                 break;
             }
 
             buffer += Lexer.Current;
             Lexer.Skip();
         }
-        
+
         return new Token
         {
             Type = TokenType.String,

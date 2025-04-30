@@ -14,19 +14,19 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
 public class UserFunctionInstance : IFunctionInstance
 {
     public required string Name { get; set; }
-    
+
     public required string Module { get; init; }
-    
+
     public required FunctionBodyExpression Root { get; set; }
 
     public required FunctionBodyExpression Body { get; set; }
-    
+
     public required FunctionArgument[] Arguments { get; init; }
-    
+
     public required ObjectTypeValue Return { get; init; }
-    
+
     public required bool IsAsync { get; init; }
-    
+
     public AccessType Access { get; init; }
 
     public bool IsDeclared => Body is not null;
@@ -44,7 +44,7 @@ public class UserFunctionInstance : IFunctionInstance
         {
             var argument = Arguments[i];
             AbstractValue value;
-            
+
             if (i > context.Arguments.Length - 1)
             {
                 if (argument.IsRequired)
@@ -62,7 +62,8 @@ public class UserFunctionInstance : IFunctionInstance
 
             if (!argument.Type.Is(value))
             {
-                InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ToString(), value.ToString(), context.Location);
+                InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ToString(), value.ToString(),
+                    context.Location);
             }
 
             //We need add argument with function to functions repository
@@ -83,26 +84,28 @@ public class UserFunctionInstance : IFunctionInstance
         }
 
         Body.Token = context.Token;
-        
+
         var result = Body.Evaluate(programContext);
         context.ProgramContext.Clear(Body);
 
         if (!Return.Is(result))
         {
-            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name, Return.AsString(programContext, context.Location), result.Type.ToString(), context.Location);
+            InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name,
+                Return.AsString(programContext, context.Location), result.Type.ToString(), context.Location);
         }
 
         return result;
     }
-    
-    public bool TryChange(ProgramContext programContext, IInstance instance, Location location, out AbstractLanguageException exception)
+
+    public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
+        out AbstractLanguageException exception)
     {
         if (instance is not UserFunctionInstance functionInstance)
         {
             exception = new CannotAccessException(Name, location);
             return false;
         }
-        
+
         if (!Return.Is(functionInstance.Return))
         {
             exception = new IncorrectTypeException(Return.ToString(), functionInstance.Return.ToString(), location);
@@ -110,16 +113,16 @@ public class UserFunctionInstance : IFunctionInstance
         }
 
         Body = functionInstance.Body;
-        
+
         exception = null;
         return false;
     }
-    
+
     public FunctionValue Create()
     {
         return new FunctionValue(this);
     }
-    
+
     public IFunctionInstance Copy(string name = null, FunctionBodyExpression root = null)
     {
         return new UserFunctionInstance

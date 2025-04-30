@@ -11,9 +11,9 @@ public class RoundNumberExpression : AbstractEvaluableExpression
     }
 
     public override bool IsValue => true;
-    
+
     public int Value { get; }
-    
+
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
         return new RoundNumberValue(Value);

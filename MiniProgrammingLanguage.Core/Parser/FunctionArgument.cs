@@ -14,9 +14,9 @@ public class FunctionArgument
     public string Name { get; }
 
     public ObjectTypeValue Type { get; }
-    
+
     public AbstractValue Default { get; }
-    
+
     public bool IsRequired => Default is null;
 
     public override string ToString()
