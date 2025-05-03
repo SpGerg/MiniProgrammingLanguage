@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using MiniProgrammingLanguage.Core;
 using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
@@ -6,6 +7,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
+using MiniProgrammingLanguage.SharpKit.Ast;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.SharpKit.Factory;
@@ -26,6 +28,19 @@ public static class TypesFactory
 
         if (result is null)
         {
+            if (target is Array array)
+            {
+                var expressions = new CSharpArrayMemberExpression[array.Length];
+
+                for (var i = 0; i < array.Length; i++)
+                {
+                    expressions[i] = new CSharpArrayMemberExpression(array, i, Location.Default);
+                }
+
+                implementModule = null;
+                return new ArrayValue(expressions);
+            }
+
             var type = target.GetType();
 
             if (type.IsEnum)
@@ -58,7 +73,7 @@ public static class TypesFactory
         return result;
     }
 
-    public static object Create(AbstractValue target)
+    public static object Create(AbstractValue target, ProgramContext programContext)
     {
         object result = target.Type switch
         {
@@ -72,6 +87,22 @@ public static class TypesFactory
 
         if (result is null)
         {
+            if (target is ArrayValue arrayValue)
+            {
+                var firstElement = Create(arrayValue.Value.ElementAt(0).Evaluate(programContext), programContext);
+                var array = Array.CreateInstance(firstElement.GetType(), arrayValue.Value.Count());
+                array.SetValue(firstElement, 0);
+
+                for (var i = 1; i < array.Length; i++)
+                {
+                    var value = Create(arrayValue.Value.ElementAt(i).Evaluate(programContext), programContext);
+                    
+                    array.SetValue(value, i);
+                }
+
+                return array;
+            }
+            
             if (target is TypeValue typeValue)
             {
                 return typeValue.ObjectTarget;
@@ -90,7 +121,7 @@ public static class TypesFactory
 
         return result;
     }
-    
+
     public static ObjectTypeValue GetObjectTypeByType(Type target, ProgramContext programContext, object objectTarget, out ImplementModule implementModule)
     {
         if (target == typeof(string))

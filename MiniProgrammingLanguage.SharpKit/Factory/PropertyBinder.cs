@@ -27,7 +27,7 @@ public static class PropertyBinder
         };
         variableInstance.SetBind = context =>
         {
-            var value = TypesFactory.Create(context.Value);
+            var value = TypesFactory.Create(context.Value, context.ProgramContext);
             propertyInfo.SetValue(null, value);
         };
     }
@@ -67,7 +67,7 @@ public static class PropertyBinder
             InterpreterThrowHelper.ThrowFunctionNotDeclaredException(context.Type.Name, context.Location);
         }
         
-        var value = TypesFactory.Create(context.Value);
+        var value = TypesFactory.Create(context.Value, context.ProgramContext);
         variableMember.Property.SetValue(context.Type.ObjectTarget, value);
     }
 }

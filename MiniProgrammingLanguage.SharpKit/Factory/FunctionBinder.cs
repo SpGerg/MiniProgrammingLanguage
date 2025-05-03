@@ -24,7 +24,7 @@ public static class FunctionBinder
 
             for (var i = 0; i < context.Arguments.Length; i++)
             {
-                arguments[i] = TypesFactory.Create(context.Arguments[i]);
+                arguments[i] = TypesFactory.Create(context.Arguments[i], context.ProgramContext);
             }
 
             if (parameters.Length > arguments.Length)
@@ -64,7 +64,7 @@ public static class FunctionBinder
         {
             var argument = context.Arguments[i];
             
-            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext));
+            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext), context.ProgramContext);
         }
 
         var parameters = functionMember.Method.GetParameters();

@@ -39,6 +39,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Ast\CSharpArrayMemberExpression.cs" />
         <Compile Include="Exceptions\ModuleNotFoundException.cs" />
         <Compile Include="Exceptions\NotSameNameException.cs" />
         <Compile Include="Factory\TypeCreator.cs" />

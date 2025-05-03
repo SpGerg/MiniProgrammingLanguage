@@ -8,6 +8,12 @@ type Item
     bindable function createExecutable()
     @sharp_kit_ignore_case
     bindable function pepe()
+    @sharp_kit_ignore_case
+    bindable function giveMeIt()
+    @sharp_kit_ignore_case
+    bindable function icooler()
+    @sharp_kit_ignore_case
+    bindable function showmesomething(array)
 end
 
 item_class = get_type("MiniProgrammingLanguage.Tests.Item")
@@ -19,8 +25,11 @@ bind(typeof("Item"), executable_item_class)
 bind(typeof("Item"), other_item_class)
 
 item = create_from_extender(typeof("Item"), other_item_class)
-item.execute()
 
-g = item.Type
+array = item.giveMeIt()
 
-print(g is ItemType.Executable)
+print(array)
+
+item.showmesomething([ 1, 2, 3 ])
+
+print(item.giveMeIt())
