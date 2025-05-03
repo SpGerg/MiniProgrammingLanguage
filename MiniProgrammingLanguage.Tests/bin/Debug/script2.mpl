@@ -18,7 +18,7 @@ bind(typeof("Item"), item_class)
 bind(typeof("Item"), executable_item_class)
 bind(typeof("Item"), other_item_class)
 
-item = create_from_extender(typeof("Item"), executable_item_class)
+item = create_from_extender(typeof("Item"), other_item_class)
 item.execute()
 
 g = item.Type

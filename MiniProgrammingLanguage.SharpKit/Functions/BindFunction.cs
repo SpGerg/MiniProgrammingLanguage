@@ -90,7 +90,7 @@ public static class BindFunction
                     {
                         var variableInstance = new LanguageVariableInstance
                         {
-                            Name = csProperty.Name,
+                            Name = $"{csObjectType.Name}_{csProperty.Name}",
                             Module = csObjectType.Assembly.GetName().Name,
                             Type = variableType,
                             Access = AccessType.Static | AccessType.ReadOnly,
@@ -145,7 +145,7 @@ public static class BindFunction
                         
                         var functionInstance = new LanguageFunctionInstance
                         {
-                            Name = csMethod.Name,
+                            Name = $"{csObjectType.Name}_{csMethod.Name}",
                             Module = csObjectType.Assembly.GetName().Name,
                             Arguments = arguments,
                             Return = functionReturnType,
