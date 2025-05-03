@@ -41,11 +41,13 @@
     <ItemGroup>
         <Compile Include="Exceptions\ModuleNotFoundException.cs" />
         <Compile Include="Exceptions\NotSameNameException.cs" />
-        <Compile Include="Factory\ClassCreator.cs" />
-        <Compile Include="Factory\MethodBinder.cs" />
+        <Compile Include="Factory\TypeCreator.cs" />
+        <Compile Include="Factory\EnumCreator.cs" />
+        <Compile Include="Factory\FunctionBinder.cs" />
         <Compile Include="Factory\PropertyBinder.cs" />
         <Compile Include="Factory\TypesFactory.cs" />
         <Compile Include="Functions\BindFunction.cs" />
+        <Compile Include="Functions\CreateFromExtenderFunction.cs" />
         <Compile Include="Functions\GetTypeFunction.cs" />
         <Compile Include="Functions\GetBaseFunction.cs" />
         <Compile Include="Functions\RequireDependencyFunction.cs" />

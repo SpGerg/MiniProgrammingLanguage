@@ -339,6 +339,11 @@ public class Parser
                     case DotExpression dotExpression:
                         return new DotExpression(new DotExpression(left, dotExpression.Left, _root, left.Location),
                             dotExpression.Right, _root, dotExpression.Location);
+                    case VariableExpression variableExpression when left is BinaryExpression binaryExpression:
+                        return new BinaryExpression(binaryExpression.Operator,
+                            binaryExpression.Left,
+                            new DotExpression(binaryExpression.Right, right, _root, variableExpression.Location),
+                            binaryExpression.Location);
                     default:
                         return new DotExpression(left, right, _root, left.Location);
                 }

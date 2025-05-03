@@ -16,7 +16,7 @@ using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueTyp
 
 namespace MiniProgrammingLanguage.SharpKit.Factory;
 
-public static class ClassCreator
+public static class TypeCreator
 {
     public static readonly Type AsyncAttribute = typeof(AsyncStateMachineAttribute);
     
@@ -173,7 +173,7 @@ public static class ClassCreator
             Return = returnType,
             IsAsync = method.GetCustomAttribute(AsyncAttribute) is not null,
             Arguments = arguments,
-            Bind = MethodBinder.ExecuteBindMethod,
+            Bind = FunctionBinder.ExecuteBindMethod,
             Method = method,
             Access = AccessType.Bindable | AccessType.Static
         };

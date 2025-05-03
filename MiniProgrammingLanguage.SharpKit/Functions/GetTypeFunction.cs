@@ -45,13 +45,18 @@ public static class GetTypeFunction
             InterpreterThrowHelper.ThrowTypeNotFoundException(content, context.Location);
         }
 
+        if (csType.IsAbstract)
+        {
+            return  new CSharpObjectValue(csType);
+        }
+        
         var instance = Activator.CreateInstance(csType);
 
         if (instance is null)
         {
             InterpreterThrowHelper.ThrowCannotAccessException(content, context.Location);
         }
-
+        
         return new CSharpObjectValue(instance);
     }
 }

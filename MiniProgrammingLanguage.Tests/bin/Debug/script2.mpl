@@ -1,16 +1,26 @@
-type Player
+type Item
+    bindable Type
     @sharp_kit_ignore_case
-    bindable name
+    bindable function destroy()
     @sharp_kit_ignore_case
-    bindable function broadcast(content)
+    bindable function execute()
+    @sharp_kit_ignore_case
+    bindable function createExecutable()
+    @sharp_kit_ignore_case
+    bindable function pepe()
 end
 
-player_class = get_type("MiniProgrammingLanguage.Tests.Player")
+item_class = get_type("MiniProgrammingLanguage.Tests.Item")
+executable_item_class = get_type("MiniProgrammingLanguage.Tests.ExecutableItem")
+other_item_class = get_type("MiniProgrammingLanguage.Tests.OtherItem")
 
-bind(typeof("Player"), player_class)
+bind(typeof("Item"), item_class)
+bind(typeof("Item"), executable_item_class)
+bind(typeof("Item"), other_item_class)
 
-player = create Player
+item = create_from_extender(typeof("Item"), executable_item_class)
+item.execute()
 
-for i in 1000000
-    player.broadcast(i)
-end
+g = item.Type
+
+print(g is ItemType.Executable)

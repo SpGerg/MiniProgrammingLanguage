@@ -13,7 +13,7 @@ public class LanguageVariableInstanceBuilder
 
     public Func<VariableGetterContext, AbstractValue> GetBind { get; set; }
 
-    public Func<VariableSetterContext, AbstractValue> SetBind { get; set; }
+    public Action<VariableSetterContext> SetBind { get; set; }
 
     public ObjectTypeValue Type { get; set; } = ObjectTypeValue.Any;
 
@@ -56,7 +56,7 @@ public class LanguageVariableInstanceBuilder
         return this;
     }
 
-    public LanguageVariableInstanceBuilder SetSetBindFunc(Func<VariableSetterContext, AbstractValue> bind)
+    public LanguageVariableInstanceBuilder SetSetBindFunc(Action<VariableSetterContext> bind)
     {
         SetBind = bind;
 

@@ -40,7 +40,10 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Player.cs" />
+        <Compile Include="ExecutableItem.cs" />
+        <Compile Include="Item.cs" />
+        <Compile Include="ItemType.cs" />
+        <Compile Include="OtherItem.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

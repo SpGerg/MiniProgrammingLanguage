@@ -14,6 +14,7 @@ public static class SharpKitModule
     
     public static ImplementModule Create()
     {
+        var createFromExtender = CreateFromExtenderFunction.Create();
         var requireDependency = RequireDependencyFunction.Create();
         var createBasedOn = BindFunction.Create();
         var createType = GetTypeFunction.Create();
@@ -25,7 +26,7 @@ public static class SharpKitModule
         {
             Name = Name,
             Types = Array.Empty<ITypeInstance>(),
-            Functions = new[] { requireDependency, createBasedOn, createType, getBase },
+            Functions = new[] { createFromExtender, requireDependency, createBasedOn, createType, getBase },
             Variables = new [] { sharpKitVariable },
             Enums = Array.Empty<IEnumInstance>()
         };

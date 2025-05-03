@@ -85,7 +85,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 Location);
         }
 
-        return new EnumMemberValue(enumValue.Value.Name, variableExpression.Name);
+        return new EnumMemberValue(enumValue.Value, variableExpression.Name);
     }
 
     public (TypeValue Type, ITypeMemberValue Member) Dot(ProgramContext context, TypeValue parent = null)

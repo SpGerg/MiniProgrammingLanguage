@@ -21,7 +21,7 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
 
     public required ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
-    public Func<VariableSetterContext, AbstractValue> SetBind { get; set; }
+    public Action<VariableSetterContext> SetBind { get; set; }
 
     public AccessType Access { get; init; } = AccessType.ReadOnly;
 
@@ -47,36 +47,36 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
             return false;
         }
 
-        if (SetBind is not null)
+        if (SetBind is null)
         {
-            var getterContext = new VariableGetterContext
-            {
-                ProgramContext = programContext,
-                Location = location
-            };
-
-            var context = new VariableSetterContext
-            {
-                ProgramContext = programContext,
-                Value = variableInstance.GetValue(getterContext),
-                Location = location
-            };
-
-            try
-            {
-                exception = null;
-
-                SetBind.Invoke(context);
-            }
-            catch (AbstractLanguageException languageException)
-            {
-                exception = languageException;
-            }
-
-            return true;
+            exception = new CannotAccessException(Name, location);
+            return false;
         }
 
-        exception = new CannotAccessException(Name, location);
-        return false;
+        var getterContext = new VariableGetterContext
+        {
+            ProgramContext = programContext,
+            Location = location
+        };
+
+        var context = new VariableSetterContext
+        {
+            ProgramContext = programContext,
+            Value = variableInstance.GetValue(getterContext),
+            Location = location
+        };
+
+        try
+        {
+            exception = null;
+
+            SetBind.Invoke(context);
+        }
+        catch (AbstractLanguageException languageException)
+        {
+            exception = languageException;
+        }
+
+        return true;
     }
 }

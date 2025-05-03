@@ -18,7 +18,7 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
 
     public required FunctionBodyExpression Root { get; init; }
 
-    public required Func<LanguageFunctionExecuteContext, AbstractValue> Bind { get; init; }
+    public required Func<LanguageFunctionExecuteContext, AbstractValue> Bind { get; set; }
 
     public required FunctionArgument[] Arguments { get; init; }
 
@@ -37,7 +37,7 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
             InterpreterThrowHelper.ThrowFunctionNotDeclaredException(Name, context.Location);
         }
 
-        var arguments = new AbstractValue[context.Arguments.Length];
+        var arguments = new AbstractValue[Arguments.Length];
 
         for (var i = 0; i < Arguments.Length; i++)
         {
@@ -64,6 +64,8 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
 
             if (!argument.IsRequired)
             {
+                arguments[i] = argument.Default;
+                
                 continue;
             }
 

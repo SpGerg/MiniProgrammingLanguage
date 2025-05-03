@@ -1,26 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using MiniProgrammingLanguage.Core;
 using MiniProgrammingLanguage.Core.Interpreter;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
+using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
-using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
-using MiniProgrammingLanguage.SharpKit.Functions;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.SharpKit.Factory;
 
 public static class TypesFactory
 {
-    public const string GeneratedMemberAttribute = "sharp_kit_generated_type";
-
     public static AbstractValue Create(object target, ProgramContext programContext, out ImplementModule implementModule)
     {
         AbstractValue result = target switch
@@ -35,9 +26,32 @@ public static class TypesFactory
 
         if (result is null)
         {
-            var type = ClassCreator.Create(target.GetType(), programContext, target, out implementModule);
+            var type = target.GetType();
 
-            return type;
+            if (type.IsEnum)
+            {
+                var index = type.GetField("value__");
+
+                if (index is not null)
+                {
+                    var enumInstance = programContext.Enums.Get(null, type.Name, programContext.Module, Location.Default);
+                    
+                    implementModule = null;
+                    return new EnumMemberValue(enumInstance, type.GetEnumName(index.GetValue(target)));
+                }
+                
+                var enumValue = EnumCreator.Create(type);
+
+                implementModule = new ImplementModule
+                {
+                    Name = "global",
+                    Enums = new [] { enumValue.Value }
+                };
+                
+                return enumValue;
+            }
+
+            return TypeCreator.Create(type, programContext, target, out implementModule);
         }
 
         implementModule = null;
@@ -56,11 +70,24 @@ public static class TypesFactory
             _ => null,
         };
 
-        if (result is null && target is TypeValue typeValue)
+        if (result is null)
         {
-            return typeValue.ObjectTarget;
+            if (target is TypeValue typeValue)
+            {
+                return typeValue.ObjectTarget;
+            }
+            
+            if (target is EnumValue enumValue)
+            {
+                return enumValue.Type;
+            }
+            
+            if (target is EnumMemberValue enumMemberValue)
+            {
+                return Enum.Parse(enumMemberValue.Parent.Type, enumMemberValue.Member);
+            }
         }
-        
+
         return result;
     }
     
@@ -95,8 +122,41 @@ public static class TypesFactory
             implementModule = null;
             return ObjectTypeValue.Void;
         }
+
+        if (target.IsEnum)
+        {
+            var enumValue = EnumCreator.Create(target);
+            var objectType = new ObjectTypeValue(enumValue.Name, ValueType.EnumMember);
+
+            if (programContext.Enums.Get(null, enumValue.Name, programContext.Module, Location.Default) is null)
+            {
+                implementModule = new ImplementModule
+                {
+                    Name = "global",
+                    Enums = new [] { enumValue.Value },
+                    Variables = new[]
+                    {
+                        new UserVariableInstance
+                        {
+                            Name = enumValue.Name,
+                            Module = programContext.Module,
+                            Type = new ObjectTypeValue(enumValue.Name, ValueType.Enum),
+                            Access = AccessType.Static | AccessType.ReadOnly,
+                            Value = enumValue,
+                            Root = null
+                        }
+                    }
+                };
+            }
+            else
+            {
+                implementModule = null;
+            }
+
+            return objectType;
+        }
         
-        var type = ClassCreator.Create(target, programContext, objectTarget, out implementModule);
+        var type = TypeCreator.Create(target, programContext, objectTarget, out implementModule);
 
         return new ObjectTypeValue(type.Name, ValueType.Type);
     }

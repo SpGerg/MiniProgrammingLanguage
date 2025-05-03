@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Exceptions;
@@ -17,8 +18,10 @@ public class UserEnumInstance : IEnumInstance
     public required string Module { get; init; }
 
     public required FunctionBodyExpression Root { get; init; }
-
+    
     public required IReadOnlyDictionary<string, int> Members { get; init; }
+    
+    public Type Type { get; set; }
 
     public AccessType Access { get; init; } = AccessType.ReadOnly;
 

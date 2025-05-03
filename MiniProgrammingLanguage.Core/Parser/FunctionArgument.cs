@@ -8,6 +8,7 @@ public class FunctionArgument
     public FunctionArgument(string name, ObjectTypeValue objectTypeValue = null, AbstractValue defaultValue = null)
     {
         Name = name;
+        Default = defaultValue;
         Type = objectTypeValue ?? new ObjectTypeValue(string.Empty, ValueType.Any);
     }
 
