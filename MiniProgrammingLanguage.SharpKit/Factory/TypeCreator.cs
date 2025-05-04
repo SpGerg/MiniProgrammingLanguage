@@ -11,15 +11,25 @@ using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Parser;
 using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
-using MiniProgrammingLanguage.SharpKit.Functions;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
 
 namespace MiniProgrammingLanguage.SharpKit.Factory;
 
 public static class TypeCreator
 {
+    /// <summary>
+    /// Async attribute
+    /// </summary>
     public static readonly Type AsyncAttribute = typeof(AsyncStateMachineAttribute);
     
+    /// <summary>
+    /// Create type by CSharp type
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="programContext"></param>
+    /// <param name="objectTarget">Type instance</param>
+    /// <param name="implementModule">Types created in process of creating this</param>
+    /// <returns></returns>
     public static TypeValue Create(Type target, ProgramContext programContext, object objectTarget, out ImplementModule implementModule)
     {
         var types = new List<ITypeInstance>();
@@ -34,6 +44,14 @@ public static class TypeCreator
         return type;
     }
 
+    /// <summary>
+    /// Create class or structure by CSharp type
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="programContext"></param>
+    /// <param name="objectTarget">Type instance</param>
+    /// <param name="types">Types created in process of creating this</param>
+    /// <returns></returns>
     private static TypeValue CreateClassOrStructure(Type type, ProgramContext programContext, object objectTarget,
         List<ITypeInstance> types)
     {
@@ -95,6 +113,11 @@ public static class TypeCreator
         return result;
     }
     
+    /// <summary>
+    /// Create type function member
+    /// </summary>
+    /// <param name="functionMember"></param>
+    /// <returns></returns>
     public static TypeLanguageVariableMemberInstance CreateVariableOfFunctionMemberByProperty(ITypeLanguageFunctionMember functionMember)
     {
         return new TypeLanguageVariableMemberInstance
@@ -111,6 +134,14 @@ public static class TypeCreator
         };
     }
     
+    /// <summary>
+    /// Create type variable member
+    /// </summary>
+    /// <param name="property"></param>
+    /// <param name="programContext"></param>
+    /// <param name="objectTarget"></param>
+    /// <param name="types"></param>
+    /// <returns></returns>
     public static TypeLanguageVariableMemberInstance CreateVariableMemberByProperty(PropertyInfo property,
         ProgramContext programContext, object objectTarget, ref List<ITypeInstance> types)
     {
@@ -136,6 +167,14 @@ public static class TypeCreator
         };
     }
 
+    /// <summary>
+    /// Create type function member by method info
+    /// </summary>
+    /// <param name="method"></param>
+    /// <param name="programContext"></param>
+    /// <param name="objectTarget"></param>
+    /// <param name="types"></param>
+    /// <returns></returns>
     public static TypeLanguageFunctionMemberInstance CreateFunctionMemberByMethod(MethodInfo method, ProgramContext programContext, object objectTarget, 
         ref List<ITypeInstance> types)
     {

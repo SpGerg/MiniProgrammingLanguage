@@ -17,6 +17,8 @@ public class CSharpObjectValue : AbstractValue
         ValueType.String
     };
 
+    public override bool IsValueType => false;
+
     public object Value { get; }
 
     public override bool Visit(IValueVisitor visitor)

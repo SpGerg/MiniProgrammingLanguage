@@ -9,8 +9,15 @@ namespace MiniProgrammingLanguage.Std;
 
 public static class StdModule
 {
+    /// <summary>
+    /// Name
+    /// </summary>
     public const string Name = "std";
     
+    /// <summary>
+    /// Create std implement module
+    /// </summary>
+    /// <returns></returns>
     public static ImplementModule Create()
     {
         var print = PrintFunction.Create();

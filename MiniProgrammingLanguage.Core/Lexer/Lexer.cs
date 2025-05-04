@@ -7,6 +7,12 @@ namespace MiniProgrammingLanguage.Core.Lexer
 {
     public class Lexer
     {
+        /// <summary>
+        /// Create instance of lexer
+        /// </summary>
+        /// <param name="source">Source</param>
+        /// <param name="filepath">Filepath</param>
+        /// <param name="configuration">Keywords</param>
         public Lexer(string source, string filepath, LexerConfiguration configuration)
         {
             Source = source;
@@ -17,26 +23,55 @@ namespace MiniProgrammingLanguage.Core.Lexer
             _numberTokenizer = new NumberTokenizer(this);
         }
 
+        /// <summary>
+        /// Source
+        /// </summary>
         public string Source { get; }
 
+        /// <summary>
+        /// Filepath to script.
+        /// Uses in errors.
+        /// </summary>
         public string Filepath { get; }
 
+        /// <summary>
+        /// Configuration
+        /// </summary>
         public LexerConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Current symbol
+        /// </summary>
         public char Current => Source[Position];
 
+        /// <summary>
+        /// Previous symbol
+        /// </summary>
         public char Previous => Source[Position - 1];
 
+        /// <summary>
+        /// Current position
+        /// </summary>
         public int Position { get; set; }
 
+        /// <summary>
+        /// Is not ended
+        /// </summary>
         public bool IsNotEnded => Position < Source.Length;
 
+        /// <summary>
+        /// Is ended
+        /// </summary>
         public bool IsEnded => !IsNotEnded;
 
         private readonly StringTokenizer _stringTokenizer;
 
         private readonly NumberTokenizer _numberTokenizer;
 
+        /// <summary>
+        /// Tokenized tokens based on configuration
+        /// </summary>
+        /// <returns></returns>
         public IReadOnlyList<Token> Tokenize()
         {
             var tokens = new List<Token>();

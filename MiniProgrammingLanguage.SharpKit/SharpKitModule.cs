@@ -10,8 +10,15 @@ namespace MiniProgrammingLanguage.SharpKit;
 
 public static class SharpKitModule
 {
+    /// <summary>
+    /// Name
+    /// </summary>
     public const string Name = "sharp-kit";
     
+    /// <summary>
+    /// Create sharp kit implement module
+    /// </summary>
+    /// <returns></returns>
     public static ImplementModule Create()
     {
         var createFromExtender = CreateFromExtenderFunction.Create();

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using MiniProgrammingLanguage.Core.Interpreter;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Lexer;
 using MiniProgrammingLanguage.Core.Lexer.Enums;
@@ -16,6 +14,12 @@ namespace MiniProgrammingLanguage.Core.Parser;
 
 public class Parser
 {
+    /// <summary>
+    /// Create instance of parser
+    /// </summary>
+    /// <param name="tokens">Tokenized tokens</param>
+    /// <param name="filepath">Uses in errors</param>
+    /// <param name="configuration">Keywords</param>
     public Parser(IReadOnlyList<Token> tokens, string filepath, ParserConfiguration configuration)
     {
         Tokens = tokens;
@@ -23,8 +27,15 @@ public class Parser
         Filepath = filepath;
     }
 
+    /// <summary>
+    /// Tokens
+    /// </summary>
     public IReadOnlyList<Token> Tokens { get; }
 
+    /// <summary>
+    /// Current token.
+    /// If position more than tokens counts throw an exception.
+    /// </summary>
     public Token Current
     {
         get
@@ -40,18 +51,37 @@ public class Parser
         }
     }
 
+    /// <summary>
+    /// Is not ended
+    /// </summary>
     public bool IsNotEnded => Position < Tokens.Count;
 
+    /// <summary>
+    /// Is ended
+    /// </summary>
     public bool IsEnded => !IsNotEnded;
 
+    /// <summary>
+    /// Filepath to script
+    /// </summary>
     public string Filepath { get; }
 
+    /// <summary>
+    /// Current position
+    /// </summary>
     public int Position { get; private set; }
 
+    /// <summary>
+    /// Configuration
+    /// </summary>
     public ParserConfiguration Configuration { get; }
 
     private FunctionBodyExpression _root;
 
+    /// <summary>
+    /// Parse given tokens into AST
+    /// </summary>
+    /// <returns></returns>
     public FunctionBodyExpression Parse()
     {
         var statements = new List<IStatement>();
@@ -69,6 +99,10 @@ public class Parser
         });
     }
 
+    /// <summary>
+    /// Parse statement
+    /// </summary>
+    /// <returns></returns>
     private IStatement ParseStatement()
     {
         var access = ParseAccess();
@@ -190,6 +224,14 @@ public class Parser
         return null;
     }
 
+    /// <summary>
+    /// Parse call expression.
+    /// Call function without store it in a variable.
+    /// <code>
+    /// call (function declaration)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private CallExpression ParseCall()
     {
         Match(TokenType.Call);
@@ -199,6 +241,17 @@ public class Parser
         return new CallExpression(ParseFunctionDeclaration(AccessType.None, isAsync), Current.Location);
     }
 
+    /// <summary>
+    /// Parse enum declaration expression
+    /// <code>
+    /// enum (name)
+    ///     [member] = [value]
+    ///     ...
+    /// end
+    /// </code>
+    /// </summary>
+    /// <param name="access"></param>
+    /// <returns></returns>
     private EnumDeclarationExpression ParseEnumDeclaration(AccessType access)
     {
         Match(TokenType.Enum);
@@ -244,6 +297,15 @@ public class Parser
         return new EnumDeclarationExpression(name.Value, members, _root, access, name.Location);
     }
 
+    /// <summary>
+    /// Parse while expression
+    /// <code>
+    /// while (condition)
+    ///     [body]
+    /// end
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private WhileExpression ParseWhile()
     {
         Match(TokenType.While);
@@ -255,6 +317,13 @@ public class Parser
         return new WhileExpression(condition, body, condition.Location);
     }
 
+    /// <summary>
+    /// Parse await expression
+    /// <code>
+    /// await (__task)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private AwaitExpression ParseAwait()
     {
         Match(TokenType.Await);
@@ -264,6 +333,13 @@ public class Parser
         return new AwaitExpression(functionCall, functionCall.Location);
     }
 
+    /// <summary>
+    /// Parse unary expression
+    /// <code>
+    /// [operator](value)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private AbstractEvaluableExpression ParseUnary()
     {
         if (Match(TokenType.Plus))
@@ -279,6 +355,13 @@ public class Parser
         return ParseValue();
     }
 
+    /// <summary>
+    /// Parse multiplicative expression
+    /// <code>
+    /// (left) * (right)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private AbstractEvaluableExpression ParseMultiplicative()
     {
         var left = ParseUnary();
@@ -305,6 +388,14 @@ public class Parser
         return left;
     }
 
+    /// <summary>
+    /// Parse binary expression: binary, and, or, dot, assign
+    /// <code>
+    /// (left) (operator) (right)
+    /// </code>
+    /// </summary>
+    /// <param name="last"></param>
+    /// <returns></returns>
     private AbstractEvaluableExpression ParseBinary(AbstractEvaluableExpression last = null)
     {
         var left = ParseMultiplicative();
@@ -404,6 +495,15 @@ public class Parser
         return left;
     }
 
+    /// <summary>
+    /// Parse for expression
+    /// <code>
+    /// for (variable) in (goal), (step)
+    ///     [body]
+    /// end
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private LoopExpression ParseForOrForeach()
     {
         Match(TokenType.For);
@@ -463,6 +563,23 @@ public class Parser
         return new ForExpression(condition, variable, step, name, body, variable.Location);
     }
 
+    /// <summary>
+    /// Parse if expression
+    /// <code>
+    /// if (condition) then
+    ///     [body]
+    /// end
+    /// </code>
+    /// <code>
+    /// or
+    /// if (condition) then
+    ///     [body]
+    /// else
+    ///     [else body]
+    /// end
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private IfExpression ParseIf()
     {
         Match(TokenType.If);
@@ -482,6 +599,15 @@ public class Parser
         return new IfExpression(condition, body, elseBody, condition.Location);
     }
 
+    /// <summary>
+    /// Parse implement function expression
+    /// <code>
+    /// implement function (type).(name)([arguments]): [type]
+    ///     [body]
+    /// end
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ImplementFunctionDeclarationExpression ParseImplementFunctionDeclaration()
     {
         Match(TokenType.Implement);
@@ -500,6 +626,17 @@ public class Parser
         return new ImplementFunctionDeclarationExpression(type.Value, function, type.Location);
     }
 
+    /// <summary>
+    /// Parse function declaration expression
+    /// <code>
+    /// function (name)([arguments]): [type]
+    ///     [body]
+    /// end
+    /// </code>
+    /// </summary>
+    /// <param name="accessType"></param>
+    /// <param name="isAsync"></param>
+    /// <returns></returns>
     private FunctionDeclarationExpression ParseFunctionDeclaration(AccessType accessType, bool isAsync = false)
     {
         Match(TokenType.Function);
@@ -528,6 +665,17 @@ public class Parser
             name.Location);
     }
 
+    /// <summary>
+    /// Parse type declaration expression
+    /// <code>
+    /// type (name)
+    ///     [members]
+    ///     ...
+    /// end
+    /// </code>
+    /// </summary>
+    /// <param name="accessType"></param>
+    /// <returns></returns>
     private TypeDeclarationExpression ParseType(AccessType accessType)
     {
         Match(TokenType.Type);
@@ -546,6 +694,13 @@ public class Parser
         return new TypeDeclarationExpression(name.Value, members, accessType, _root, name.Location);
     }
 
+    /// <summary>
+    /// Parse attributes
+    /// <code>
+    /// @(name)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private IEnumerable<string> ParseAttributes()
     {
         if (!Match(TokenType.At))
@@ -574,6 +729,17 @@ public class Parser
         return attributes;
     }
 
+    /// <summary>
+    /// Parse type member
+    /// <code>
+    /// (name): [type]
+    /// </code>
+    /// or
+    /// <code>
+    /// [async] function (name)([arguments]): [type]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ITypeMemberExpression ParseTypeMember(string parent)
     {
         var attributes = ParseAttributes();
@@ -594,6 +760,13 @@ public class Parser
         return ParseTypeKeyMember(parent, attributes, access);
     }
 
+    /// <summary>
+    /// Parse type key member
+    /// <code>
+    /// (name): [type]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private KeyTypeMemberExpression ParseTypeKeyMember(string parent, IEnumerable<string> attributes,
         AccessType accessType)
     {
@@ -606,6 +779,13 @@ public class Parser
         return new KeyTypeMemberExpression(name.Value, parent, type, attributes, accessType, name.Location);
     }
 
+    /// <summary>
+    /// Parse type function member, can be started after function keyword
+    /// <code>
+    /// [async] function (name)([arguments]): [type]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private TypeFunctionMemberExpression ParseTypeFunctionMember(string parent, bool isAsync,
         IEnumerable<string> attributes, AccessType accessType)
     {
@@ -632,6 +812,15 @@ public class Parser
             accessType, name.Location);
     }
 
+    /// <summary>
+    /// Parse function body and change root
+    /// <code>
+    /// ...
+    /// ...
+    /// (end token)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private FunctionBodyExpression ParseFunctionBody(params TokenType[] endTokens)
     {
         if (!endTokens.Any())
@@ -659,6 +848,13 @@ public class Parser
         return currentRoot;
     }
 
+    /// <summary>
+    /// Parse arguments
+    /// <code>
+    /// (name1): [type1] = [default1], (name2): [type2] = [default2]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private FunctionArgument[] ParseArguments(TokenType endToken = TokenType.RightParentheses)
     {
         Match(TokenType.LeftParentheses);
@@ -673,6 +869,13 @@ public class Parser
         return arguments.ToArray();
     }
 
+    /// <summary>
+    /// Parse function argument
+    /// <code>
+    /// (name): [type] = [default]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private FunctionArgument ParseArgument()
     {
         var name = Current;
@@ -703,6 +906,13 @@ public class Parser
         return new FunctionArgument(name.Value, objectType, defaultValue);
     }
 
+    /// <summary>
+    /// Parse cast expression
+    /// <code>
+    /// (type) (object)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private CastExpression ParseCast()
     {
         Match(TokenType.LeftParentheses);
@@ -716,6 +926,13 @@ public class Parser
         return new CastExpression(type, value, value.Location);
     }
 
+    /// <summary>
+    /// Parse function call expression
+    /// <code>
+    /// function(value1, value2)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private FunctionCallExpression ParseFunctionCall()
     {
         var name = Current;
@@ -735,6 +952,13 @@ public class Parser
         return new FunctionCallExpression(name.Value, arguments.ToArray(), _root, name.Location);
     }
 
+    /// <summary>
+    /// Parse assign expression
+    /// <code>
+    /// variable = value
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private AssignExpression ParseAssign(AccessType access)
     {
         var name = Current;
@@ -755,6 +979,13 @@ public class Parser
         return new AssignExpression(name.Value, objectTypeValue, value, _root, name.Location, access);
     }
 
+    /// <summary>
+    /// Parse type member assign
+    /// <code>
+    /// type.member = value
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private AssignTypeMemberExpression ParseTypeMemberAssign()
     {
         var expression = ParseBinary();
@@ -769,6 +1000,13 @@ public class Parser
         return new AssignTypeMemberExpression(assignTypeMember.Left, assignTypeMember.Right, expression.Location);
     }
 
+    /// <summary>
+    /// Parse return expression
+    /// <code>
+    /// return [value]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ReturnExpression ParseReturn()
     {
         Match(TokenType.Return);
@@ -778,6 +1016,13 @@ public class Parser
         return new ReturnExpression(value, value.Location);
     }
 
+    /// <summary>
+    /// Parse module expression
+    /// <code>
+    /// module (name)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ModuleExpression ParseModule()
     {
         Match(TokenType.Module);
@@ -794,6 +1039,13 @@ public class Parser
         return new ModuleExpression(stringExpression, value.Location);
     }
 
+    /// <summary>
+    /// Parse array
+    /// <code>
+    /// [ 1, 2, 3, 4, 5 ] 
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ArrayExpression ParseArray()
     {
         Match(TokenType.LeftSquareBracket);
@@ -816,6 +1068,13 @@ public class Parser
         return new ArrayExpression(values.ToArray(), current.Location);
     }
 
+    /// <summary>
+    /// Parse array assign expression
+    /// <code>
+    /// array[i] = value
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private AssignArrayMemberExpression ParseArrayAssign()
     {
         var name = Current;
@@ -833,6 +1092,13 @@ public class Parser
         return new AssignArrayMemberExpression(new VariableExpression(name.Value, _root, name.Location), index, value, name.Location);
     }
     
+    /// <summary>
+    /// Parse array member expression
+    /// <code>
+    /// array[i]
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ArrayMemberExpression ParseArrayMember()
     {
         var name = Current;
@@ -847,6 +1113,13 @@ public class Parser
         return new ArrayMemberExpression(new VariableExpression(name.Value, _root, name.Location), index, name.Location);
     }
     
+    /// <summary>
+    /// Parse import expression
+    /// <code>
+    /// import (name)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private ImportExpression ParseImport()
     {
         Match(TokenType.Import);
@@ -856,6 +1129,13 @@ public class Parser
         return new ImportExpression(name, name.Location);
     }
 
+    /// <summary>
+    /// Parse create expression
+    /// <code>
+    /// create (name)
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
     private CreateExpression ParseCreate()
     {
         Match(TokenType.Create);
@@ -867,6 +1147,11 @@ public class Parser
         return new CreateExpression(name.Value, _root, name.Location);
     }
 
+    /// <summary>
+    /// Parse value on current token.
+    /// Unknown values at parsing too (variables, functions, e.t.c).
+    /// </summary>
+    /// <returns></returns>
     private AbstractEvaluableExpression ParseValue()
     {
         var current = Current;
@@ -977,6 +1262,11 @@ public class Parser
         return null;
     }
 
+    /// <summary>
+    /// Parse object type on curren token: Array, String, Boolean, Number, Round Number, Enum Member (?), Enum (?), Type.
+    /// </summary>
+    /// <param name="anyIfNull">Return any type if type not found otherwise exception</param>
+    /// <returns>Type or exception</returns>
     private ObjectTypeValue ParseObjectType(bool anyIfNull = false)
     {
         Match(TokenType.Colon);
@@ -1047,6 +1337,10 @@ public class Parser
         return null;
     }
 
+    /// <summary>
+    /// Parse access on current token: Static, Readonly, Bindable.
+    /// </summary>
+    /// <returns></returns>
     private AccessType ParseAccess()
     {
         var accessType = AccessType.None;
@@ -1069,6 +1363,11 @@ public class Parser
         return accessType;
     }
 
+    /// <summary>
+    /// Return true and skip current token if it in given otherwise return false.
+    /// </summary>
+    /// <param name="tokenTypes"></param>
+    /// <returns>Skipped or not</returns>
     private bool Match(params TokenType[] tokenTypes)
     {
         if (tokenTypes.Contains(TokenType.None))
@@ -1085,6 +1384,11 @@ public class Parser
         return true;
     }
 
+    /// <summary>
+    /// Skip current token if it in given otherwise throw exception.
+    /// </summary>
+    /// <param name="tokenTypes"></param>
+    /// <returns>Current instance</returns>
     private Parser MatchOrException(params TokenType[] tokenTypes)
     {
         if (!Is(tokenTypes))
@@ -1097,6 +1401,11 @@ public class Parser
         return this;
     }
 
+    /// <summary>
+    /// Return true if current token in given.
+    /// </summary>
+    /// <param name="tokenTypes"></param>
+    /// <returns></returns>
     private bool Is(params TokenType[] tokenTypes)
     {
         if (IsEnded)
@@ -1107,6 +1416,13 @@ public class Parser
         return tokenTypes.Contains(Current.Type);
     }
 
+    /// <summary>
+    /// Return true if current token in given.
+    /// If offset more than tokens counts, it will return false.
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <param name="tokenTypes"></param>
+    /// <returns></returns>
     private bool IsWithOffset(int offset, params TokenType[] tokenTypes)
     {
         if (Position + offset > Tokens.Count - 1)
@@ -1117,6 +1433,9 @@ public class Parser
         return tokenTypes.Contains(Tokens[Position + offset].Type);
     }
 
+    /// <summary>
+    /// Skip current token
+    /// </summary>
     private void Skip()
     {
         Position++;

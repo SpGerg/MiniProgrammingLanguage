@@ -6,6 +6,9 @@ namespace MiniProgrammingLanguage.Core.Lexer;
 
 public readonly struct LexerConfiguration
 {
+    /// <summary>
+    /// MPL language lexer configuration
+    /// </summary>
     public static LexerConfiguration Default { get; } = new()
     {
         Configuration = new Dictionary<TokenType, string>
@@ -64,15 +67,33 @@ public readonly struct LexerConfiguration
         }
     };
 
+    /// <summary>
+    /// Keywords and operators
+    /// </summary>
     public IReadOnlyDictionary<TokenType, string> Configuration { get; init; }
 
+    /// <summary>
+    /// Get value by token
+    /// </summary>
+    /// <param name="tokenType"></param>
+    /// <returns></returns>
     public string GetString(TokenType tokenType)
     {
         return Configuration[tokenType];
     }
 
+    /// <summary>
+    /// Is symbol a token
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public TokenType IsToken(char value) => IsToken(value.ToString());
 
+    /// <summary>
+    /// Is string a token
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public TokenType IsToken(string value)
     {
         var result = Configuration.FirstOrDefault(pair => pair.Value == value);

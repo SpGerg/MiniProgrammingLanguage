@@ -12,18 +12,48 @@ public abstract class AbstractValue
         Name = name;
     }
 
+    /// <summary>
+    /// Value type
+    /// </summary>
     public abstract ValueType Type { get; }
 
+    /// <summary>
+    /// Castable types
+    /// </summary>
     public abstract ValueType[] CanCast { get; }
 
+    /// <summary>
+    /// Is value type.
+    /// Boolean, number, round number, string, none, void, function
+    /// </summary>
     public virtual bool IsValueType => true;
 
+    /// <summary>
+    /// Name.
+    /// it empty in: string, boolean, round number, number, none, void, function, array.
+    /// In <see cref="CSharpObjectValue"/> it contains type name
+    /// </summary>
     public string Name { get; }
 
+    /// <summary>
+    /// Visit
+    /// </summary>
+    /// <param name="visitor"></param>
+    /// <returns></returns>
     public abstract bool Visit(IValueVisitor visitor);
 
+    /// <summary>
+    /// Gives copy of value
+    /// </summary>
+    /// <returns></returns>
     public abstract AbstractValue Copy();
 
+    /// <summary>
+    /// Return string of value otherwise exception
+    /// </summary>
+    /// <param name="programContext"></param>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public virtual string AsString(ProgramContext programContext, Location location)
     {
         InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.String.ToString(), location);
@@ -31,6 +61,12 @@ public abstract class AbstractValue
         return null;
     }
 
+    /// <summary>
+    /// Return number of value otherwise exception
+    /// </summary>
+    /// <param name="programContext"></param>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public virtual float AsNumber(ProgramContext programContext, Location location)
     {
         InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.Number.ToString(), location);
@@ -38,6 +74,12 @@ public abstract class AbstractValue
         return -1;
     }
 
+    /// <summary>
+    /// Return round number of value otherwise exception
+    /// </summary>
+    /// <param name="programContext"></param>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public virtual int AsRoundNumber(ProgramContext programContext, Location location)
     {
         InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.RoundNumber.ToString(), location);
@@ -45,6 +87,12 @@ public abstract class AbstractValue
         return -1;
     }
 
+    /// <summary>
+    /// Return boolean of value otherwise exception
+    /// </summary>
+    /// <param name="programContext"></param>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public virtual bool AsBoolean(ProgramContext programContext, Location location)
     {
         InterpreterThrowHelper.ThrowCannotCastException(Type.ToString(), ValueType.Boolean.ToString(), location);
@@ -52,6 +100,11 @@ public abstract class AbstractValue
         return false;
     }
 
+    /// <summary>
+    /// Is value match by given type
+    /// </summary>
+    /// <param name="objectTypeValue">Type</param>
+    /// <returns></returns>
     public bool Is(ObjectTypeValue objectTypeValue)
     {
         if (objectTypeValue.ValueType is ValueType.Any)
@@ -64,6 +117,11 @@ public abstract class AbstractValue
         return Visit(visitor);
     }
 
+    /// <summary>
+    /// Is value match by value
+    /// </summary>
+    /// <param name="abstractValue">Value</param>
+    /// <returns></returns>
     public bool Is(AbstractValue abstractValue)
     {
         if (this is ObjectTypeValue objectTypeValue)
@@ -76,6 +134,13 @@ public abstract class AbstractValue
         return Visit(visitor);
     }
 
+    /// <summary>
+    /// Cast value by given type
+    /// </summary>
+    /// <param name="programContext"></param>
+    /// <param name="valueType"></param>
+    /// <param name="location"></param>
+    /// <returns></returns>
     public AbstractValue Cast(ProgramContext programContext, ValueType valueType, Location location)
     {
         return valueType switch
@@ -87,6 +152,10 @@ public abstract class AbstractValue
         };
     }
 
+    /// <summary>
+    /// Return value type, can be also with type name.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
         return string.IsNullOrEmpty(Name) ? Type.ToString() : $"({Name}), {Type}";

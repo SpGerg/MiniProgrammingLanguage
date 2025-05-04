@@ -14,6 +14,13 @@ namespace MiniProgrammingLanguage.SharpKit.Factory;
 
 public static class TypesFactory
 {
+    /// <summary>
+    /// Create type by CSharp type
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="programContext"></param>
+    /// <param name="implementModule">Types created in process of creating thi</param>
+    /// <returns></returns>
     public static AbstractValue Create(object target, ProgramContext programContext, out ImplementModule implementModule)
     {
         AbstractValue result = target switch
@@ -73,6 +80,12 @@ public static class TypesFactory
         return result;
     }
 
+    /// <summary>
+    /// Create CSharp type by MPL type
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="programContext"></param>
+    /// <returns></returns>
     public static object Create(AbstractValue target, ProgramContext programContext)
     {
         object result = target.Type switch
@@ -122,6 +135,14 @@ public static class TypesFactory
         return result;
     }
 
+    /// <summary>
+    /// Get MPL type by CSharp type
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="programContext"></param>
+    /// <param name="objectTarget"></param>
+    /// <param name="implementModule">Types created in process of creating thi</param>
+    /// <returns></returns>
     public static ObjectTypeValue GetObjectTypeByType(Type target, ProgramContext programContext, object objectTarget, out ImplementModule implementModule)
     {
         if (target == typeof(string))

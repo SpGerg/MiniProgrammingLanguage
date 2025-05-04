@@ -16,6 +16,13 @@ namespace MiniProgrammingLanguage.Core.Interpreter
 
         public string Filepath { get; set; }
 
+        /// <summary>
+        /// Tokenize, parse and interpreter source in the script by filepath.
+        /// If after execution some tasks still in progress, the thread where this function was executed will be frozen.
+        /// </summary>
+        /// <param name="exception">Exception without stack trace</param>
+        /// <param name="modules">Default modules</param>
+        /// <returns></returns>
         public AbstractValue Run(out AbstractLanguageException exception, params ImplementModule[] modules)
         {
             var content = File.ReadAllText(Filepath);

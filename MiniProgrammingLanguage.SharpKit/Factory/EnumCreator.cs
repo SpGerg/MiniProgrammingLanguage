@@ -8,6 +8,11 @@ namespace MiniProgrammingLanguage.SharpKit.Factory;
 
 public static class EnumCreator
 {
+    /// <summary>
+    /// Create enum value based on enum type in CSharp
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static EnumValue Create(Type type)
     {
         var members = new Dictionary<string, int>();
