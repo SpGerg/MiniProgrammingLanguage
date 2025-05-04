@@ -1,35 +1,9 @@
-type Item
-    bindable Type
-    @sharp_kit_ignore_case
-    bindable function destroy()
-    @sharp_kit_ignore_case
-    bindable function execute()
-    @sharp_kit_ignore_case
-    bindable function createExecutable()
-    @sharp_kit_ignore_case
-    bindable function pepe()
-    @sharp_kit_ignore_case
-    bindable function giveMeIt()
-    @sharp_kit_ignore_case
-    bindable function icooler()
-    @sharp_kit_ignore_case
-    bindable function showmesomething(array)
-end
+test: array = [ 1, 2, 3 ]
 
-item_class = get_type("MiniProgrammingLanguage.Tests.Item")
-executable_item_class = get_type("MiniProgrammingLanguage.Tests.ExecutableItem")
-other_item_class = get_type("MiniProgrammingLanguage.Tests.OtherItem")
+print(test)
 
-bind(typeof("Item"), item_class)
-bind(typeof("Item"), executable_item_class)
-bind(typeof("Item"), other_item_class)
+test[1] = 5
 
-item = create_from_extender(typeof("Item"), other_item_class)
+print(test)
 
-array = item.giveMeIt()
-
-print(array)
-
-item.showmesomething([ 1, 2, 3 ])
-
-print(item.giveMeIt())
+print(test[2])

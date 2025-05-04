@@ -147,8 +147,10 @@
         <Compile Include="Lexer\Tokenizers\StringTokenizer.cs" />
         <Compile Include="Location.cs" />
         <Compile Include="Parser\Ast\ArrayExpression.cs" />
+        <Compile Include="Parser\Ast\ArrayMemberExpression.cs" />
         <Compile Include="Parser\Ast\AssignExpression.cs" />
         <Compile Include="Parser\Ast\AssignTypeMemberExpression.cs" />
+        <Compile Include="Parser\Ast\AssignArrayMemberExpression.cs" />
         <Compile Include="Parser\Ast\AwaitExpression.cs" />
         <Compile Include="Parser\Ast\BinaryExpression.cs" />
         <Compile Include="Parser\Ast\BooleanExpression.cs" />

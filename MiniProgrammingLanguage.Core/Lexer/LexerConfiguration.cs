@@ -59,7 +59,8 @@ public readonly struct LexerConfiguration
             { TokenType.Static, "static" },
             { TokenType.ReadOnly, "readonly" },
             { TokenType.Call, "call" },
-            { TokenType.Bindable, "bindable" }
+            { TokenType.Bindable, "bindable" },
+            { TokenType.Array, "array" }
         }
     };
 

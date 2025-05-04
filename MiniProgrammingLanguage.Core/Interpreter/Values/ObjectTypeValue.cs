@@ -7,6 +7,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 public class ObjectTypeValue : AbstractValue
 {
     public static ObjectTypeValue String => new(string.Empty, ValueType.String);
+    
+    public static ObjectTypeValue Array => new(string.Empty, ValueType.Array);
 
     public static ObjectTypeValue Number => new(string.Empty, ValueType.Number);
 

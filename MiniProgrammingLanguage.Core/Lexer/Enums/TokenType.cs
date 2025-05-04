@@ -51,6 +51,7 @@ namespace MiniProgrammingLanguage.Core.Lexer.Enums
         Static,
         Call,
         Bindable,
+        Array,
         StringType,
         NumberType,
         RoundNumberType,

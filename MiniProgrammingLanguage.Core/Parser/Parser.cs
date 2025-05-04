@@ -140,11 +140,16 @@ public class Parser
 
         if (Is(TokenType.Word))
         {
+            if (IsWithOffset(1, TokenType.LeftSquareBracket))
+            {
+                return ParseArrayAssign();
+            }
+            
             if (IsWithOffset(1, TokenType.Equals, TokenType.Colon))
             {
                 return ParseAssign(access);
             }
-
+            
             if (IsWithOffset(1, TokenType.LeftParentheses))
             {
                 return ParseFunctionCall();
@@ -811,6 +816,37 @@ public class Parser
         return new ArrayExpression(values.ToArray(), current.Location);
     }
 
+    private AssignArrayMemberExpression ParseArrayAssign()
+    {
+        var name = Current;
+
+        MatchOrException(TokenType.Word).
+            MatchOrException(TokenType.LeftSquareBracket);
+
+        var index = ParseBinary();
+
+        MatchOrException(TokenType.RightSquareBracket).
+            MatchOrException(TokenType.Equals);
+
+        var value = ParseBinary();
+
+        return new AssignArrayMemberExpression(new VariableExpression(name.Value, _root, name.Location), index, value, name.Location);
+    }
+    
+    private ArrayMemberExpression ParseArrayMember()
+    {
+        var name = Current;
+
+        MatchOrException(TokenType.Word).
+            MatchOrException(TokenType.LeftSquareBracket);
+
+        var index = ParseBinary();
+
+        MatchOrException(TokenType.RightSquareBracket);
+
+        return new ArrayMemberExpression(new VariableExpression(name.Value, _root, name.Location), index, name.Location);
+    }
+    
     private ImportExpression ParseImport()
     {
         Match(TokenType.Import);
@@ -901,6 +937,13 @@ public class Parser
                 return ParseFunctionCall();
             }
 
+            if (Is(TokenType.LeftSquareBracket))
+            {
+                Position--;
+
+                return ParseArrayMember();
+            }
+
             return new VariableExpression(current.Value, _root, current.Location);
         }
 
@@ -940,6 +983,11 @@ public class Parser
 
         var current = Current;
 
+        if (Match(TokenType.Array))
+        {
+            return ObjectTypeValue.Array;
+        }
+        
         if (Match(TokenType.StringType))
         {
             return ObjectTypeValue.String;

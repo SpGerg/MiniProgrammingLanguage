@@ -11,7 +11,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class ArrayValue : AbstractValue
 {
-    public ArrayValue(IEnumerable<AbstractEvaluableExpression> value) : base(string.Empty)
+    public ArrayValue(AbstractEvaluableExpression[] value) : base(string.Empty)
     {
         Value = value;
 
@@ -25,7 +25,7 @@ public class ArrayValue : AbstractValue
 
     public override bool IsValueType => false;
 
-    public IEnumerable<AbstractEvaluableExpression> Value { get; }
+    public AbstractEvaluableExpression[] Value { get; }
 
     private readonly int _count;
 
