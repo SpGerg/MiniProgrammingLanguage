@@ -54,9 +54,9 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
                 Root = result.Root,
                 Value = value
             }, Location);
+            
+            programContext.Functions.AddOrSet(programContext, Create(programContext.Module), Location);
         }
-
-        programContext.Functions.AddOrSet(programContext, Create(programContext.Module), Location);
 
         return value;
     }
