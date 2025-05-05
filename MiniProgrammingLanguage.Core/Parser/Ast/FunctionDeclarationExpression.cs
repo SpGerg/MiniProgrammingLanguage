@@ -44,19 +44,21 @@ public class FunctionDeclarationExpression : AbstractEvaluableExpression, IState
         var result = Create(programContext.Module);
         var value = result.Create();
 
-        if (!IsAnonymous)
+        if (IsAnonymous)
         {
-            programContext.Variables.AddOrSet(programContext, new UserVariableInstance
-            {
-                Name = result.Name,
-                Module = programContext.Module,
-                Type = ObjectTypeValue.Function,
-                Root = result.Root,
-                Value = value
-            }, Location);
-            
-            programContext.Functions.AddOrSet(programContext, Create(programContext.Module), Location);
+            return value;
         }
+        
+        programContext.Variables.AddOrSet(programContext, new UserVariableInstance
+        {
+            Name = result.Name,
+            Module = programContext.Module,
+            Type = ObjectTypeValue.Function,
+            Root = result.Root,
+            Value = value
+        }, Location);
+            
+        programContext.Functions.AddOrSet(programContext, Create(programContext.Module), Location);
 
         return value;
     }
