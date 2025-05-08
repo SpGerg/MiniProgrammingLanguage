@@ -35,14 +35,14 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
         {
             var existing = Get(entity.Root, entity.Name, entity.Module, location);
 
-            //We didnt need already declared functions with same logic
-            if (existing.Module == entity.Module)
-            {
-                return;
-            }
-            
             if (existing is not null)
             {
+                //We didnt need already declared functions with same logic
+                if (existing.Module == entity.Module)
+                {
+                    return;
+                }
+                
                 InterpreterThrowHelper.ThrowDuplicateNameException(entity.Name, location);
             }
         }
