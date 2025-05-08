@@ -5,6 +5,11 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class CSharpObjectValue : AbstractValue
 {
+    public CSharpObjectValue(string name, object value) : base(name)
+    {
+        Value = value;
+    }
+    
     public CSharpObjectValue(object value) : base(value.GetType().Name)
     {
         Value = value;
