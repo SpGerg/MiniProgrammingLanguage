@@ -61,7 +61,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(CSharpObjectValue cSharpObjectValue)
     {
-        return Type.ValueType is ValueType.CSharpObject;
+        return Type.ValueType is ValueType.CSharpObject && Type.Name == cSharpObjectValue.Name;
     }
 
     public bool Visit(NumberValue numberValue)
