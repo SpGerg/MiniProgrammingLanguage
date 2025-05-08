@@ -80,7 +80,7 @@ public class TypeValue : AbstractValue
 
         foreach (var member in Members)
         {
-            AbstractValue value = null;
+            AbstractValue value;
 
             if (member.Value is ITypeVariableMemberValue variableMember)
             {

@@ -17,6 +17,6 @@ public class BreakExpression : AbstractEvaluableExpression, IControlFlowStatemen
     {
         State = StateType.Stopped;
 
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 }

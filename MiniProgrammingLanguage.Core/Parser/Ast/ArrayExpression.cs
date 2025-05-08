@@ -14,6 +14,13 @@ public class ArrayExpression : AbstractEvaluableExpression
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        return new ArrayValue(EvaluableExpressions);
+        var values = new AbstractValue[EvaluableExpressions.Length];
+
+        for (var i = 0; i < EvaluableExpressions.Length; i++)
+        {
+            values[i] = EvaluableExpressions[i].Evaluate(programContext);
+        }
+
+        return new ArrayValue(values);
     }
 }

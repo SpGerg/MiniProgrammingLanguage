@@ -32,7 +32,7 @@ public class TypeFunctionMemberInstance : ITypeMember
 
     public IFunctionInstance Value { get; set; }
 
-    public AbstractValue Default { get; } = new NoneValue();
+    public AbstractValue Default => NoneValue.Instance;
 
     public FunctionValue Create(FunctionBodyExpression root = null)
     {

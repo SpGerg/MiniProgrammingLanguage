@@ -42,9 +42,12 @@ public class TypeVariableMemberInstanceBuilder
         return this;
     }
 
-    public TypeVariableMemberInstanceBuilder SetIdentification(KeyTypeMemberIdentification identification)
+    public TypeVariableMemberInstanceBuilder SetName(string name)
     {
-        Identification = identification;
+        Identification = new KeyTypeMemberIdentification
+        {
+            Identifier = name
+        };
 
         return this;
     }

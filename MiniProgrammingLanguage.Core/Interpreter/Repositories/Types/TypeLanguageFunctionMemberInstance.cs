@@ -34,7 +34,7 @@ public class TypeLanguageFunctionMemberInstance : ITypeLanguageFunctionMember
 
     public ObjectTypeValue Type { get; } = ObjectTypeValue.Function;
 
-    public AbstractValue Default { get; } = new NoneValue();
+    public AbstractValue Default => NoneValue.Instance;
 
     public FunctionValue Create(FunctionBodyExpression root = null)
     {

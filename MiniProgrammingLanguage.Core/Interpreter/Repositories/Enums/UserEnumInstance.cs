@@ -44,6 +44,16 @@ public class UserEnumInstance : IEnumInstance
         return true;
     }
 
+    public int GetByName(string name)
+    {
+        return Members[name];
+    }
+
+    public string GetByValue(int value)
+    {
+        return Members.FirstOrDefault(member => member.Value == value).Key;
+    }
+
     public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
         out AbstractLanguageException exception)
     {

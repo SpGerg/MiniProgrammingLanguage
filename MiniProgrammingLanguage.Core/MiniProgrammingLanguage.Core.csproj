@@ -66,6 +66,7 @@
         <Compile Include="Interpreter\Repositories\Enums\Interfaces\IEnumInstance.cs" />
         <Compile Include="Interpreter\Repositories\Enums\Interfaces\IEnumsRepository.cs" />
         <Compile Include="Interpreter\Repositories\Enums\UserEnumInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Enums\UserEnumInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Functions\FunctionExecuteContext.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionInstance.cs" />
         <Compile Include="Interpreter\Repositories\Functions\Interfaces\IFunctionsRepository.cs" />
@@ -92,7 +93,9 @@
         <Compile Include="Interpreter\Repositories\Types\TypeFunctionMemberInstance.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeFunctionExecuteContext.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeLanguageFunctionMemberInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Types\TypeLanguageFunctionMemberInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeLanguageVariableMemberInstance.cs" />
+        <Compile Include="Interpreter\Repositories\Types\TypeLanguageVariableMemberInstanceBuilder.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeMemberGetterContext.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeMemberSetterContext.cs" />
         <Compile Include="Interpreter\Repositories\Types\TypeVariableMemberInstanceBuilder.cs" />
@@ -186,6 +189,7 @@
         <Compile Include="Parser\Ast\TypeDeclarationExpression.cs" />
         <Compile Include="Parser\Ast\TypeFunctionMemberExpression.cs" />
         <Compile Include="Parser\Ast\UnaryExpression.cs" />
+        <Compile Include="Parser\Ast\ValueExpression.cs" />
         <Compile Include="Parser\Ast\VariableExpression.cs" />
         <Compile Include="Parser\Ast\WhileExpression.cs" />
         <Compile Include="Parser\Exceptions\StatementExceptedException.cs" />

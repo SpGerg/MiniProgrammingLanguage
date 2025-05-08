@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
@@ -108,6 +109,11 @@ public abstract class AbstractValue
     public bool Is(ObjectTypeValue objectTypeValue)
     {
         if (objectTypeValue.ValueType is ValueType.Any)
+        {
+            return true;
+        }
+        
+        if (CanCast.Contains(objectTypeValue.ValueType))
         {
             return true;
         }

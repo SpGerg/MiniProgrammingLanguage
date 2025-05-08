@@ -37,7 +37,7 @@ public class BinaryExpression : AbstractEvaluableExpression
 
         var leftType = new ObjectTypeValue(left.Name, left.Type);
 
-        if (!leftType.Is(right))
+        if (!leftType.Is(right) && right is not NoneValue)
         {
             InterpreterThrowHelper.ThrowCannotCastException(left.Type.ToString(), right.Type.ToString(), Location);
         }

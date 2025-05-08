@@ -174,7 +174,7 @@ public static class BindFunction
             type.Value.Type = csObjectType;
         }
         
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 
     private static bool IsNameEquals(MemberInfo memberInfo, ITypeMemberIdentification identification, bool isIgnoreCase)

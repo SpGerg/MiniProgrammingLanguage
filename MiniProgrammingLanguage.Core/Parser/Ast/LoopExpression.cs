@@ -23,7 +23,7 @@ public abstract class LoopExpression : AbstractEvaluableExpression, IStatement
 
         OnLoopStarted();
 
-        AbstractValue result = new VoidValue();
+        AbstractValue result = VoidValue.Instance;
 
         while (IsContinue)
         {

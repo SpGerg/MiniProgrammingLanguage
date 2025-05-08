@@ -9,12 +9,15 @@ namespace MiniProgrammingLanguage.Core.Interpreter
 {
     public class EntryPoint
     {
-        public EntryPoint(string filepath)
+        public EntryPoint(string executor, string source = null)
         {
-            Filepath = filepath;
+            Executor = executor;
+            Source = source;
         }
 
-        public string Filepath { get; set; }
+        public string Executor { get; set; }
+        
+        public string Source { get; set; }
 
         /// <summary>
         /// Tokenize, parse and interpreter source in the script by filepath.
@@ -23,13 +26,13 @@ namespace MiniProgrammingLanguage.Core.Interpreter
         /// <param name="exception">Exception without stack trace</param>
         /// <param name="modules">Default modules</param>
         /// <returns></returns>
-        public AbstractValue Run(out AbstractLanguageException exception, params ImplementModule[] modules)
+        public AbstractValue Run(out ProgramContext programContext, out AbstractLanguageException exception,  bool isClear = true, params ImplementModule[] modules)
         {
-            var content = File.ReadAllText(Filepath);
-            var lexer = new Lexer.Lexer(content, Filepath, LexerConfiguration.Default);
+            var content = Source ?? File.ReadAllText(Executor);
+            var lexer = new Lexer.Lexer(content, Executor, LexerConfiguration.Default);
             var tokens = lexer.Tokenize();
 
-            var parser = new Parser.Parser(tokens, Filepath, new ParserConfiguration
+            var parser = new Parser.Parser(tokens, Executor, new ParserConfiguration
             {
                 LexerConfiguration = lexer.Configuration
             });
@@ -37,7 +40,7 @@ namespace MiniProgrammingLanguage.Core.Interpreter
 
             AbstractValue result = null;
 
-            var programContext = new ProgramContext(Filepath, modules);
+            programContext = new ProgramContext(Executor, modules);
 
             try
             {
@@ -47,10 +50,13 @@ namespace MiniProgrammingLanguage.Core.Interpreter
                 {
                 }
 
-                programContext.Tasks.Clear();
-                programContext.Variables.Clear();
-                programContext.Functions.Clear();
-                programContext.Types.Clear();
+                if (isClear)
+                {
+                    programContext.Tasks.Clear();
+                    programContext.Variables.Clear();
+                    programContext.Functions.Clear();
+                    programContext.Types.Clear();
+                }
 
                 exception = null;
             }

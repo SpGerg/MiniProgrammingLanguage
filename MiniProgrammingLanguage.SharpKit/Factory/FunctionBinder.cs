@@ -24,7 +24,7 @@ public static class FunctionBinder
 
             for (var i = 0; i < context.Arguments.Length; i++)
             {
-                arguments[i] = TypesFactory.Create(context.Arguments[i], context.ProgramContext);
+                arguments[i] = TypesFactory.Create(context.Arguments[i]);
             }
 
             if (parameters.Length > arguments.Length)
@@ -36,7 +36,7 @@ public static class FunctionBinder
 
             if (method.ReturnType == typeof(void))
             {
-                return new VoidValue();
+                return VoidValue.Instance;
             }
         
             var type = TypesFactory.Create(result, context.ProgramContext, out var implementModule);
@@ -50,7 +50,7 @@ public static class FunctionBinder
     {
         if (context.Member is not ITypeLanguageFunctionMember functionMember)
         {
-            return new NoneValue();
+            return NoneValue.Instance;
         }
         
         if (context.Type.ObjectTarget.GetType().GetMethod(functionMember.Method.Name) is null)
@@ -64,7 +64,7 @@ public static class FunctionBinder
         {
             var argument = context.Arguments[i];
             
-            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext), context.ProgramContext);
+            arguments[i] = TypesFactory.Create(argument.Evaluate(context.ProgramContext));
         }
 
         var parameters = functionMember.Method.GetParameters();
@@ -78,7 +78,7 @@ public static class FunctionBinder
 
         if (functionMember.Method.ReturnType == typeof(void))
         {
-            return new VoidValue();
+            return VoidValue.Instance;
         }
         
         var type = TypesFactory.Create(result, context.ProgramContext, out var implementModule);

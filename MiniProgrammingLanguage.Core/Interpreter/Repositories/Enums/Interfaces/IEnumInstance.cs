@@ -15,5 +15,9 @@ public interface IEnumInstance : IInstance
 
     bool TryGetByValue(int value, out string name);
 
+    int GetByName(string name);
+    
+    string GetByValue(int index);
+
     EnumValue Create();
 }

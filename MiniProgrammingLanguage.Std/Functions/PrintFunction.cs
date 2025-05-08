@@ -37,6 +37,6 @@ public static class PrintFunction
             
         Console.WriteLine(message);
         
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 }

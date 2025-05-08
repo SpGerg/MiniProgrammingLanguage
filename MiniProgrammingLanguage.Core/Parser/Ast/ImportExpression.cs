@@ -21,7 +21,7 @@ public class ImportExpression : AbstractEvaluableExpression, IStatement
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        var directory = Path.GetDirectoryName(programContext.Filepath);
+        var directory = Path.GetDirectoryName(programContext.Executor);
         var content = string.Empty;
 
         if (Filepath.IsValue)

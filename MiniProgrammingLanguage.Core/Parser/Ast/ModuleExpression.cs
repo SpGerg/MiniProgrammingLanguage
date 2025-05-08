@@ -17,6 +17,6 @@ public class ModuleExpression : AbstractEvaluableExpression, IStatement
     {
         programContext.Module = StringExpression.Value;
 
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 }

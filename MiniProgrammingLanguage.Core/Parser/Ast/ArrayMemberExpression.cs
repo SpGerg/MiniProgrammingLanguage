@@ -38,6 +38,6 @@ public class ArrayMemberExpression : AbstractEvaluableExpression
             InterpreterThrowHelper.ThrowCannotAccessException("array", Location);
         }
 
-        return arrayValue.Value[index].Evaluate(programContext);
+        return arrayValue.Value[index];
     }
 }

@@ -10,6 +10,8 @@ public interface IInstancesRepository<T> : IRepository<T> where T : IInstance
     void Add(T entity, Location location, bool isCheckExisting = true);
 
     void AddRange(IEnumerable<T> entities, bool isCheckExisting = true);
+    
+    void AddRange(FunctionBodyExpression functionBody, IEnumerable<T> entities, bool isCheckExisting = true);
 
     bool AddOrSet(ProgramContext programContext, T entity, Location location);
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using MiniProgrammingLanguage.Core.Exceptions;
 using MiniProgrammingLanguage.Core.Interpreter.Exceptions;
@@ -72,6 +73,11 @@ public class UserFunctionInstance : IFunctionInstance
                 var functionInstance = functionValue.Value.Copy(argument.Name, Body);
 
                 programContext.Functions.Add(functionInstance, context.Location, false);
+
+                if (functionValue.Value is UserFunctionInstance)
+                {
+                    functionValue.Value.AddEntitiesFromCaller(programContext);
+                }
             }
 
             programContext.Variables.Add(new UserVariableInstance
@@ -86,13 +92,14 @@ public class UserFunctionInstance : IFunctionInstance
         Body.Token = context.Token;
 
         var result = Body.Evaluate(programContext);
-        context.ProgramContext.Clear(Body);
-
+        
         if (!Return.Is(result))
         {
             InterpreterThrowHelper.ThrowInvalidReturnTypeException(Name,
                 Return.AsString(programContext, context.Location), result.Type.ToString(), context.Location);
         }
+        
+        context.ProgramContext.Clear(Body);
 
         return result;
     }
@@ -136,5 +143,33 @@ public class UserFunctionInstance : IFunctionInstance
             Access = Access,
             Root = root ?? Root
         };
+    }
+
+    public void AddEntitiesFromCaller(ProgramContext programContext)
+    {
+        if (Root is null)
+        {
+            return;
+        } 
+        
+        if (programContext.Variables.Instances.TryGetValue(Root, out var variables))
+        {
+            for (var i = 0; i < variables.Count; i++)
+            {
+                variables[i] = variables[i].Copy(Body);
+            }
+            
+            programContext.Variables.AddRange(variables);
+        }
+        
+        if (programContext.Functions.Instances.TryGetValue(Root, out var functions))
+        {
+            for (var i = 0; i < functions.Count; i++)
+            {
+                functions[i] = functions[i].Copy(root: Body);
+            }
+            
+            programContext.Functions.AddRange(functions);
+        }
     }
 }

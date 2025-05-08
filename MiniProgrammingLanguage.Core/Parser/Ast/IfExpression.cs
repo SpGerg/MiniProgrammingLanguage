@@ -64,6 +64,6 @@ public class IfExpression : AbstractEvaluableExpression, IStatement, IControlFlo
             return elseResult;
         }
 
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 }

@@ -41,9 +41,7 @@ public class AssignArrayMemberExpression : AbstractEvaluableExpression, IStateme
         {
             InterpreterThrowHelper.ThrowCannotAccessException("array", Location);
         }
-
-        arrayValue.Value[index] = Value;
-
-        return new VoidValue();
+        
+        return arrayValue.Value[index] = Value.Evaluate(programContext);
     }
 }

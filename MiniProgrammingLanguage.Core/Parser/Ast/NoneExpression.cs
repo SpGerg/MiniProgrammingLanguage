@@ -11,6 +11,6 @@ public class NoneExpression : AbstractEvaluableExpression
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        return new NoneValue();
+        return NoneValue.Instance;
     }
 }

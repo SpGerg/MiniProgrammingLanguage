@@ -30,7 +30,6 @@ public class ObjectTypeValue : AbstractValue
 
     public ObjectTypeValue(string name, ValueType valueType) : base(name)
     {
-        Name = name;
         ValueType = valueType;
     }
 
@@ -40,9 +39,7 @@ public class ObjectTypeValue : AbstractValue
     {
         ValueType.String
     };
-
-    public string Name { get; } = string.Empty;
-
+    
     public ValueType ValueType { get; }
 
     public override bool Visit(IValueVisitor visitor)

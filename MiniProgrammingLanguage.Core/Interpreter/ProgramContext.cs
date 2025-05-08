@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Functions;
@@ -18,16 +20,25 @@ public class ProgramContext
     /// <summary>
     /// Create instance of program context
     /// </summary>
-    /// <param name="filepath">Filepath</param>
+    /// <param name="executor">Filepath</param>
     /// <param name="modules">Default modules</param>
-    public ProgramContext(string filepath, params ImplementModule[] modules)
+    public ProgramContext(string executor, params ImplementModule[] modules)
     {
-        Filepath = filepath;
+        Executor = executor;
 
         foreach (var module in modules)
         {
             Import(module);
         }
+
+        var split = executor.Split(Path.DirectorySeparatorChar);
+
+        if (split.Length > 0)
+        {
+            ExecutorName = split.Last();
+        }
+        
+        Location = new Location { Filepath = ExecutorName, Line = 0, Position = 0 };
     }
 
     /// <summary>
@@ -35,11 +46,16 @@ public class ProgramContext
     /// By default - 'global'
     /// </summary>
     public string Module { get; set; } = "global";
+    
+    /// <summary>
+    /// Script executor (can be filepath).
+    /// </summary>
+    public string ExecutorName { get; }
 
     /// <summary>
-    /// Script filepath.
+    /// Script executor (can be filepath).
     /// </summary>
-    public string Filepath { get; set; }
+    public string Executor { get; set; }
 
     /// <summary>
     /// Is module name 'global'.
@@ -75,6 +91,11 @@ public class ProgramContext
     /// Tasks
     /// </summary>
     public ITasksRepository Tasks { get; } = new TasksRepository();
+
+    /// <summary>
+    /// Location without position and line
+    /// </summary>
+    public Location Location { get; }
 
     private readonly Stack<string> _importedModules = new();
 

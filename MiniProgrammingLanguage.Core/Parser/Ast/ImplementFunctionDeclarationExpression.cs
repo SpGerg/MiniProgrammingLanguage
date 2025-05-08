@@ -48,6 +48,6 @@ public class ImplementFunctionDeclarationExpression : AbstractEvaluableExpressio
 
         functionMemberInstance.Value = functionInstance;
 
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 }

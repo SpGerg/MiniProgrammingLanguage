@@ -43,7 +43,7 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
                     Identifier = Name
                 },
                 Type = Type,
-                Default = new NoneValue(),
+                Default = NoneValue.Instance,
                 Access = Access,
                 Attributes = Attributes
             };
@@ -58,7 +58,7 @@ public class KeyTypeMemberExpression : AbstractExpression, ITypeMemberExpression
                 Identifier = Name
             },
             Type = Type,
-            Default = new NoneValue(),
+            Default = NoneValue.Instance,
             Access = Access,
             Attributes = Attributes
         };

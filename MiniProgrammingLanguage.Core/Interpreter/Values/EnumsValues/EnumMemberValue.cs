@@ -1,4 +1,3 @@
-using System;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Enums.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueType;
@@ -7,10 +6,11 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 
 public class EnumMemberValue : AbstractValue
 {
-    public EnumMemberValue(IEnumInstance parent, string member) : base(parent is null ? string.Empty : parent.Name)
+    public EnumMemberValue(IEnumInstance parent, string member, int value) : base(parent is null ? string.Empty : parent.Name)
     {
         Parent = parent;
         Member = member;
+        Value = value;
     }
 
     public override ValueType Type => ValueType.EnumMember;
@@ -20,6 +20,8 @@ public class EnumMemberValue : AbstractValue
     public IEnumInstance Parent { get; }
 
     public string Member { get; }
+    
+    public int Value { get; }
 
     public override bool Visit(IValueVisitor visitor)
     {
@@ -28,11 +30,21 @@ public class EnumMemberValue : AbstractValue
 
     public override AbstractValue Copy()
     {
-        return new EnumMemberValue(Parent, Member);
+        return new EnumMemberValue(Parent, Member, Value);
     }
 
     public override string AsString(ProgramContext programContext, Location location)
     {
         return $"({Name}) {Member}";
+    }
+
+    public override float AsNumber(ProgramContext programContext, Location location)
+    {
+        return Value;
+    }
+
+    public override int AsRoundNumber(ProgramContext programContext, Location location)
+    {
+        return Value;
     }
 }

@@ -87,9 +87,29 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     /// <param name="isCheckExisting"></param>
     public void AddRange(IEnumerable<T> entities, bool isCheckExisting = true)
     {
-        foreach (var entity in entities)
+        foreach (var entity in entities.ToList())
         {
             Add(entity, Location.Default, isCheckExisting);
+        }
+    }
+
+    /// <summary>
+    /// Add range of entities into root
+    /// </summary>
+    /// <param name="functionBody"></param>
+    /// <param name="entities"></param>
+    /// <param name="isCheckExisting"></param>
+    public void AddRange(FunctionBodyExpression functionBody, IEnumerable<T> entities, bool isCheckExisting = true)
+    {
+        if (!BodiesEntities.TryGetValue(functionBody, out var instances))
+        {
+            instances = new List<T>();
+            BodiesEntities.Add(functionBody, instances);
+        }
+        
+        foreach (var entity in entities)
+        {
+            instances.Add(entity);
         }
     }
 

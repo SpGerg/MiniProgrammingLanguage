@@ -20,4 +20,6 @@ public interface IFunctionInstance : IInstance
     FunctionValue Create();
 
     IFunctionInstance Copy(string name = null, FunctionBodyExpression root = null);
+
+    void AddEntitiesFromCaller(ProgramContext programContext);
 }

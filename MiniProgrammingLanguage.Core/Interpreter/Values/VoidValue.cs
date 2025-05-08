@@ -5,6 +5,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class VoidValue : AbstractValue
 {
+    public static VoidValue Instance { get; } = new();
+    
     public VoidValue() : base(string.Empty)
     {
     }
@@ -22,6 +24,6 @@ public class VoidValue : AbstractValue
 
     public override AbstractValue Copy()
     {
-        return new VoidValue();
+        return Instance;
     }
 }

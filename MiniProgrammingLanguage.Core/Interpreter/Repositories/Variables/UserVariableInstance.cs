@@ -18,7 +18,7 @@ public class UserVariableInstance : IVariableInstance
 
     public ObjectTypeValue Type { get; init; } = ObjectTypeValue.Any;
 
-    public AbstractValue Value { get; set; } = new NoneValue();
+    public AbstractValue Value { get; set; } = NoneValue.Instance;
 
     public AccessType Access { get; init; }
 
@@ -61,5 +61,17 @@ public class UserVariableInstance : IVariableInstance
 
         exception = null;
         return true;
+    }
+    public IVariableInstance Copy(FunctionBodyExpression root = null)
+    {
+        return new UserVariableInstance
+        {
+            Name = Name,
+            Module = Module,
+            Access = Access,
+            Value = Value,
+            Type = Type,
+            Root = root ?? Root
+        };
     }
 }

@@ -26,6 +26,6 @@ public static class SleepFunction
 
         functionExecuteContext.Token.WaitHandle.WaitOne(time);
 
-        return new VoidValue();
+        return VoidValue.Instance;
     }
 }

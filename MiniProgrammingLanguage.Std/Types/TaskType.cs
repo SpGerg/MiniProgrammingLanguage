@@ -11,11 +11,8 @@ public static class TaskType
     {
         var id = new TypeVariableMemberInstanceBuilder()
             .SetParent("__task")
+            .SetName("id")
             .SetModule(StdModule.Name)
-            .SetIdentification(new KeyTypeMemberIdentification
-            {
-                Identifier = "id"
-            })
             .SetAccess(AccessType.Static)
             .SetDefault(new RoundNumberValue(-1))
             .SetType(ObjectTypeValue.RoundNumber)
@@ -24,7 +21,7 @@ public static class TaskType
         return new UserTypeInstanceBuilder()
             .SetName("__task")
             .SetModule(StdModule.Name)
-            .SetMembers(id)
+            .AddMember(id)
             .Build();
     }
 }

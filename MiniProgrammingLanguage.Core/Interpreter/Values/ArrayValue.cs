@@ -11,9 +11,17 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class ArrayValue : AbstractValue
 {
-    public ArrayValue(AbstractEvaluableExpression[] value) : base(string.Empty)
+    public ArrayValue(AbstractValue[] value) : base(string.Empty)
     {
         Value = value;
+
+        _count = Value.Count();
+        _last = Value.Last();
+    }
+    
+    public ArrayValue(IEnumerable<AbstractValue> value) : base(string.Empty)
+    {
+        Value = value.ToArray();
 
         _count = Value.Count();
         _last = Value.Last();
@@ -25,11 +33,11 @@ public class ArrayValue : AbstractValue
 
     public override bool IsValueType => false;
 
-    public AbstractEvaluableExpression[] Value { get; }
+    public AbstractValue[] Value { get; }
 
     private readonly int _count;
 
-    private readonly AbstractEvaluableExpression _last;
+    private readonly AbstractValue _last;
 
     public override bool Visit(IValueVisitor visitor)
     {
@@ -48,10 +56,9 @@ public class ArrayValue : AbstractValue
 
         foreach (var value in Value)
         {
-            var result = value.Evaluate(programContext);
-            var message = result is NoneValue
+            var message = value is NoneValue
                 ? "none"
-                : $"{result.Type.ToString().ToLower()}: {result.AsString(programContext, location)}";
+                : $"{value.Type.ToString().ToLower()}: {value.AsString(programContext, location)}";
 
             stringBuilder.Append(message);
 

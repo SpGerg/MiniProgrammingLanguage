@@ -38,7 +38,7 @@ public static class RequireDependencyFunction
                 continue;
             }
 
-            return new VoidValue();
+            return VoidValue.Instance;
         }
 
         throw new ModuleNotFoundException(content, context.Location);

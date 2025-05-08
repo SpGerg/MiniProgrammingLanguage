@@ -30,7 +30,7 @@ public class FunctionBodyExpression : AbstractEvaluableExpression
     {
         var token = Token;
 
-        AbstractValue result = new VoidValue();
+        AbstractValue result = VoidValue.Instance;
 
         State = StateType.Running;
 

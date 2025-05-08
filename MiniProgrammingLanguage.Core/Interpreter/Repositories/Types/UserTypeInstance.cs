@@ -68,6 +68,28 @@ public class UserTypeInstance : ITypeInstance
 
                 continue;
             }
+            
+            if (member is TypeLanguageFunctionMemberInstance functionMember)
+            {
+                var value = functionMember.Create();
+
+                result.Add(member.Identification, new TypeLanguageFunctionMemberValue(functionMember)
+                {
+                    Type = ObjectTypeValue.Function
+                });
+
+                result.Add(new KeyTypeMemberIdentification
+                {
+                    Identifier = member.Identification.Identifier
+                }, new TypeMemberValue
+                {
+                    Type = ObjectTypeValue.Function,
+                    Instance = member,
+                    Value = value
+                });
+
+                continue;
+            }
 
             if (member is TypeFunctionMemberInstance typeFunctionMemberInstance)
             {
@@ -97,7 +119,7 @@ public class UserTypeInstance : ITypeInstance
             {
                 Type = member.Type,
                 Instance = member,
-                Value = new NoneValue()
+                Value = NoneValue.Instance
             });
         }
 

@@ -68,24 +68,30 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 return functionMember.GetValue(context);
             }
 
-            return new NoneValue();
+            return NoneValue.Instance;
         }
 
-        if (left is not EnumValue enumValue || Right is not VariableExpression variableExpression)
+        if (left is EnumValue enumValue)
         {
-            InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Enum.ToString(), left.Type.ToString(),
-                Location);
+            if (Right is not VariableExpression variableExpression)
+            {
+                InterpreterThrowHelper.ThrowIncorrectTypeException(ValueType.Enum.ToString(), left.Type.ToString(),
+                    Location);
 
-            return null;
+                return null;
+            }
+            
+            if (!enumValue.Value.TryGetByName(variableExpression.Name, out _))
+            {
+                InterpreterThrowHelper.ThrowMemberNotFoundException(enumValue.Value.Name, variableExpression.Name,
+                    Location);
+            }
+
+            return new EnumMemberValue(enumValue.Value, variableExpression.Name, enumValue.Value.GetByName(variableExpression.Name));
         }
 
-        if (!enumValue.Value.TryGetByName(variableExpression.Name, out _))
-        {
-            InterpreterThrowHelper.ThrowMemberNotFoundException(enumValue.Value.Name, variableExpression.Name,
-                Location);
-        }
 
-        return new EnumMemberValue(enumValue.Value, variableExpression.Name);
+        return left;
     }
 
     public (TypeValue Type, ITypeMemberValue Member) Dot(ProgramContext context, TypeValue parent = null)
@@ -203,7 +209,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 return null;
             }
 
-            if (functionInstance?.Value is null)
+            if (functionInstance.Value is null)
             {
                 InterpreterThrowHelper.ThrowMemberNotFoundException(typeValue.Name, functionCallExpression.Name,
                     expression.Location);

@@ -38,6 +38,20 @@ public class LanguageVariableInstance : IVariableInstance, ILanguageInstance
         return result;
     }
 
+    public IVariableInstance Copy(FunctionBodyExpression root = null)
+    {
+        return new LanguageVariableInstance
+        {
+            Name = Name,
+            Module = Module,
+            Access = Access,
+            GetBind = GetBind,
+            SetBind = SetBind,
+            Type = Type,
+            Root = root ?? Root
+        };
+    }
+
     public bool TryChange(ProgramContext programContext, IInstance instance, Location location,
         out AbstractLanguageException exception)
     {

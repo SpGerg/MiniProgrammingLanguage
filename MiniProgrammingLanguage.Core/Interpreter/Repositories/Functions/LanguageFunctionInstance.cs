@@ -54,6 +54,11 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
                     InterpreterThrowHelper.ThrowIncorrectTypeException(argument.Type.ValueType.ToString(),
                         value.Type.ToString(), context.Location);
                 }
+                
+                if (value is FunctionValue { Value: UserFunctionInstance } functionValue)
+                {
+                    functionValue.Value.AddEntitiesFromCaller(context.ProgramContext);
+                }
 
                 arguments[i] = value;
 
@@ -65,7 +70,7 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
             if (!argument.IsRequired)
             {
                 arguments[i] = argument.Default;
-                
+
                 continue;
             }
 
@@ -107,5 +112,9 @@ public class LanguageFunctionInstance : IFunctionInstance, ILanguageInstance
             Return = Return,
             Root = root ?? Root
         };
+    }
+
+    public void AddEntitiesFromCaller(ProgramContext programContext)
+    {
     }
 }

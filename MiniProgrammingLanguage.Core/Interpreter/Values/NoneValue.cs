@@ -5,6 +5,8 @@ namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
 public class NoneValue : AbstractValue
 {
+    public static NoneValue Instance { get; } = new();
+    
     public NoneValue() : base(string.Empty)
     {
     }
@@ -22,6 +24,6 @@ public class NoneValue : AbstractValue
 
     public override AbstractValue Copy()
     {
-        return new NoneValue();
+        return Instance;
     }
 }

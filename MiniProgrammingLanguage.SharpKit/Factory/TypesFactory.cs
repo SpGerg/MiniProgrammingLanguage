@@ -29,7 +29,7 @@ public static class TypesFactory
             int => new RoundNumberValue(Convert.ToInt32(target)),
             float => new NumberValue(Convert.ToSingle(target)),
             bool => new BooleanValue(Convert.ToBoolean(target)),
-            null => new NoneValue(),
+            null => NoneValue.Instance,
             _ => null
         };
 
@@ -37,11 +37,12 @@ public static class TypesFactory
         {
             if (target is Array array)
             {
-                var expressions = new CSharpArrayMemberExpression[array.Length];
+                var expressions = new AbstractValue[array.Length];
 
                 for (var i = 0; i < array.Length; i++)
                 {
-                    expressions[i] = new CSharpArrayMemberExpression(array, i, Location.Default);
+                    expressions[i] = Create(array.GetValue(i), programContext, out implementModule);
+                    programContext.Import(implementModule);
                 }
 
                 implementModule = null;
@@ -59,7 +60,7 @@ public static class TypesFactory
                     var enumInstance = programContext.Enums.Get(null, type.Name, programContext.Module, Location.Default);
                     
                     implementModule = null;
-                    return new EnumMemberValue(enumInstance, type.GetEnumName(index.GetValue(target)));
+                    return new EnumMemberValue(enumInstance, type.GetEnumName(index.GetValue(target)), (int) index.GetValue(target));
                 }
                 
                 var enumValue = EnumCreator.Create(type);
@@ -86,7 +87,7 @@ public static class TypesFactory
     /// <param name="target"></param>
     /// <param name="programContext"></param>
     /// <returns></returns>
-    public static object Create(AbstractValue target, ProgramContext programContext)
+    public static object Create(AbstractValue target)
     {
         object result = target.Type switch
         {
@@ -102,13 +103,13 @@ public static class TypesFactory
         {
             if (target is ArrayValue arrayValue)
             {
-                var firstElement = Create(arrayValue.Value.ElementAt(0).Evaluate(programContext), programContext);
+                var firstElement = Create(arrayValue.Value.ElementAt(0));
                 var array = Array.CreateInstance(firstElement.GetType(), arrayValue.Value.Count());
                 array.SetValue(firstElement, 0);
 
                 for (var i = 1; i < array.Length; i++)
                 {
-                    var value = Create(arrayValue.Value.ElementAt(i).Evaluate(programContext), programContext);
+                    var value = Create(arrayValue.Value.ElementAt(i));
                     
                     array.SetValue(value, i);
                 }

@@ -27,7 +27,7 @@ public static class GetBaseFunction
 
         if (typeValue.ObjectTarget is null)
         {
-            return new NoneValue();
+            return NoneValue.Instance;
         }
 
         return new CSharpObjectValue(typeValue.ObjectTarget);

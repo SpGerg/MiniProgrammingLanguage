@@ -3,19 +3,17 @@ using MiniProgrammingLanguage.Core.Interpreter.Values;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
-public class BooleanExpression : AbstractEvaluableExpression
+public class ValueExpression : AbstractEvaluableExpression
 {
-    public BooleanExpression(bool value, Location location) : base(location)
+    public ValueExpression(AbstractValue value, Location location) : base(location)
     {
         Value = value;
     }
 
-    public override bool IsValue => true;
-
-    public bool Value { get; }
-
+    public AbstractValue Value { get; }
+    
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
-        return new BooleanValue(Value);
+        return Value;
     }
 }
