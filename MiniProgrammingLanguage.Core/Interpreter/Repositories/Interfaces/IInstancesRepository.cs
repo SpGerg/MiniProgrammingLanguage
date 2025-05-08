@@ -17,7 +17,7 @@ public interface IInstancesRepository<T> : IRepository<T> where T : IInstance
 
     void Set(ProgramContext programContext, T entity, Location location);
 
-    T Get(FunctionBodyExpression functionBody, string name, string module, Location location);
+    T Get(FunctionBodyExpression functionBody, string name, string requesterModule, Location location);
 
     void Clear(FunctionBodyExpression functionBodyExpression);
 }

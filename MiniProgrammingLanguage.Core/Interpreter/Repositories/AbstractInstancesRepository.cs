@@ -180,10 +180,10 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     /// </summary>
     /// <param name="functionBody"></param>
     /// <param name="name"></param>
-    /// <param name="module"></param>
+    /// <param name="requesterModule"></param>
     /// <param name="location"></param>
     /// <returns>Can be null</returns>
-    public T Get(FunctionBodyExpression functionBody, string name, string module, Location location)
+    public T Get(FunctionBodyExpression functionBody, string name, string requesterModule, Location location)
     {
         var currentBody = functionBody;
 
@@ -202,7 +202,7 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
 
         var entity = GlobalEntities.FirstOrDefault(entity => entity.Name == name);
 
-        if (entity is not null && !entity.Access.HasFlag(AccessType.Static) && entity.Module != module)
+        if (entity is not null && !entity.Access.HasFlag(AccessType.Static) && entity.Module != requesterModule)
         {
             InterpreterThrowHelper.ThrowCannotAccessException(entity.Name, location);
         }
