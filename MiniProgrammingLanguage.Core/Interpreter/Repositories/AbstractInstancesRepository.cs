@@ -31,10 +31,16 @@ public abstract class AbstractInstancesRepository<T> : IInstancesRepository<T> w
     /// <param name="isCheckExisting">Throw exception if exists</param>
     public void Add(T entity, Location location, bool isCheckExisting = true)
     {
-        if (entity.Module is not "global" && isCheckExisting)
+        if (isCheckExisting)
         {
             var existing = Get(entity.Root, entity.Name, entity.Module, location);
 
+            //We didnt need already declared functions with same logic
+            if (existing.Module == entity.Module)
+            {
+                return;
+            }
+            
             if (existing is not null)
             {
                 InterpreterThrowHelper.ThrowDuplicateNameException(entity.Name, location);
