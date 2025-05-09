@@ -192,6 +192,7 @@
         <Compile Include="Parser\Ast\UnaryExpression.cs" />
         <Compile Include="Parser\Ast\ValueExpression.cs" />
         <Compile Include="Parser\Ast\VariableExpression.cs" />
+        <Compile Include="Parser\Ast\VoidExpression.cs" />
         <Compile Include="Parser\Ast\WhileExpression.cs" />
         <Compile Include="Parser\Exceptions\StatementExceptedException.cs" />
         <Compile Include="Parser\Exceptions\InvalidNumberFormatException.cs" />

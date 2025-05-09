@@ -1030,9 +1030,17 @@ public class Parser
     private ReturnExpression ParseReturn()
     {
         Match(TokenType.Return);
-
-        var value = ParseBinary();
-
+        AbstractEvaluableExpression value;
+        
+        try
+        {
+            value = ParseBinary();
+        }
+        catch
+        {
+            value = new VoidExpression(Current.Location);
+        }
+        
         return new ReturnExpression(value, value.Location);
     }
 
