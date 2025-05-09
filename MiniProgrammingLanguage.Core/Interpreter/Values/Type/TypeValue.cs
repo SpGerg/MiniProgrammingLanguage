@@ -74,6 +74,7 @@ public class TypeValue : AbstractValue
 
     public override string AsString(ProgramContext programContext, Location location)
     {
+        /*
         var stringBuilder = new StringBuilder();
         stringBuilder.Append($"({Name}) ");
         stringBuilder.Append("{ ");
@@ -113,6 +114,9 @@ public class TypeValue : AbstractValue
         stringBuilder.Append(" }");
 
         return stringBuilder.ToString();
+        */
+
+        return Name;
     }
 
     public ITypeMemberValue Get(ITypeMemberIdentification typeMemberIdentification)
