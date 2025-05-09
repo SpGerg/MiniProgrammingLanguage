@@ -31,11 +31,11 @@ public class TryCatchExpression : AbstractEvaluableExpression, IStatement
         }
         catch (AbstractInterpreterException languageException)
         {
-            var exceptionTypeInstance = programContext.Types.Get(CatchBody, "__exception", programContext.Module, Location);
+            var exceptionTypeInstance = programContext.Types.Get(null, "__exception", "std", Location);
             var exception = exceptionTypeInstance.Create();
 
             var nameMember = (TypeMemberValue) exception.Get("name");
-            nameMember.Value = new StringValue(languageException.InnerException.GetType().Name);
+            nameMember.Value = new StringValue(languageException.GetType().Name);
             
             var messageMember = (TypeMemberValue) exception.Get("message");
             messageMember.Value = new StringValue(languageException.Message);
@@ -51,6 +51,8 @@ public class TryCatchExpression : AbstractEvaluableExpression, IStatement
             };
             
             programContext.Variables.Add(variableInstance, programContext.Location);
+
+            CatchBody.Evaluate(programContext);
             
             return VoidValue.Instance;
         }

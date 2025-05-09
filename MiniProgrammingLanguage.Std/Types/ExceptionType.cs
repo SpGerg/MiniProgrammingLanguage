@@ -5,7 +5,7 @@ using MiniProgrammingLanguage.Core.Parser.Ast.Enums;
 
 namespace MiniProgrammingLanguage.Std.Types;
 
-public class ExceptionType
+public static class ExceptionType
 {
     public static UserTypeInstance Create()
     {
@@ -28,7 +28,7 @@ public class ExceptionType
             .Build();
 
         return new UserTypeInstanceBuilder()
-            .SetName("__task")
+            .SetName("__exception")
             .SetModule(StdModule.Name)
             .AddMember(id)
             .AddMember(message)

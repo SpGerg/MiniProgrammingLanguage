@@ -1,0 +1,16 @@
+# Visual Studio
+/.vs/
+
+# NuGet
+/packages/
+!packages/repositories.config
+
+# Rider
+riderModule.iml
+/_ReSharper.Caches/
+/.idea/
+
+# Output files
+/build/
+bin/
+obj/
