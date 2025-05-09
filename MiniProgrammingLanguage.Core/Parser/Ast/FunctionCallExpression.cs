@@ -105,9 +105,8 @@ public class FunctionCallExpression : AbstractEvaluableExpression, IStatement
             }
 
             var taskTypeValue = taskType.Create();
-
-            var identification = new KeyTypeMemberIdentification { Identifier = "id" };
-            var member = (TypeMemberValue)taskTypeValue.Get(identification);
+            
+            var member = (TypeMemberValue) taskTypeValue.Get("id");
 
             member.Value = new NumberValue(task.Id);
 

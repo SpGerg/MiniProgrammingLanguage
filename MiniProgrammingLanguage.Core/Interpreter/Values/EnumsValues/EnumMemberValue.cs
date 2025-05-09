@@ -15,7 +15,12 @@ public class EnumMemberValue : AbstractValue
 
     public override ValueType Type => ValueType.EnumMember;
 
-    public override ValueType[] CanCast { get; } = { ValueType.String };
+    public override ValueType[] CanCast { get; } =
+    {
+        ValueType.String,
+        ValueType.RoundNumber,
+        ValueType.Number
+    };
     
     public IEnumInstance Parent { get; }
 
@@ -35,7 +40,7 @@ public class EnumMemberValue : AbstractValue
 
     public override string AsString(ProgramContext programContext, Location location)
     {
-        return $"({Name}) {Member}";
+        return Member;
     }
 
     public override float AsNumber(ProgramContext programContext, Location location)

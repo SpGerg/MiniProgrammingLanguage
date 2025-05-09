@@ -25,13 +25,14 @@ public static class StdModule
         var typeofFunction = TypeofFunction.Create();
 
         var task = TaskType.Create();
+        var exception = ExceptionType.Create();
 
         var module = ModuleVariable.Create();
 
         return new ImplementModule
         {
             Name = Name,
-            Types = new[] { task },
+            Types = new[] { task, exception },
             Functions = new[] { print, sleep, typeofFunction },
             Variables = new[] { module },
             Enums = Array.Empty<IEnumInstance>()

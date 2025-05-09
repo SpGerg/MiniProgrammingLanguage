@@ -52,6 +52,8 @@ namespace MiniProgrammingLanguage.Core.Lexer.Enums
         Call,
         Bindable,
         Array,
+        Try,
+        Catch,
         StringType,
         NumberType,
         RoundNumberType,

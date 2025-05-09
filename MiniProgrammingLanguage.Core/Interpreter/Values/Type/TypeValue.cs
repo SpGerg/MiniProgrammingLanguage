@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
@@ -118,5 +118,21 @@ public class TypeValue : AbstractValue
     public ITypeMemberValue Get(ITypeMemberIdentification typeMemberIdentification)
     {
         return Members.FirstOrDefault(member => member.Key.Is(typeMemberIdentification)).Value;
+    }
+
+    public ITypeMemberValue Get(string identifier)
+    {
+        ITypeMemberIdentification identification;
+        
+        if (!identifier.EndsWith("()"))
+        {
+            identification = new KeyTypeMemberIdentification { Identifier = identifier };
+        }
+        else
+        {
+            identification = new FunctionTypeMemberIdentification { Identifier = identifier };
+        }
+
+        return Members.FirstOrDefault(member => member.Key.Is(identification)).Value;
     }
 }

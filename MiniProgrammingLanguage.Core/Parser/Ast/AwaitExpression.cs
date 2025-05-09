@@ -26,10 +26,7 @@ public class AwaitExpression : AbstractEvaluableExpression, IStatement
             return null;
         }
 
-        var idMember = (TypeMemberValue)typeValue.Get(new KeyTypeMemberIdentification
-        {
-            Identifier = "id"
-        });
+        var idMember = (TypeMemberValue) typeValue.Get("id");
 
         if (idMember?.Value is null)
         {

@@ -157,6 +157,11 @@ public class Parser
             return ParseForOrForeach();
         }
 
+        if (Match(TokenType.Try))
+        {
+            return ParseTryCatch();
+        }
+
         if (Match(TokenType.Module))
         {
             return ParseModule();
@@ -224,11 +229,26 @@ public class Parser
         return null;
     }
 
+    private TryCatchExpression ParseTryCatch()
+    {
+        Match(TokenType.Try);
+
+        var tryBody = ParseFunctionBody(TokenType.Catch);
+        var catchBody = ParseFunctionBody();
+
+        return new TryCatchExpression(tryBody, catchBody, tryBody.Location);
+    }
+
     /// <summary>
     /// Parse call expression.
     /// Call function without store it in a variable.
     /// <code>
     /// call (function declaration)
+    /// </code>
+    /// <code>
+    /// return call function()
+    ///     return ...
+    /// end
     /// </code>
     /// </summary>
     /// <returns></returns>
