@@ -424,13 +424,13 @@ public class Parser
         {
             if (Match(TokenType.And))
             {
-                left = new BinaryExpression(BinaryOperatorType.And, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.And, left, ParseBinary(), left.Location);
                 continue;
             }
 
             if (Match(TokenType.Or))
             {
-                left = new BinaryExpression(BinaryOperatorType.Or, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.Or, left, ParseBinary(), left.Location);
                 continue;
             }
 
@@ -467,31 +467,31 @@ public class Parser
 
             if (Match(TokenType.Plus))
             {
-                left = new BinaryExpression(BinaryOperatorType.Plus, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.Plus, left, ParseBinary(), left.Location);
                 continue;
             }
 
             if (Match(TokenType.Minus))
             {
-                left = new BinaryExpression(BinaryOperatorType.Minus, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.Minus, left, ParseBinary(), left.Location);
                 continue;
             }
 
             if (Match(TokenType.Is))
             {
-                left = new BinaryExpression(BinaryOperatorType.Equals, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.Equals, left, ParseBinary(), left.Location);
                 continue;
             }
 
             if (Match(TokenType.Greater))
             {
-                left = new BinaryExpression(BinaryOperatorType.Greater, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.Greater, left, ParseBinary(), left.Location);
                 continue;
             }
 
             if (Match(TokenType.Less))
             {
-                left = new BinaryExpression(BinaryOperatorType.Less, left, ParseMultiplicative(), left.Location);
+                left = new BinaryExpression(BinaryOperatorType.Less, left, ParseBinary(), left.Location);
                 continue;
             }
 
@@ -500,7 +500,7 @@ public class Parser
                 if (IsWithOffset(-3, TokenType.Dot))
                     return new AssignTypeMemberExpression(
                         new DotExpression(last, left, _root, left.Location),
-                        ParseMultiplicative(),
+                        ParseBinary(),
                         left.Location
                     );
 

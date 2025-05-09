@@ -1,9 +1,21 @@
-test: array = [ 1, 2, 3 ]
+saver = create saver
+saver.filepath = "C:\Users\spger\AppData\Roaming\EXILED\Configs\Plugins\mpl\7777.yml\scripts\"
 
-print(test)
+plugin = xp_system_plugin
 
-test[1] = 5
+function update_level(player, level)
+    saver.set(player.get_user_id(), 0)
+    player.rank = "Level | " + (string) level
+end
 
-print(test)
+function set_level_on_verified(player)
+    update_level(player, 0)
+end
 
-print(test[2])
+plugin.on_enabled.subscribe(function()
+    on_verified.subscribe(set_level_on_verified)
+end)
+
+plugin.on_disabled.unsubscribe(function()
+    on_verified.unsubscribe(set_level_on_verified)
+end)
