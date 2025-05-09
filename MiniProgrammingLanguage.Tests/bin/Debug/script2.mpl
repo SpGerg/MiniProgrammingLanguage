@@ -4,7 +4,7 @@ saver.filepath = "C:\Users\spger\AppData\Roaming\EXILED\Configs\Plugins\mpl\7777
 plugin = xp_system_plugin
 
 function update_level(player, level)
-    saver.set(player.get_user_id(), 0)
+    saver.set(player.get_user_id(), level)
     player.rank = "Level | " + (string) level
 end
 

@@ -10,5 +10,6 @@ public enum BinaryOperatorType
     Greater,
     Less,
     And,
-    Or
+    Or,
+    Not
 }

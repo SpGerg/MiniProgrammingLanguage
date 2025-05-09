@@ -23,6 +23,7 @@ public readonly struct LexerConfiguration
             { TokenType.RightBrace, "}" },
             { TokenType.LeftSquareBracket, "[" },
             { TokenType.RightSquareBracket, "]" },
+            { TokenType.Not, "not" },
             { TokenType.Dot, "." },
             { TokenType.Colon, ":" },
             { TokenType.Comma, "," },

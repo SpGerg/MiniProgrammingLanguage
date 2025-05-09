@@ -14,6 +14,7 @@ namespace MiniProgrammingLanguage.Core.Lexer.Enums
         RightBrace,
         LeftSquareBracket,
         RightSquareBracket,
+        Not,
         Multiplication,
         Division,
         Plus,

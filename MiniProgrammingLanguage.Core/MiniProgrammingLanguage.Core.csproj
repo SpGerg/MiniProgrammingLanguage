@@ -182,6 +182,7 @@
         <Compile Include="Parser\Ast\LoopExpression.cs" />
         <Compile Include="Parser\Ast\ModuleExpression.cs" />
         <Compile Include="Parser\Ast\NoneExpression.cs" />
+        <Compile Include="Parser\Ast\NotExpression.cs" />
         <Compile Include="Parser\Ast\NumberExpression.cs" />
         <Compile Include="Parser\Ast\ReturnExpression.cs" />
         <Compile Include="Parser\Ast\RoundNumberExpression.cs" />

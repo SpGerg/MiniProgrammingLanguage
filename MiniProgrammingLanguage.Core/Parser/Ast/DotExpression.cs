@@ -155,7 +155,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
     private ITypeMemberValue GetTypeMember(
         ProgramContext context,
         TypeValue type,
-        AbstractEvaluableExpression expression)
+        AbstractExpression expression)
     {
         if (expression is VariableExpression variableExpression)
         {
@@ -246,7 +246,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 })
             };
         }
-
+        
         InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, "?", expression.Location);
 
         return null;

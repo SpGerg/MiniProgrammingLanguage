@@ -362,6 +362,11 @@ public class Parser
     /// <returns></returns>
     private AbstractEvaluableExpression ParseUnary()
     {
+        if (Match(TokenType.Not))
+        {
+            return new NotExpression(ParseBinary(), Current.Location);
+        }
+
         if (Match(TokenType.Plus))
         {
             return ParseValue();
@@ -422,18 +427,6 @@ public class Parser
 
         while (IsNotEnded)
         {
-            if (Match(TokenType.And))
-            {
-                left = new BinaryExpression(BinaryOperatorType.And, left, ParseBinary(), left.Location);
-                continue;
-            }
-
-            if (Match(TokenType.Or))
-            {
-                left = new BinaryExpression(BinaryOperatorType.Or, left, ParseBinary(), left.Location);
-                continue;
-            }
-
             if (Match(TokenType.Dot))
             {
                 var right = ParseBinary(left);
@@ -455,11 +448,16 @@ public class Parser
                     case DotExpression dotExpression:
                         return new DotExpression(new DotExpression(left, dotExpression.Left, _root, left.Location),
                             dotExpression.Right, _root, dotExpression.Location);
-                    case VariableExpression variableExpression when left is BinaryExpression binaryExpression:
+                    case VariableExpression or FunctionCallExpression when left is BinaryExpression binaryExpression:
                         return new BinaryExpression(binaryExpression.Operator,
                             binaryExpression.Left,
-                            new DotExpression(binaryExpression.Right, right, _root, variableExpression.Location),
+                            new DotExpression(binaryExpression.Right, right, _root, right.Location),
                             binaryExpression.Location);
+                    case BinaryExpression { Left: FunctionCallExpression functionCallExpression } binaryExpression:
+                        var leftCall = new DotExpression(left, functionCallExpression, _root, left.Location);
+                        var binary = new BinaryExpression(binaryExpression.Operator, leftCall, binaryExpression.Right, left.Location);
+
+                        return binary;
                     default:
                         return new DotExpression(left, right, _root, left.Location);
                 }
@@ -480,6 +478,18 @@ public class Parser
             if (Match(TokenType.Is))
             {
                 left = new BinaryExpression(BinaryOperatorType.Equals, left, ParseBinary(), left.Location);
+                continue;
+            }
+            
+            if (Match(TokenType.And))
+            {
+                left = new BinaryExpression(BinaryOperatorType.And, left, ParseBinary(), left.Location);
+                continue;
+            }
+
+            if (Match(TokenType.Or))
+            {
+                left = new BinaryExpression(BinaryOperatorType.Or, left, ParseBinary(), left.Location);
                 continue;
             }
 

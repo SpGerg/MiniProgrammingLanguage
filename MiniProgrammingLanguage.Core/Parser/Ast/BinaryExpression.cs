@@ -50,9 +50,10 @@ public class BinaryExpression : AbstractEvaluableExpression
             BinaryOperatorType.Division => Division(context, left, right),
             BinaryOperatorType.And => And(context, left, right),
             BinaryOperatorType.Or => Or(context, left, right),
-            BinaryOperatorType.Equals => Equals(context, left, right),
+            BinaryOperatorType.Equals => Equals(context, left, right, false),
             BinaryOperatorType.Greater => Greater(context, left, right),
             BinaryOperatorType.Less => Less(context, left, right),
+            BinaryOperatorType.Not => Equals(context, left, right, true),
             _ => null
         };
 
@@ -96,9 +97,11 @@ public class BinaryExpression : AbstractEvaluableExpression
         };
     }
 
-    private static AbstractValue Equals(ProgramContext context, AbstractValue left, AbstractValue right)
+    private static AbstractValue Equals(ProgramContext context, AbstractValue left, AbstractValue right, bool isNot)
     {
-        return new BooleanValue(left.Is(right));
+        var result = left.Is(right);
+        
+        return new BooleanValue(isNot ? !result : result);
     }
 
     private AbstractValue Plus(ProgramContext context, AbstractValue left, AbstractValue right)
