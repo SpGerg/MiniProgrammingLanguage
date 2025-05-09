@@ -9,7 +9,7 @@ using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Parser.Ast;
 
-public class TryCatchExpression : AbstractEvaluableExpression, IStatement
+public class TryCatchExpression : AbstractEvaluableExpression, IControlFlowStatement
 {
     public TryCatchExpression(FunctionBodyExpression tryBody, FunctionBodyExpression catchBody, Location location) : base(location)
     {
@@ -20,6 +20,8 @@ public class TryCatchExpression : AbstractEvaluableExpression, IStatement
     public FunctionBodyExpression TryBody { get; }
     
     public FunctionBodyExpression CatchBody { get; }
+    
+    public StateType State { get; private set; }
 
     public override AbstractValue Evaluate(ProgramContext programContext)
     {
@@ -28,6 +30,7 @@ public class TryCatchExpression : AbstractEvaluableExpression, IStatement
         try
         {
             result = TryBody.Evaluate(programContext);
+            State = TryBody.State;
         }
         catch (AbstractInterpreterException languageException)
         {
@@ -51,8 +54,9 @@ public class TryCatchExpression : AbstractEvaluableExpression, IStatement
             };
             
             programContext.Variables.Add(variableInstance, programContext.Location);
-
+            
             CatchBody.Evaluate(programContext);
+            State = CatchBody.State;
             
             return VoidValue.Instance;
         }
