@@ -129,6 +129,7 @@
         <Compile Include="Interpreter\Values\RoundNumberValue.cs" />
         <Compile Include="Interpreter\Values\StringValue.cs" />
         <Compile Include="Interpreter\Values\ObjectTypeValue.cs" />
+        <Compile Include="Interpreter\Values\TableValue.cs" />
         <Compile Include="Interpreter\Values\TypeCompatibilityVisitor.cs" />
         <Compile Include="Interpreter\Values\Type\Interfaces\ITypeFunctionMemberValue.cs" />
         <Compile Include="Interpreter\Values\Type\Interfaces\ITypeMemberValue.cs" />

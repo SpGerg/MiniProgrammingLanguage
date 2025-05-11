@@ -89,6 +89,11 @@ public static class TypesFactory
     /// <returns></returns>
     public static object Create(AbstractValue target)
     {
+        if (target.Type is ValueType.None)
+        {
+            return null;
+        }
+        
         object result = target.Type switch
         {
             ValueType.String => target.AsString(null, Location.Default),

@@ -112,11 +112,6 @@ public abstract class AbstractValue
         {
             return true;
         }
-        
-        if (CanCast.Contains(objectTypeValue.ValueType))
-        {
-            return true;
-        }
 
         var visitor = new TypeCompatibilityVisitor(objectTypeValue);
 

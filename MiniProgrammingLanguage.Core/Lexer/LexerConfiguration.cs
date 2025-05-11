@@ -17,6 +17,8 @@ public readonly struct LexerConfiguration
             { TokenType.In, "in" },
             { TokenType.True, "true" },
             { TokenType.False, "false" },
+            { TokenType.LeftCurlyBrackets, "{" },
+            { TokenType.RightCurlyBrackets, "}" },
             { TokenType.LeftParentheses, "(" },
             { TokenType.RightParentheses, ")" },
             { TokenType.LeftBrace, "{" },

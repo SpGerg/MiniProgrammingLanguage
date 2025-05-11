@@ -41,7 +41,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(NoneValue noneValue)
     {
-        return Type.ValueType is ValueType.None;
+        return Type.ValueType is ValueType.None or ValueType.Object or ValueType.Type;
     }
 
     public bool Visit(TypeInstanceValue typeInstanceValue)
@@ -81,7 +81,7 @@ public class TypeCompatibilityVisitor : IValueVisitor
 
     public bool Visit(RoundNumberValue roundNumberValue)
     {
-        return Type.ValueType is ValueType.RoundNumber or ValueType.Number;
+        return Type.ValueType is ValueType.Number or ValueType.RoundNumber;
     }
 
     public bool Visit(EnumValue enumValue)
