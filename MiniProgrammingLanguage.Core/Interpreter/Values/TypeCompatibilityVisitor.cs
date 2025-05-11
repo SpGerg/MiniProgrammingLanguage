@@ -113,4 +113,9 @@ public class TypeCompatibilityVisitor : IValueVisitor
     {
         return Type.ValueType is ValueType.Void;
     }
+
+    public bool Visit(TableValue tableValue)
+    {
+        return Type.ValueType is ValueType.Table;
+    }
 }

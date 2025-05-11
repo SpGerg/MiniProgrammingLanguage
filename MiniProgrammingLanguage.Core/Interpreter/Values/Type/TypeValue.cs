@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
-using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Identifications;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
@@ -10,7 +8,7 @@ using ValueType = MiniProgrammingLanguage.Core.Interpreter.Values.Enums.ValueTyp
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 
-public class TypeValue : AbstractValue
+public class TypeValue : AbstractDataContainerValue
 {
     public TypeValue(ITypeInstance value, IReadOnlyDictionary<ITypeMemberIdentification, ITypeMemberValue> members) :
         base(value.Name)
@@ -119,24 +117,32 @@ public class TypeValue : AbstractValue
         return Name;
     }
 
-    public ITypeMemberValue Get(ITypeMemberIdentification typeMemberIdentification)
+    public override ITypeMemberValue Get(ITypeMemberIdentification identification)
     {
-        return Members.FirstOrDefault(member => member.Key.Is(typeMemberIdentification)).Value;
+        var member = Members.FirstOrDefault(member => member.Key.Is(identification));
+
+        return member.Equals(default) ? null : member.Value;
     }
 
-    public ITypeMemberValue Get(string identifier)
+    public override void Set(ProgramContext programContext, ITypeMemberIdentification identification, AbstractValue abstractValue, Location location)
     {
-        ITypeMemberIdentification identification;
-        
-        if (!identifier.EndsWith("()"))
-        {
-            identification = new KeyTypeMemberIdentification { Identifier = identifier };
-        }
-        else
-        {
-            identification = new FunctionTypeMemberIdentification { Identifier = identifier };
-        }
+        var member = Get(identification);
 
-        return Members.FirstOrDefault(member => member.Key.Is(identification)).Value;
+        if (member is not ITypeVariableMemberValue typeMemberValue)
+        {
+            InterpreterThrowHelper.ThrowMemberNotFoundException(Name, identification.Identifier, location);
+            return;
+        }
+        
+        var setterContext = new TypeMemberSetterContext
+        {
+            ProgramContext = programContext,
+            Member = member.Instance,
+            Type = this,
+            Value = abstractValue,
+            Location = location
+        };
+
+        typeMemberValue.SetValue(setterContext);
     }
 }

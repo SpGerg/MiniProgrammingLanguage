@@ -8,8 +8,6 @@ namespace MiniProgrammingLanguage.Core.Lexer.Enums
         Number,
         True,
         False,
-        LeftCurlyBrackets,
-        RightCurlyBrackets,
         LeftParentheses,
         RightParentheses,
         LeftBrace,

@@ -1,7 +1,10 @@
+using System.Linq;
+using MiniProgrammingLanguage.Core.Interpreter.Repositories.Variables;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
 using MiniProgrammingLanguage.Core.Interpreter.Values.EnumsValues;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 
 namespace MiniProgrammingLanguage.Core.Interpreter.Values;
 
@@ -142,5 +145,27 @@ public class ValueCompatibilityVisitor : IValueVisitor
     public bool Visit(VoidValue voidValue)
     {
         return Value.Type is ValueType.Void;
+    }
+    
+    public bool Visit(TableValue tableValue)
+    {
+        if (Value is not TableValue table)
+        {
+            return false;
+        }
+
+        foreach (var member in tableValue.Members)
+        {
+            var tableMember = table.Members.FirstOrDefault(entity => entity.Key.Is(member.Key));
+
+            if (!tableMember.Equals(default))
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

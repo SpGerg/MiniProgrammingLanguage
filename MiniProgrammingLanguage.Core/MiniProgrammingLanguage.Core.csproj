@@ -115,6 +115,7 @@
         <Compile Include="Interpreter\Repositories\Variables\VariableGetterContext.cs" />
         <Compile Include="Interpreter\Repositories\Variables\VariableSetterContext.cs" />
         <Compile Include="Interpreter\Repositories\Variables\VariablesRepository.cs" />
+        <Compile Include="Interpreter\Values\AbstractDataContainerValue.cs" />
         <Compile Include="Interpreter\Values\AbstractValue.cs" />
         <Compile Include="Interpreter\Values\ArrayValue.cs" />
         <Compile Include="Interpreter\Values\BooleanValue.cs" />
@@ -188,6 +189,7 @@
         <Compile Include="Parser\Ast\ReturnExpression.cs" />
         <Compile Include="Parser\Ast\RoundNumberExpression.cs" />
         <Compile Include="Parser\Ast\StringExpression.cs" />
+        <Compile Include="Parser\Ast\TableExpression.cs" />
         <Compile Include="Parser\Ast\TryCatchExpression.cs" />
         <Compile Include="Parser\Ast\TypeDeclarationExpression.cs" />
         <Compile Include="Parser\Ast\TypeFunctionMemberExpression.cs" />

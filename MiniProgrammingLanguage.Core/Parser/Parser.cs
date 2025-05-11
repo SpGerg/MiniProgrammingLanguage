@@ -1186,6 +1186,38 @@ public class Parser
     }
 
     /// <summary>
+    /// Parse table
+    /// </summary>
+    /// <code>
+    /// { (name) = (value), ... }
+    /// </code>
+    /// </summary>
+    /// <returns></returns>
+    private TableExpression ParseTable()
+    {
+        Match(TokenType.LeftBrace);
+
+        var location = Current.Location;
+        var members = new Dictionary<string, AbstractEvaluableExpression>();
+
+        while (!Match(TokenType.RightBrace))
+        {
+            var name = Current;
+
+            MatchOrException(TokenType.Word).
+                MatchOrException(TokenType.Equals);
+
+            var value = ParseBinary();
+            
+            members.Add(name.Value, value);
+
+            Match(TokenType.Comma);
+        }
+
+        return new TableExpression(members, location);
+    }
+    
+    /// <summary>
     /// Parse value on current token.
     /// Unknown values at parsing too (variables, functions, e.t.c).
     /// </summary>
@@ -1295,6 +1327,11 @@ public class Parser
             return ParseCreate();
         }
 
+        if (Match(TokenType.LeftBrace))
+        {
+            return ParseTable();
+        }
+        
         ParserThrowHelper.ThrowValueExceptedException(current.Location);
 
         return null;

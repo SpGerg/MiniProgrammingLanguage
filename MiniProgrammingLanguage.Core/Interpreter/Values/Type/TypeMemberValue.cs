@@ -17,8 +17,14 @@ public class TypeMemberValue : ITypeVariableMemberValue
         return Value;
     }
 
-    public void SetValue(TypeMemberSetterContext getterContext)
+    public void SetValue(TypeMemberSetterContext setterContext)
     {
-        Value = getterContext.Value;
+        if (!Instance.Type.Is(Value))
+        {
+            InterpreterThrowHelper.ThrowIncorrectTypeException(Instance.Type.ToString(), setterContext.Value.ToString(),
+                setterContext.Location);
+        }
+        
+        Value = setterContext.Value;
     }
 }

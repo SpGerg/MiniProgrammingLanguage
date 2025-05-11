@@ -17,5 +17,6 @@ public enum ValueType
     EnumMember,
     CSharpObject,
     TypeInstance,
+    Table,
     None
 }

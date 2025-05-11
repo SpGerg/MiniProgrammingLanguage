@@ -36,7 +36,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
     {
         var left = Left.Evaluate(programContext);
 
-        if (left is TypeValue typeValue)
+        if (left is AbstractDataContainerValue typeValue)
         {
             var (_, member) = Dot(programContext, typeValue);
 
@@ -45,7 +45,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 var context = new TypeMemberGetterContext
                 {
                     ProgramContext = programContext,
-                    Type = typeValue,
+                    Type = typeValue as TypeValue,
                     Member = member.Instance,
                     Location = Location
                 };
@@ -58,7 +58,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                 var context = new TypeFunctionExecuteContext
                 {
                     ProgramContext = programContext,
-                    Type = typeValue,
+                    Type = typeValue as TypeValue,
                     Arguments = ((FunctionCallExpression)Right).Arguments,
                     Member = functionMember.Instance,
                     Root = Root,
@@ -94,14 +94,14 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         return left;
     }
 
-    public (TypeValue Type, ITypeMemberValue Member) Dot(ProgramContext context, TypeValue parent = null)
+    public (AbstractDataContainerValue dataContainer, ITypeMemberValue Member) Dot(ProgramContext context, AbstractDataContainerValue parent = null)
     {
         return parent is null
             ? EvaluateRootExpression(context)
             : EvaluateNestedExpression(context, parent);
     }
 
-    private (TypeValue Type, ITypeMemberValue Member) EvaluateRootExpression(ProgramContext context)
+    private (AbstractDataContainerValue dataContainer, ITypeMemberValue Member) EvaluateRootExpression(ProgramContext context)
     {
         var leftValue = Left.Evaluate(context);
 
@@ -119,9 +119,9 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             : (typeValue, GetTypeMember(context, typeValue, Right));
     }
 
-    private (TypeValue Type, ITypeMemberValue Member) EvaluateNestedExpression(
+    private (AbstractDataContainerValue dataContainer, ITypeMemberValue Member) EvaluateNestedExpression(
         ProgramContext context,
-        TypeValue parent)
+        AbstractDataContainerValue parent)
     {
         if (Right is not DotExpression dotExpression)
         {
@@ -133,9 +133,9 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
         return dotExpression.Dot(context, memberType);
     }
 
-    private (TypeValue Type, ITypeMemberValue Member) HandleSingleMemberAccess(
+    private (AbstractDataContainerValue dataContainer, ITypeMemberValue Member) HandleSingleMemberAccess(
         ProgramContext context,
-        TypeValue parent)
+        AbstractDataContainerValue parent)
     {
         var member = GetTypeMember(context, parent, Right);
 
@@ -154,19 +154,19 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
     private ITypeMemberValue GetTypeMember(
         ProgramContext context,
-        TypeValue type,
+        AbstractDataContainerValue dataContainer,
         AbstractExpression expression)
     {
         if (expression is VariableExpression variableExpression)
         {
-            var result = type.Get(new KeyTypeMemberIdentification
+            var result = dataContainer.Get(new KeyTypeMemberIdentification
             {
                 Identifier = variableExpression.Name
             });
 
             if (result is null)
             {
-                InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, variableExpression.Name, Location);
+                InterpreterThrowHelper.ThrowMemberNotFoundException(dataContainer.Name, variableExpression.Name, Location);
             }
 
             return result;
@@ -174,16 +174,16 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
         if (expression is FunctionCallExpression functionCallExpression)
         {
-            var typeValue = context.Types.Get(functionCallExpression.Root, type.Name, context.Module,
+            var typeValue = context.Types.Get(functionCallExpression.Root, dataContainer.Name, context.Module,
                 Location);
-            var function = type.Get(new FunctionTypeMemberIdentification
+            var function = dataContainer.Get(new FunctionTypeMemberIdentification
             {
                 Identifier = functionCallExpression.Name
             });
 
             if (function is null)
             {
-                InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, functionCallExpression.Name, Location);
+                InterpreterThrowHelper.ThrowMemberNotFoundException(dataContainer.Name, functionCallExpression.Name, Location);
             }
 
             if (function.Instance is ITypeLanguageFunctionMember languageFunctionMember)
@@ -195,7 +195,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                     Value = languageFunctionMember.Bind.Invoke(new TypeFunctionExecuteContext
                     {
                         ProgramContext = context,
-                        Type = type,
+                        Type = dataContainer as TypeValue,
                         Member = languageFunctionMember,
                         Arguments = functionCallExpression.Arguments,
                         Root = Root,
@@ -229,7 +229,7 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
                     Module = "system",
                     Access = AccessType.ReadOnly,
                     Type = new ObjectTypeValue(typeValue.Name, ValueType.Type),
-                    Value = type,
+                    Value = dataContainer,
                     Root = userFunctionInstance.Body
                 }, Location);
 
@@ -247,43 +247,43 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
             };
         }
         
-        InterpreterThrowHelper.ThrowMemberNotFoundException(type.Name, "?", expression.Location);
+        InterpreterThrowHelper.ThrowMemberNotFoundException(dataContainer.Name, "?", expression.Location);
 
         return null;
     }
 
     private AbstractValue GetMemberValue(
         ProgramContext context,
-        TypeValue parent,
+        AbstractDataContainerValue dataContainer,
         ITypeMemberValue member)
     {
         return member switch
         {
-            TypeLanguageFunctionMemberValue languageFunction => ExecuteFunction(context, parent, languageFunction),
-            TypeLanguageVariableMemberValue languageVariable => GetVariableValue(context, parent, languageVariable),
-            ITypeVariableMemberValue variable => GetVariableValue(context, parent, variable),
-            ITypeFunctionMemberValue function => ExecuteFunction(context, parent, function),
+            TypeLanguageFunctionMemberValue languageFunction => ExecuteFunction(context, dataContainer, languageFunction),
+            TypeLanguageVariableMemberValue languageVariable => GetVariableValue(context, dataContainer, languageVariable),
+            ITypeVariableMemberValue variable => GetVariableValue(context, dataContainer, variable),
+            ITypeFunctionMemberValue function => ExecuteFunction(context, dataContainer, function),
             _ => throw new NotSupportedException($"Unsupported member type: {member.GetType()}")
         };
     }
 
     private AbstractValue GetVariableValue(
         ProgramContext context,
-        TypeValue parent,
+        AbstractDataContainerValue dataContainer,
         ITypeVariableMemberValue variable)
     {
-        var getterContext = CreateMemberGetterContext(context, parent, variable.Instance);
+        var getterContext = CreateMemberGetterContext(context, dataContainer, variable.Instance);
         return variable.GetValue(getterContext);
     }
 
     private AbstractValue ExecuteFunction(
         ProgramContext context,
-        TypeValue parent,
+        AbstractDataContainerValue dataContainer,
         ITypeFunctionMemberValue function)
     {
         var functionContext = CreateFunctionContext(
             context,
-            parent,
+            dataContainer,
             function.Instance,
             ((FunctionCallExpression)Right).Arguments
         );
@@ -292,11 +292,11 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
     private (AbstractValue Value, TypeValue Type) ResolveLeftMember(
         ProgramContext context,
-        TypeValue parent,
+        AbstractDataContainerValue dataContainer,
         DotExpression dotExpression)
     {
-        var member = GetTypeMember(context, parent, dotExpression.Left);
-        var value = GetMemberValue(context, parent, member);
+        var member = GetTypeMember(context, dataContainer, dotExpression.Left);
+        var value = GetMemberValue(context, dataContainer, member);
 
         if (value is not TypeValue typeValue)
         {
@@ -310,13 +310,13 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
     private TypeMemberGetterContext CreateMemberGetterContext(
         ProgramContext context,
-        TypeValue type,
+        AbstractDataContainerValue dataContainer,
         ITypeMember member)
     {
         return new TypeMemberGetterContext
         {
             ProgramContext = context,
-            Type = type,
+            Type = dataContainer as TypeValue,
             Member = member,
             Location = Location
         };
@@ -324,14 +324,14 @@ public class DotExpression : AbstractEvaluableExpression, IStatement
 
     private TypeFunctionExecuteContext CreateFunctionContext(
         ProgramContext context,
-        TypeValue type,
+        AbstractDataContainerValue dataContainer,
         ITypeMember member,
         AbstractEvaluableExpression[] arguments)
     {
         return new TypeFunctionExecuteContext
         {
             ProgramContext = context,
-            Type = type,
+            Type = dataContainer as TypeValue,
             Member = member,
             Arguments = arguments,
             Root = Root,

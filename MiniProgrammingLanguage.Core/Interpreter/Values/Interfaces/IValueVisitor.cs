@@ -32,4 +32,6 @@ public interface IValueVisitor
     bool Visit(EnumMemberValue enumMemberValue);
 
     bool Visit(VoidValue voidValue);
+
+    bool Visit(TableValue tableValue);
 }

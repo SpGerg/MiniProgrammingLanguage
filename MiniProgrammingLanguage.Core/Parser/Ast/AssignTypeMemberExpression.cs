@@ -3,6 +3,7 @@ using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types;
 using MiniProgrammingLanguage.Core.Interpreter.Repositories.Types.Interfaces;
 using MiniProgrammingLanguage.Core.Interpreter.Values;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Enums;
+using MiniProgrammingLanguage.Core.Interpreter.Values.Type;
 using MiniProgrammingLanguage.Core.Interpreter.Values.Type.Interfaces;
 using MiniProgrammingLanguage.Core.Parser.Ast.Interfaces;
 
@@ -48,7 +49,7 @@ public class AssignTypeMemberExpression : AbstractEvaluableExpression, IAssignEx
         var setterContext = new TypeMemberSetterContext
         {
             ProgramContext = programContext,
-            Type = type,
+            Type = type as TypeValue,
             Member = member.Instance,
             Value = right,
             Location = Location
